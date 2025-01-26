@@ -32,7 +32,6 @@ fetch('./data/canvasData.json')
     .then(response => response.json())
     .then(data => {
         canvasData = data;
-        document.getElementById('output').innerText = JSON.stringify(canvasData, null, 2);
     })
     .catch(error => console.error('Error loading JSON:', error));
 
@@ -43,7 +42,6 @@ fetch('./data/localizedData.json')
 .then(response => response.json())
 .then(data => {
     canvasData = data;
-    document.getElementById('output').innerText = JSON.stringify(canvasData, null, 2);
 })
 .catch(error => console.error('Error loading JSON:', error));
   
