@@ -1,225 +1,281 @@
 <!doctype html>
 <html>
-<head>
-  <link rel="icon" type="image/png" href="/img/apiops-cycles-logo-2025-32.png"/>
-  <title>APIOps Cycles - Canvas Creator</title>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <style>
-   /* Use inline styles to support SVG exports */
-   body {
-      font-family: Arial, sans-serif;
-    }
+  <head>
+    <link
+      rel="icon"
+      type="image/png"
+      href="/img/apiops-cycles-logo-2025-32.png"
+    />
+    <title>APIOps Cycles - Canvas Creator</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+      /* General Styles */
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f4f7fc;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+      }
 
-    #canvasCreator {
-    margin: 0 10% 0 10%;
-    }
-    
-    svg {
-      margin: 0 10% 50px 10%;
-    }
+      h1 {
+        color: #1a3987;
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
 
-    #canvasToolGroup {
-      display:none;
-    }
-    .canvas-tools {
-      position: fixed;
-      bottom: 0px;
-      padding: 10px 20px;
-      margin-top: -10px;
-      background-color: #0073e6;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+      p,
+      ul {
+        font-size: 1rem;
+        max-width: 800px;
+        margin: 0 auto 10px auto;
+        text-align: left;
+      }
 
-    #metadataButton {
-      left: 30px;
-    }
+      ul {
+        list-style-type: disc;
+        padding-left: 20px;
+      }
 
-    #importButton {
-      left: 170px;
-    }
+      /* Container */
+      #canvasCreator {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 1000px;
+        margin: auto;
+      }
 
-    #exportButton {
-      left: 290px;
-    }
+      /* Form Elements */
+      #localeSelector,
+      #canvasSelector {
+        display: flex;
+        justify-content: center;
+        margin: 15px 0;
+      }
 
-    #exportSVGButton {
-      left: 410px;
-    }
-    #colorPalette {
-       position: fixed;
-       bottom: 20px;
-       left: 800px;
-       text-align: right;
-    }
+      select {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+      }
 
-    .colorSwatch {
-      height: 30px;
-      width: 30px;
-      border-radius: 3px;
-    }
+      /* Buttons */
+      .canvas-tools {
+        background: #0073e6;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        margin: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: 0.3s;
+      }
 
-    /* Styles for the locale and canvas selection */
-    #localeSelector,
-    #canvasSelector {
-      margin-bottom: 10px;
-      margin-top: 10px;
-      display: flex;
-      align-items: center;
-    }
+      .canvas-tools:hover {
+        background: #005bb5;
+      }
 
-    #localeSelector label,
-    #canvasSelector label {
-      margin-right: 10px;
-      font-weight: bold;
-    }
+      /* Metadata Form */
+      #metadataForm {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+        width: 300px;
+      }
 
-    #localeSelector select,
-    #canvasSelector select {
-      padding: 5px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
-    }
+      #metadataForm input {
+        width: 100%;
+        padding: 8px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
 
-    #canvasSelector {
-      display: none;
-    }
+      #metadataForm button {
+        width: 100%;
+        padding: 10px;
+        background: #0073e6;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
 
-    /* Styles for the metadata form */
-    #metadataForm {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-      z-index: 10; /* Ensure the form is on top */
-    }
+      #metadataForm button:hover {
+        background: #005bb5;
+      }
 
-    #metadataForm h2 {
-      margin-top: 0;
-    }
+      /* Color Palette */
+      #colorPalette {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
 
-    #metadataForm label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
+      .colorSwatch {
+        width: 40px;
+        height: 40px;
+        margin: 5px;
+        border-radius: 50%;
+        border: 2px solid #ccc;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
 
-    #metadataForm input[type="text"] {
-      width: 100%;
-      padding: 5px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
-      box-sizing: border-box;
-    }
+      .colorSwatch:hover {
+        transform: scale(1.1);
+      }
+    </style>
+  </head>
 
-    #metadataForm button {
-      margin-top: 10px;
-      padding: 8px 15px;
-      background-color: #0073e6;
-      color: white;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-  </style>
-</head>
+  <body>
+    <div id="canvasCreator">
+      <img
+        src="/img/apiops-cycles-logo2025-blue.svg"
+        width="100px"
+        height="100px"
+      />
+      <h1>APIOps Cycles Canvas Creator</h1>
+      <p>
+        For <b>instructions</b> how to use the APIOps Cycles canvases, check the
+        method and
+        <a
+          href="https://www.apiopscycles.com/collecting-requirements"
+          target="_blank"
+          >the canvas instructions at apiopscycles.com.</a
+        >
+      </p>
+      <p>
+        If you are insterested in the canvases as <b>JSON files</b> or helping
+        to <b>localize</b> the canvases or use and contribute this code, check
+        <a
+          href="https://github.com/APIOpsCycles/CanvasCreator.git"
+          target="_blank"
+          >the Github repository
+        </a>
+      </p>
+      <ul>
+        <li>
+          <b>Open a canvas:</b> Select the locale (language) and then the
+          canvas.
+        </li>
+        <li>
+          <b>Create sticky notes:</b> Import from JSON file or double-click left
+          mouse button to create or edit sticky notes.
+        </li>
+        <li>
+          <b>Change note color:</b> Left click sticky note and then pick color.
+          Selected color will be used for new stickies, too.
+        </li>
+        <li>
+          <b>Remove note:</b> Right click and confirm to remove a sticky note.
+        </li>
+        <li>
+          <b>Save your content:</b> Export as JSON. For security and simplicity
+          reasons, everything is done in your browser and not sent to any
+          server.
+        </li>
+        <li>
+          <b>Export as image:</b> You can export the whole canvas and content as
+          SVG (vector image) to use in slides, Miro / Mural, print or web.
+        </li>
+      </ul>
+      <div id="localeSelector">
+        <label for="locale">Select Locale:</label>
+        <select id="locale"></select>
+      </div>
 
-<body>
-    <div id ="canvasCreator">
-        <img src="/img/apiops-cycles-logo2025-blue.svg" width="100px" height="100px">
-        <h1>APIOps Cycles Canvas Creator</h1>
-        <p>
-        For <b>instructions</b>b> how to use the APIOps Cycles canvases, check the method and <a href="https://www.apiopscycles.com/collecting-requirements" target="_blank">the canvas instructions at apiopscycles.com.</a> 
-        </p>
-        <p>
-        If you are insterested in the canvases as <b>JSON files</b> or helping to <b>localize</b> the canvases or use and contribute this code, check <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank">the Github repository </a> 
-        </p>
-        <p>
-            For similar, but more integrated commercial tool, you can refer to one of our partners Qriar Labs. For consulting or training services on how to use the canvases,<a href="https://www.apiopscycles.com/partners" target="_blank">check our partner page for more information</a>.
-        </p>
-        <ul>
-            <li><b>Open a canvas:</b> Select the locale (language) and then the canvas.</li>
-            <li><b>Create sticky notes:</b> Import from JSON file or double-click left mouse button to create or edit sticky notes.</li>
-            <li><b>Change note color:</b> Left click sticky note and then pick color. Selected color will be used for new stickies, too.</li>
-            <li><b>Remove note:</b> Right click and confirm to remove a sticky note.</li>
-            <li><b>Save your content:</b> Export as JSON. For security and simplicity reasons, everything is done in your browser and not sent to any server.</li>
-            <li><b>Export as image:</b> You can export the whole canvas and content as SVG (vector image) to use in slides, Miro / Mural, print or web.</li>
-        </ul>
-        <div id="localeSelector">
-            <label for="locale">Select Locale:</label>
-            <select id="locale">
-            </select>
+      <div id="canvasSelector">
+        <label for="canvas">Select Canvas:</label>
+        <select id="canvas"></select>
+      </div>
+      <div id="canvasToolGroup">
+        <button id="metadataButton" class="canvas-tools">Edit Metadata</button>
+        <button class="canvas-tools" id="importButton">Import JSON</button>
+        <button id="exportButton" class="canvas-tools">Export JSON</button>
+        <button id="exportSVGButton" class="canvas-tools">Export SVGs</button>
+
+        <div id="colorPalette">
+          <button
+            class="colorSwatch"
+            style="background-color: #c0eb6a"
+            data-color="#C0EB6A"
+          ></button>
+          <button
+            class="colorSwatch"
+            style="background-color: #dfddc5"
+            data-color="#DFDDC5"
+          ></button>
+          <button
+            class="colorSwatch"
+            style="background-color: #ffafaf"
+            data-color="#FFAFAF"
+          ></button>
+          <button
+            class="colorSwatch"
+            style="background-color: #7dc9e7"
+            data-color="#7DC9E7"
+          ></button>
+          <button
+            class="colorSwatch"
+            style="background-color: #fff399"
+            data-color="#FFF399"
+          ></button>
         </div>
-
-        <div id="canvasSelector">
-            <label for="canvas">Select Canvas:</label>
-            <select id="canvas">
-            </select>
-        </div>
-        <div id="canvasToolGroup">
-                <button id="metadataButton" class="canvas-tools">Edit Metadata</button>
-                <button class="canvas-tools" id="importButton">Import JSON</button>
-                <button id="exportButton" class="canvas-tools">Export JSON</button>
-                <button id="exportSVGButton" class="canvas-tools">Export SVGs</button>
-                
-            <div id="colorPalette">
-                <label>Double-click sections to create notes.</br></label>
-                <label>Click note, then pick color</br></label>
-                <button class="colorSwatch" style="background-color: #C0EB6A;" data-color="#C0EB6A"></button>
-                <button class="colorSwatch" style="background-color: #DFDDC5;" data-color="#DFDDC5"></button>
-                <button class="colorSwatch" style="background-color: #FFAFAF;" data-color="#FFAFAF"></button>
-                <button class="colorSwatch" style="background-color: #7DC9E7;" data-color="#7DC9E7"></button>
-                <button class="colorSwatch" style="background-color: #FFF399;" data-color="#FFF399"></button>
-            </div>
-        </div>
-        <div id="metadataForm" style="display: none;">
-            <h2>Content Metadata</h2>
-            <label for="source">Source:</label>
-            <input type="text" id="source" name="source"><br><br>
-            <label for="license">License:</label>
-            <input type="text" id="license" name="license"><br><br>
-            <label for="authors">Authors:</label>
-            <input type="text" id="authors" name="authors"><br><br>
-            <label for="website">Website:</label>
-            <input type="text" id="website" name="website"><br><br>
-            <button id="saveMetadata">Save Metadata</button>
-        </div>
+      </div>
+      <div id="metadataForm" style="display: none">
+        <h2>Content Metadata</h2>
+        <label for="source">Source:</label>
+        <input type="text" id="source" name="source" /><br /><br />
+        <label for="license">License:</label>
+        <input type="text" id="license" name="license" /><br /><br />
+        <label for="authors">Authors:</label>
+        <input type="text" id="authors" name="authors" /><br /><br />
+        <label for="website">Website:</label>
+        <input type="text" id="website" name="website" /><br /><br />
+        <button id="saveMetadata">Save Metadata</button>
+      </div>
     </div>
-  <script>
-    //configure styles for canvas creator here
-    const defaultStyles = {
-      width: 1000,
-      height: 712,
-      headerHeight: 80,
-      footerHeight: 30,
-      fontSize: 12,
-      fontFamily: "Arial, sans-serif",
-      backgroundColor: "#f5f5ff",
-      borderColor: "#1a3987",
-      fontColor: "#1a3987",
-      contentFontColor: "#333",
-      highlightColor: "#d7e3fe",
-      sectionColor: "#ffffff",
-      padding: 10,
-      cornerRadius: 10,
-      circleRadius: 14,
-      lineSize: 1,
-      shadowColor: "rgba(0, 0, 0, 0.2)",
-      stickyNoteSize: 80,
-      stickyNoteSpacing: 10,
-      stickyNoteCornerRadius: 3,
-      maxLineWidth: 70,
-      stickyNoteColor: "#FFFFE0",
-      defaultLocale: "en-US",
-    }
-</script>
-<script defer src="/canvasCreatorUI.v1_1.min.js"></script>
-</body>
+    <script>
+      //configure styles for canvas creator here
+      const defaultStyles = {
+        width: 1000,
+        height: 712,
+        headerHeight: 80,
+        footerHeight: 30,
+        fontSize: 12,
+        fontFamily: "Arial, sans-serif",
+        backgroundColor: "#f5f5ff",
+        borderColor: "#1a3987",
+        fontColor: "#1a3987",
+        contentFontColor: "#333",
+        highlightColor: "#d7e3fe",
+        sectionColor: "#ffffff",
+        padding: 10,
+        cornerRadius: 10,
+        circleRadius: 14,
+        lineSize: 1,
+        shadowColor: "rgba(0, 0, 0, 0.2)",
+        stickyNoteSize: 80,
+        stickyNoteSpacing: 10,
+        stickyNoteCornerRadius: 3,
+        maxLineWidth: 70,
+        stickyNoteColor: "#FFFFE0",
+        defaultLocale: "en-US",
+      }
+    </script>
+    <script defer src="/canvasCreatorUI.v1_1.min.js"></script>
+  </body>
 </html>
