@@ -1,3 +1,12 @@
+/* 
+APIOps Cycles Canvas Creator
+Creates canvases from json and localization files (note: current code requires the data is directly inserted in the Javascript file.
+The JSON files are so big and the client side Javascript not the most efficient way, that also the JSON needs to be minimized with the script).
+When you update the Javascript, also create the minimized file and raise version number to help cache to update.
+Original author Marjukka Niinioja, licensed under Apache 2.0
+
+ */
+
 /* //default configuration for easily overriding the styles when calling from html. Put this in the html file before calling this script file
 const defaultStyles = {
     width: 1000,
@@ -1097,14 +1106,14 @@ function loadCanvas(locale, canvasId) {
     }
 
     svg = d3
-      .select("body")
+      .select("#canvasCreator")
       .append("svg")
       .attr("width", defaultStyles.width + defaultStyles.padding * 2)
       .attr("height", defaultStyles.height)
       .style("background-color", defaultStyles.backgroundColor)
 
     const logoUrl =
-      "https://cdn.prod.website-files.com/60b12ba6f99f5f10acf3499c/674caeff00fc531a1727d336_apiops-cycles-logo2025-blue.svg"
+      "/img/apiops-cycles-logo2025-blue.svg"
 
     fetchAPIOpsLogo(
       logoUrl,
