@@ -25,25 +25,903 @@ const defaultStyles = {
   
 */
 
-//load canvas layouts from json data   
-let canvasData;
-
-fetch('./data/canvasData.json')
-    .then(response => response.json())
-    .then(data => {
-        canvasData = data;
-    })
-    .catch(error => console.error('Error loading JSON:', error));
-
-//load localized names and help texts for canvases from json data
-let localizedData;
-
-fetch('./data/localizedData.json')
-.then(response => response.json())
-.then(data => {
-    canvasData = data;
-})
-.catch(error => console.error('Error loading JSON:', error));
+//load canvas layouts and localizations from json data   
+const canvasData = {
+    "apiBusinessModelCanvas": {
+      "id": "apiBusinessModelCanvas",
+      "layout": {
+        "columns": 5,
+        "rows": 3
+      },
+      "metadata": {
+        "source": "APIOps Cycles",
+        "license": "CC-BY-SA 4.0",
+        "authors": ["Alexander Osterwalder", "Osaango Ltd"],
+        "website": "www.apiopscycles.com"
+      },
+      "sections": [
+        {
+          "id": "keyPartners",
+          "gridPosition": { "column": 0, "row": 0, "colSpan": 1, "rowSpan": 2 },
+          "fillOrder": 7
+        },
+        {
+          "id": "keyActivities",
+          "gridPosition": { "column": 1, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 6
+        },
+        {
+          "id": "keyResources",
+          "gridPosition": { "column": 1, "row": 1, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 5
+        },
+        {
+          "id": "apiValueProposition",
+          "gridPosition": { "column": 2, "row": 0, "colSpan": 1, "rowSpan": 2 },
+          "fillOrder": 1,
+          "highlight": true
+        },
+        {
+          "id": "developerRelations",
+          "gridPosition": { "column": 3, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 3
+        },
+        {
+          "id": "channels",
+          "gridPosition": { "column": 3, "row": 1, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 4
+        },
+        {
+          "id": "apiConsumerSegments",
+          "gridPosition": { "column": 4, "row": 0, "colSpan": 1, "rowSpan": 2 },
+          "fillOrder": 2
+        },
+        {
+          "id": "costs",
+          "gridPosition": { "column": 0, "row": 2, "colSpan": 2.5, "rowSpan": 1 },
+          "fillOrder": 9
+        },
+        {
+          "id": "benefits",
+          "gridPosition": { "column": 2.5, "row": 2, "colSpan": 2.5, "rowSpan": 1 },
+          "fillOrder": 8
+        }
+      ]
+    },
+    "apiValuePropositionCanvas": {
+      "id": "apiValuePropositionCanvas",
+      "layout": {
+        "columns": 4,
+        "rows": 3
+      },
+      "metadata": {
+        "source": "APIOps Cycles",
+        "license": "CC-BY-SA 4.0",
+        "authors": ["Alexander Osterwalder", "Osaango Ltd"],
+        "website": "www.apiopscycles.com"
+      },
+      "sections": [
+        {
+          "id": "tasks",
+          "gridPosition": { "column": 0, "row": 0, "colSpan": 4, "rowSpan": 1 },
+          "fillOrder": 1,
+          "highlight": true,
+          "journeySteps": true
+        },
+        {
+          "id": "gainEnablingFeatures",
+          "gridPosition": { "column": 0, "row": 1, "colSpan": 2, "rowSpan": 1 },
+          "fillOrder": 2
+        },
+        {
+          "id": "painRelievingFeatures",
+          "gridPosition": { "column": 2, "row": 1, "colSpan": 2, "rowSpan": 1 },
+          "fillOrder": 3
+        },
+        {
+          "id": "apiProducts",
+          "gridPosition": { "column": 0, "row": 2, "colSpan": 4, "rowSpan": 1 },
+          "fillOrder": 4
+        }
+      ]
+    },
+    "businessImpactCanvas": {
+      "id": "businessImpactCanvas",
+      "layout": {
+        "columns": 3,
+        "rows": 2
+      },
+      "metadata": {
+        "source": "APIOps Cycles",
+        "license": "CC-BY-SA 4.0",
+        "authors": ["Osaango Ltd"],
+        "website": "www.apiopscycles.com"
+      },
+      "sections": [
+        {
+          "id": "availabilityRisks",
+          "gridPosition": { "column": 0, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 1,
+          "highlight": true
+        },
+        {
+          "id": "securityRisks",
+          "gridPosition": { "column": 1, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 3,
+          "highlight": true
+        },
+        {
+          "id": "dataRisks",
+          "gridPosition": { "column": 2, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 5,
+          "highlight": true
+        },
+        {
+          "id": "mitigateAvailabilityRisks",
+          "gridPosition": { "column": 0, "row": 1, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 2
+        },
+        {
+          "id": "mitigateSecurityRisks",
+          "gridPosition": { "column": 1, "row": 1, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 4
+        },
+        {
+          "id": "mitigateDataRisks",
+          "gridPosition": { "column": 2, "row": 1, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 6
+        }
+      ]
+    },
+    "capacityCanvas": {
+      "id": "capacityCanvas",
+      "layout": {
+        "columns": 3,
+        "rows": 3
+      },
+      "metadata": {
+        "source": "APIOps Cycles",
+        "license": "CC-BY-SA 4.0",
+        "authors": ["Osaango Ltd"],
+        "website": "www.apiopscycles.com"
+      },
+      "sections": [
+        {
+          "id": "currentBusinessVolumes",
+          "gridPosition": { "column": 0, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 1,
+          "highlight": true
+        },
+        {
+          "id": "futureConsumptionTrends",
+          "gridPosition": { "column": 1, "row": 0, "colSpan": 2, "rowSpan": 1 },
+          "fillOrder": 2
+        },
+        {
+          "id": "peakLoadAndAvailabilityRequirements",
+          "gridPosition": { "column": 0, "row": 1, "colSpan": 3, "rowSpan": 1 },
+          "fillOrder": 3
+        },
+        {
+          "id": "cachingStrategies",
+          "gridPosition": { "column": 0, "row": 2, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 4
+        },
+        {
+          "id": "rateLimitingStrategies",
+          "gridPosition": { "column": 1, "row": 2, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 5
+        },
+        {
+          "id": "scalingStrategies",
+          "gridPosition": { "column": 2, "row": 2, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 6
+        }
+      ]
+    },
+    "customerJourneyCanvas": {
+      "id": "customerJourneyCanvas",
+      "layout": {
+        "columns": 5,
+        "rows": 4
+      },
+      "metadata": {
+        "source": "APIOps Cycles",
+        "license": "CC-BY-SA 4.0",
+        "authors": ["Osaango Ltd"],
+        "website": "www.apiopscycles.com"
+      },
+      "sections": [
+        {
+          "id": "customerDiscoversNeed",
+          "gridPosition": { "column": 0, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 2
+        },
+        {
+          "id": "persona",
+          "gridPosition": { "column": 1, "row": 0, "colSpan": 3, "rowSpan": 1 },
+          "fillOrder": 1,
+          "highlight": true
+        },
+        {
+          "id": "pains",
+          "gridPosition": { "column": 0, "row": 1, "colSpan": 1, "rowSpan": 2 },
+          "fillOrder": 5
+        },
+        {
+          "id": "journeySteps",
+          "gridPosition": { "column": 1, "row": 1, "colSpan": 3, "rowSpan": 2 },
+          "fillOrder": 4,
+          "journeySteps": true
+        },
+        {
+          "id": "customerNeedIsResolved",
+          "gridPosition": { "column": 4, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 3
+        },
+        {
+          "id": "gains",
+          "gridPosition": { "column": 4, "row": 1, "colSpan": 1, "rowSpan": 2 },
+          "fillOrder": 6
+        },
+        {
+          "id": "inputsOutputs",
+          "gridPosition": { "column": 0.5, "row": 3, "colSpan": 2, "rowSpan": 1 },
+          "fillOrder": 7
+        },
+        {
+          "id": "interactionProcessingRules",
+          "gridPosition": { "column": 2.5, "row": 3, "colSpan": 2, "rowSpan": 1 },
+          "fillOrder": 8
+        }
+      ]
+    },
+    "domainCanvas": {
+      "id": "domainCanvas",
+      "layout": {
+        "columns": 2,
+        "rows": 4
+      },
+      "metadata": {
+        "source": "APIOps Cycles",
+        "license": "CC-BY-SA 4.0",
+        "authors": ["Osaango Ltd"],
+        "website": "www.apiopscycles.com"
+      },
+      "sections": [
+        {
+          "id": "selectedCustomerJourneySteps",
+          "gridPosition": { "column": 0, "row": 0, "colSpan": 2, "rowSpan": 1 },
+          "fillOrder": 1,
+          "highlight": true,
+          "journeySteps": true
+        },
+        {
+          "id": "coreEntitiesAndBusinessMeaning",
+          "gridPosition": { "column": 0, "row": 1, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 2
+        },
+        {
+          "id": "attributesAndBusinessImportance",
+          "gridPosition": { "column": 1, "row": 1, "colSpan": 1, "rowSpan": 2 },
+          "fillOrder": 3
+        },
+        {
+          "id": "relationshipsBetweenEntities",
+          "gridPosition": { "column": 0, "row": 2, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 4
+        },
+        {
+          "id": "businessComplianceAndIntegrityRules",
+          "gridPosition": { "column": 0, "row": 3, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 5
+        },
+        {
+          "id": "securityAndPrivacyConsiderations",
+          "gridPosition": { "column": 1, "row": 3, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 6
+        }
+      ]
+    },
+    "eventCanvas": {
+      "id": "eventCanvas",
+      "layout": {
+        "columns": 4,
+        "rows": 3
+      },
+      "metadata": {
+        "source": "APIOps Cycles",
+        "license": "CC-BY-SA 4.0",
+        "authors": ["Osaango Ltd"],
+        "website": "www.apiopscycles.com"
+      },
+      "sections": [
+        {
+          "id": "userTaskTrigger",
+          "gridPosition": { "column": 0, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 1,
+          "highlight": true
+        },
+        {
+          "id": "inputEventPayload",
+          "gridPosition": { "column": 0, "row": 1, "colSpan": 1, "rowSpan": 2 },
+          "fillOrder": 2
+        },
+        {
+          "id": "processingLogic",
+          "gridPosition": { "column": 1, "row": 1, "colSpan": 2, "rowSpan": 2 },
+          "fillOrder": 3
+        },
+        {
+          "id": "outputEventResult",
+          "gridPosition": { "column": 3, "row": 1, "colSpan": 1, "rowSpan": 2 },
+          "fillOrder": 4
+        }
+      ]
+    },
+    "interactionCanvas": {
+      "id": "interactionCanvas",
+      "layout": {
+        "columns": 4,
+        "rows": 3
+      },
+      "metadata": {
+        "source": "APIOps Cycles",
+        "license": "CC-BY-SA 4.0",
+        "authors": ["Osaango Ltd"],
+        "website": "www.apiopscycles.com"
+      },
+      "sections": [
+        {
+          "id": "crudInteractions",
+          "gridPosition": { "column": 0, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 1,
+          "highlight": true
+        },
+        {
+          "id": "crudInputOutputModels",
+          "gridPosition": { "column": 0, "row": 1, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 2
+        },
+        {
+          "id": "crudProcessingValidation",
+          "gridPosition": { "column": 0, "row": 2, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 3
+        },
+        {
+          "id": "queryDrivenInteractions",
+          "gridPosition": { "column": 1, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 4,
+          "highlight": true
+        },
+        {
+          "id": "queryDrivenInputOutputModels",
+          "gridPosition": { "column": 1, "row": 1, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 5
+        },
+        {
+          "id": "queryDrivenProcessingValidation",
+          "gridPosition": { "column": 1, "row": 2, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 6
+        },
+        {
+          "id": "commandDrivenInteractions",
+          "gridPosition": { "column": 2, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 7,
+          "highlight": true
+        },
+        {
+          "id": "commandDrivenInputOutputModels",
+          "gridPosition": { "column": 2, "row": 1, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 8
+        },
+        {
+          "id": "commandDrivenProcessingValidation",
+          "gridPosition": { "column": 2, "row": 2, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 9
+        },
+        {
+          "id": "eventDrivenInteractions",
+          "gridPosition": { "column": 3, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 10,
+          "highlight": true
+        },
+        {
+          "id": "eventDrivenInputOutputModels",
+          "gridPosition": { "column": 3, "row": 1, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 11
+        },
+        {
+          "id": "eventDrivenProcessingValidation",
+          "gridPosition": { "column": 3, "row": 2, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 12
+        }
+      ]
+    },
+    "locationsCanvas": {
+      "id": "locationsCanvas",
+      "layout": {
+        "columns": 4,
+        "rows": 2
+      },
+      "metadata": {
+        "source": "APIOps Cycles",
+        "license": "CC-BY-SA 4.0",
+        "authors": ["Osaango Ltd"],
+        "website": "www.apiopscycles.com"
+      },
+      "sections": [
+        {
+          "id": "locationGroups",
+          "gridPosition": { "column": 0, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 1,
+          "highlight": true
+        },
+        {
+          "id": "locationGroupCharacteristics",
+          "gridPosition": { "column": 0, "row": 1, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 2
+        },
+        {
+          "id": "locations",
+          "gridPosition": { "column": 1, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 3,
+          "highlight": true
+        },
+        {
+          "id": "locationCharacteristics",
+          "gridPosition": { "column": 1, "row": 1, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 4
+        },
+        {
+          "id": "locationDistances",
+          "gridPosition": { "column": 2, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 5
+        },
+        {
+          "id": "locationDistanceCharacteristics",
+          "gridPosition": { "column": 2, "row": 1, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 6
+        },
+        {
+          "id": "locationEndpoints",
+          "gridPosition": { "column": 3, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 7
+        },
+        {
+          "id": "locationEndpointCharacteristics",
+          "gridPosition": { "column": 3, "row": 1, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 8
+        }
+      ]
+    },
+    "restCanvas": {
+      "id": "restCanvas",
+      "layout": {
+        "columns": 4,
+        "rows": 3
+      },
+      "metadata": {
+        "source": "APIOps Cycles",
+        "license": "CC-BY-SA 4.0",
+        "authors": ["Osaango Ltd"],
+        "website": "www.apiopscycles.com"
+      },
+      "sections": [
+        {
+          "id": "apiResources",
+          "gridPosition": { "column": 0, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 1,
+          "highlight": true
+        },
+        {
+          "id": "apiResourceModel",
+          "gridPosition": { "column": 0, "row": 1, "colSpan": 1, "rowSpan": 2 },
+          "fillOrder": 2
+        },
+        {
+          "id": "apiVerbs",
+          "gridPosition": { "column": 1, "row": 0, "colSpan": 1, "rowSpan": 1 },
+          "fillOrder": 3,
+          "highlight": true
+        },
+        {
+          "id": "apiVerbExample",
+          "gridPosition": { "column": 1, "row": 1, "colSpan": 3, "rowSpan": 2 },
+          "fillOrder": 4
+        }
+      ]
+    }
+  };
+  
+  const localizedData = {
+    "de-DE": {
+      "apiBusinessModelCanvas": {
+        "title": "API-Geschäftsmodell Canvas",
+        "purpose": "Wie praktikabel und wiederverwendbar wird diese API sein? Haben wir einen Business Case aus Kosten-Nutzen-Sicht?",
+        "howToUse": "Fassen Sie das Wertversprechen einer API aus dem API-Wertversprechen-Canvas zusammen und folgen Sie dann der nummerierten Reihenfolge.",
+        "sections": {
+          "keyPartners": {
+            "section": "Schlüsselpartner",
+            "description": "Wer sind die wichtigsten beteiligten Stakeholder?"
+          },
+          "keyActivities": {
+            "section": "Schlüsselaktivitäten",
+            "description": "Was sind die wichtigsten Maßnahmen, die der API-Anbieter ergreifen muss, um erfolgreich zu arbeiten?"
+          },
+          "keyResources": {
+            "section": "Schlüsselressourcen",
+            "description": "Welche einzigartigen strategischen Vermögenswerte muss der API-Anbieter erwerben oder aufbauen?"
+          },
+          "apiValueProposition": {
+            "section": "API-Wertversprechen",
+            "description": "Welchen Wert bietet die API den API-Konsumenten?"
+          },
+          "developerRelations": {
+            "section": "Entwicklerbeziehungen",
+            "description": "Wie erreicht und unterstützt der API-Anbieter API-Konsumenten?"
+          },
+          "channels": {
+            "section": "Kanäle",
+            "description": "Über welche Mechanismen interagieren API-Konsumenten mit der API?"
+          },
+          "apiConsumerSegments": {
+            "section": "API-Konsumentensegmente",
+            "description": "Wer sind die Zielgruppen für die API?"
+          },
+          "costs": {
+            "section": "Kosten",
+            "description": "Was sind die wesentlichen Kosten für die Erstellung, Bereitstellung und den Betrieb der API?"
+          },
+          "benefits": {
+            "section": "Vorteile",
+            "description": "Was sind die wesentlichen Vorteile oder Einnahmequellen, die durch die API generiert werden?"
+          }
+        }
+      }
+    },
+    "en-US": {
+      "apiBusinessModelCanvas": {
+        "title": "API Business Model Canvas",
+        "purpose": "How feasible and reusable will this API be? Do we have a business case from a cost - benefit point of view?",
+        "howToUse": "Summarize the value proposition of one API from the API Value Proposition Canvas, then follow the numbered sequence.",
+        "sections": {
+          "keyPartners": {
+            "section": "Key Partners",
+            "description": "Who are the key stakeholders involved?"
+          },
+          "keyActivities": {
+            "section": "Key Activities",
+            "description": "What are the most important actions the API provider must take to operate successfully?"
+          },
+          "keyResources": {
+            "section": "Key Resources",
+            "description": "What unique strategic assets must the API provider acquire or build?"
+          },
+          "apiValueProposition": {
+            "section": "API Value Proposition",
+            "description": "What value does the API offer to API consumers?"
+          },
+          "developerRelations": {
+            "section": "Developer Relations",
+            "description": "How does the API provider reach and support API consumers?"
+          },
+          "channels": {
+            "section": "Channels",
+            "description": "Through which mechanisms do API consumers interact with the API?"
+          },
+          "apiConsumerSegments": {
+            "section": "API Consumer Segments",
+            "description": "Who are the target audiences for the API?"
+          },
+          "costs": {
+            "section": "Costs",
+            "description": "What are the significant costs involved in building, deploying, and operating the API?"
+          },
+          "benefits": {
+            "section": "Benefits",
+            "description": "What are the significant benefits or revenue streams generated by the API?"
+          }
+        }
+      },
+      "apiValuePropositionCanvas": {
+        "title": "API Value Proposition Canvas",
+        "purpose": "Does this API address the jobs, pains, and gains of API consumers?",
+        "howToUse": "Describe the API consumer's perspective, starting with their tasks, then their pains and gains, and finally the API's products and features.",
+        "sections": {
+          "tasks": {
+            "section": "Tasks",
+            "description": "What are the API consumers trying to achieve?"
+          },
+          "gainEnablingFeatures": {
+            "section": "Gain Enabling Features",
+            "description": "What features enable API consumers to achieve gains?"
+          },
+          "painRelievingFeatures": {
+            "section": "Pain Relieving Features",
+            "description": "What features help API consumers overcome pains?"
+          },
+          "apiProducts": {
+            "section": "API Products",
+            "description": "What API products and features address the tasks, pains, and gains?"
+          }
+        }
+      },
+      "businessImpactCanvas": {
+        "title": "Business Impact Canvas",
+        "purpose": "What are the potential business impacts of API failure?",
+        "howToUse": "Consider the potential impact on availability, security, and data for each API.",
+        "sections": {
+          "availabilityRisks": {
+            "section": "Availability Risks",
+            "description": "What are the potential risks to API availability?"
+          },
+          "securityRisks": {
+            "section": "Security Risks",
+            "description": "What are the potential security risks associated with the API?"
+          },
+          "dataRisks": {
+            "section": "Data Risks",
+            "description": "What are the potential risks to data integrity or confidentiality?"
+          },
+          "mitigateAvailabilityRisks": {
+            "section": "Mitigate Availability Risks",
+            "description": "How can the API provider mitigate the availability risks?"
+          },
+          "mitigateSecurityRisks": {
+            "section": "Mitigate Security Risks",
+            "description": "How can the API provider mitigate the security risks?"
+          },
+          "mitigateDataRisks": {
+            "section": "Mitigate Data Risks",
+            "description": "How can the API provider mitigate the data risks?"
+          }
+        }
+      },
+      "capacityCanvas": {
+        "title": "Capacity Canvas",
+        "purpose": "How much capacity is needed to support API consumption?",
+        "howToUse": "Analyze the current and future capacity requirements for each API.",
+        "sections": {
+          "currentBusinessVolumes": {
+            "section": "Current Business Volumes",
+            "description": "What are the current business volumes and transaction rates?"
+          },
+          "futureConsumptionTrends": {
+            "section": "Future Consumption Trends",
+            "description": "What are the anticipated future consumption trends?"
+          },
+          "peakLoadAndAvailabilityRequirements": {
+            "section": "Peak Load and Availability Requirements",
+            "description": "What are the peak load and availability requirements?"
+          },
+          "cachingStrategies": {
+            "section": "Caching Strategies",
+            "description": "What caching strategies can be used to optimize performance?"
+          },
+          "rateLimitingStrategies": {
+            "section": "Rate Limiting Strategies",
+            "description": "What rate limiting strategies can be used to manage consumption?"
+          },
+          "scalingStrategies": {
+            "section": "Scaling Strategies",
+            "description": "What scaling strategies can be used to accommodate growth?"
+          }
+        }
+      },
+      "customerJourneyCanvas": {
+        "title": "Customer Journey Canvas",
+        "purpose": "How do API consumers interact with the API over time?",
+        "howToUse": "Map the customer journey for each API, from initial discovery to ongoing use.",
+        "sections": {
+          "customerDiscoversNeed": {
+            "section": "Customer Discovers Need",
+            "description": "How does the customer discover the need for the API?"
+          },
+          "persona": {
+            "section": "Persona",
+            "description": "Who is the typical customer or user of the API?"
+          },
+          "pains": {
+            "section": "Pains",
+            "description": "What are the customer's pain points or challenges?"
+          },
+          "journeySteps": {
+            "section": "Journey Steps",
+            "description": "What are the steps the customer takes in their journey?"
+          },
+          "customerNeedIsResolved": {
+            "section": "Customer Need Is Resolved",
+            "description": "How is the customer's need ultimately resolved?"
+          },
+          "gains": {
+            "section": "Gains",
+            "description": "What are the customer's gains or benefits?"
+          },
+          "inputsOutputs": {
+            "section": "Inputs & Outputs",
+            "description": "What are the inputs and outputs at each step?"
+          },
+          "interactionProcessingRules": {
+            "section": "Interaction & Processing Rules",
+            "description": "What are the interaction and processing rules at each step?"
+          }
+        }
+      },
+      "domainCanvas": {
+        "title": "Domain Canvas",
+        "purpose": "What are the core entities and business rules related to the API?",
+        "howToUse": "Define the domain model for each API, including entities, attributes, and relationships.",
+        "sections": {
+          "selectedCustomerJourneySteps": {
+            "section": "Selected Customer Journey Steps",
+            "description": "Which customer journey steps are relevant to this domain?"
+          },
+          "coreEntitiesAndBusinessMeaning": {
+            "section": "Core Entities & Business Meaning",
+            "description": "What are the core entities and their business meaning?"
+          },
+          "attributesAndBusinessImportance": {
+            "section": "Attributes & Business Importance",
+            "description": "What are the key attributes of each entity and their business importance?"
+          },
+          "relationshipsBetweenEntities": {
+            "section": "Relationships Between Entities",
+            "description": "What are the relationships between the entities?"
+          },
+          "businessComplianceAndIntegrityRules": {
+            "section": "Business, Compliance & Integrity Rules",
+            "description": "What are the business, compliance, and integrity rules related to the entities?"
+          },
+          "securityAndPrivacyConsiderations": {
+            "section": "Security & Privacy Considerations",
+            "description": "What are the security and privacy considerations related to the entities?"
+          }
+        }
+      },
+      "eventCanvas": {
+        "title": "Event Canvas",
+        "purpose": "What events are relevant to the API, and how are they processed?",
+        "howToUse": "Define the events, their triggers, and the processing logic for each API.",
+        "sections": {
+          "userTaskTrigger": {
+            "section": "User Task / Trigger",
+            "description": "What user action or system event triggers this event operation?"
+          },
+          "inputEventPayload": {
+            "section": "Input / Event Payload",
+            "description": "What data is included in the incoming event payload? Specify key attributes."
+          },
+          "processingLogic": {
+            "section": "Processing / Logic",
+            "description": "Describe the backend processing logic, including validations, transformations, or routing decisions."
+          },
+          "outputEventResult": {
+            "section": "Output / Event Result",
+            "description": "What resulting event or acknowledgment is produced? Include attributes of the output payload."
+          }
+        }
+      },
+      "interactionCanvas": {
+        "title": "Interaction Canvas",
+        "purpose": "What are the different types of interactions supported by the API?",
+        "howToUse": "Define the CRUD, query-driven, command-driven, and event-driven interactions for each API.",
+        "sections": {
+          "crudInteractions": {
+            "section": "CRUD Interactions",
+            "description": "What are the CRUD (Create, Read, Update, Delete) interactions supported by the API?"
+          },
+          "crudInputOutputModels": {
+            "section": "CRUD Input & Output Models",
+            "description": "What are the input and output models for the CRUD interactions?"
+          },
+          "crudProcessingValidation": {
+            "section": "CRUD Processing & Validation",
+            "description": "What are the processing and validation rules for the CRUD interactions?"
+          },
+          "queryDrivenInteractions": {
+            "section": "Query-Driven Interactions",
+            "description": "What are the query-driven interactions supported by the API?"
+          },
+          "queryDrivenInputOutputModels": {
+            "section": "Query-Driven Input & Output Models",
+            "description": "What are the input and output models for the query-driven interactions?"
+          },
+          "queryDrivenProcessingValidation": {
+            "section": "Query-Driven Processing & Validation",
+            "description": "What are the processing and validation rules for the query-driven interactions?"
+          },
+          "commandDrivenInteractions": {
+            "section": "Command-Driven Interactions",
+            "description": "What are the command-driven interactions supported by the API?"
+          },
+          "commandDrivenInputOutputModels": {
+            "section": "Command-Driven Input & Output Models",
+            "description": "What are the input and output models for the command-driven interactions?"
+          },
+          "commandDrivenProcessingValidation": {
+            "section": "Command-Driven Processing & Validation",
+            "description": "What are the processing and validation rules for the command-driven interactions?"
+          },
+          "eventDrivenInteractions": {
+            "section": "Event-Driven Interactions",
+            "description": "What are the event-driven interactions supported by the API?"
+          },
+          "eventDrivenInputOutputModels": {
+            "section": "Event-Driven Input & Output Models",
+            "description": "What are the input and output models for the event-driven interactions?"
+          },
+          "eventDrivenProcessingValidation": {
+            "section": "Event-Driven Processing & Validation",
+            "description": "What are the processing and validation rules for the event-driven interactions?"
+          }
+        }
+      },
+      "locationsCanvas": {
+        "title": "Locations Canvas",
+        "purpose": "What are the relevant locations and their characteristics?",
+        "howToUse": "Define the locations, their distances, and their endpoints for each API.",
+        "sections": {
+          "locationGroups": {
+            "section": "Location Groups",
+            "description": "What are the relevant location groups?"
+          },
+          "locationGroupCharacteristics": {
+            "section": "Location Group Characteristics",
+            "description": "What are the characteristics of the location groups?"
+          },
+          "locations": {
+            "section": "Locations",
+            "description": "What are the relevant locations within each group?"
+          },
+          "locationCharacteristics": {
+            "section": "Location Characteristics",
+            "description": "What are the characteristics of the locations?"
+          },
+          "locationDistances": {
+            "section": "Location Distances",
+            "description": "What are the distances between the locations?"
+          },
+          "locationDistanceCharacteristics": {
+            "section": "Location Distance Characteristics",
+            "description": "What are the characteristics of the location distances?"
+          },
+          "locationEndpoints": {
+            "section": "Location Endpoints",
+            "description": "What are the endpoints associated with the locations?"
+          },
+          "locationEndpointCharacteristics": {
+            "section": "Location Endpoint Characteristics",
+            "description": "What are the characteristics of the location endpoints?"
+          }
+        }
+      },
+      "restCanvas": {
+        "title": "REST Canvas",
+        "purpose": "How can the API be designed using RESTful principles?",
+        "howToUse": "Define the API resources, verbs, and example requests and responses.",
+        "sections": {
+          "apiResources": {
+            "section": "API Resources",
+            "description": "What are the key resources exposed by the API?"
+          },
+          "apiResourceModel": {
+            "section": "API Resource Model",
+            "description": "What is the structure of the API resource model?"
+          },
+          "apiVerbs": {
+            "section": "API Verbs",
+            "description": "What HTTP verbs are used to interact with the API resources?"
+          },
+          "apiVerbExample": {
+            "section": "API Verb Example",
+            "description": "Provide an example of an API request and response for each verb."
+          }
+        }
+      }
+    }
+  };
+  
   
 // Sticky note variables
 let currentColor = defaultStyles.stickyNoteColor
