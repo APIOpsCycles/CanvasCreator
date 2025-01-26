@@ -25,10 +25,27 @@ const defaultStyles = {
   
 */
 
-  
-import canvasData from "./data/canvasData.json" assert { type: 'json' };
+//load canvas layouts from json data   
+let canvasData;
 
-import localizedData from "./data/localizedData.json" assert { type: 'json' };
+fetch('./data/canvasData.json')
+    .then(response => response.json())
+    .then(data => {
+        canvasData = data;
+        document.getElementById('output').innerText = JSON.stringify(canvasData, null, 2);
+    })
+    .catch(error => console.error('Error loading JSON:', error));
+
+//load localized names and help texts for canvases from json data
+let localizedData;
+
+fetch('./data/localizedData.json')
+.then(response => response.json())
+.then(data => {
+    canvasData = data;
+    document.getElementById('output').innerText = JSON.stringify(canvasData, null, 2);
+})
+.catch(error => console.error('Error loading JSON:', error));
   
 // Sticky note variables
 let currentColor = defaultStyles.stickyNoteColor
