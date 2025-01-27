@@ -1059,7 +1059,7 @@ const canvasData = {
       const selectedCanvas = document.getElementById("canvas").value
       if (selectedCanvas) {
         //loadCanvas(selectedLocale, selectedCanvas);
-        document.getElementById("canvasToolGroup").style.display = "flex"
+        document.getElementById("canvasCreator").style.display = "flex"
       }
     },
     { once: true },
