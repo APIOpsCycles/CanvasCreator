@@ -1003,6 +1003,15 @@ document.getElementById("locale").addEventListener(
   { once: true },
 )
 
+//add touch events to tool section.
+document.querySelectorAll(".canvas-tools").forEach(button => {
+    button.addEventListener("touchstart", function (event) {
+        event.preventDefault();
+        this.click();
+    }, { passive: false });
+});
+
+
 document.getElementById("canvas").addEventListener(
   "change",
   (event) => {
@@ -1605,56 +1614,98 @@ function loadCanvas(locale, canvasId) {
       // Update the footer with the new metadata
       updateFooter()
     })
+    
+           function getEventCoordinates(event) {
+        let x, y;
+        const svgRect = svg.node().getBoundingClientRect();
 
-    // Add double-click event listener to the SVG for creating sticky notes
-    svg.on("dblclick", function (event) {
-      // Get mouse coordinates relative to the SVG
-      const x = event.offsetX - defaultStyles.stickyNoteSize / 2
-      const y = event.offsetY - defaultStyles.stickyNoteSize / 2
-
-      // Find the section that was clicked
-      const clickedSection = canvasData.sections.find((section) => {
-        const sectionRect = {
-          x:
-            section.gridPosition.column * cellWidth + 2 * defaultStyles.padding,
-          y: section.gridPosition.row * cellHeight + defaultStyles.headerHeight,
-          width: section.gridPosition.colSpan * cellWidth,
-          height: section.gridPosition.rowSpan * cellHeight,
+        if (event.type.startsWith("touch")) {
+            const touch = event.changedTouches[0];
+            x = touch.clientX - svgRect.left;
+            y = touch.clientY - svgRect.top;
+        } else {
+            x = event.clientX - svgRect.left;
+            y = event.clientY - svgRect.top;
         }
-        return isPointInRect(
-          x + defaultStyles.stickyNoteSize / 2,
-          y + defaultStyles.stickyNoteSize / 2,
-          sectionRect,
-        )
-      })
 
-      if (clickedSection) {
-        // Find the corresponding section in contentData
-        const contentSection = contentData.sections.find(
-          (section) => section.sectionId === clickedSection.id,
-        )
+        return { x, y };
+    }
 
-        // Add a new sticky note to the contentData
+let lastTapTime = 0;
+let lastClickTime = 0;
+
+// Attach event listener to the entire SVG
+svg.on("click touchend", function (event) {
+    event.preventDefault(); // Prevent scrolling on mobile devices
+
+  
+        // Get correct event coordinates
+    const { x, y } = getEventCoordinates(event);
+    
+    const now = new Date().getTime();
+    const isTouch = event.type === "touchend";
+
+    // Handle mouse double-click separately
+    if (!isTouch) {
+        if (now - lastClickTime < 300) {
+            handleCreateStickyNote(event, "mouse");
+        }
+        lastClickTime = now;
+    } 
+    // Handle double-tap for touch
+    else {
+        if (now - lastTapTime < 300) {
+            handleCreateStickyNote(event, "touch");
+        }
+        lastTapTime = now;
+    }
+});
+
+// Function to create a sticky note
+function handleCreateStickyNote(event, inputType) {
+    let x, y;
+
+    if (inputType === "mouse") {
+        x = event.offsetX - defaultStyles.stickyNoteSize / 2;
+        y = event.offsetY - defaultStyles.stickyNoteSize / 2;
+    } else if (inputType === "touch") {
+        const touch = event.changedTouches[0];
+
+        // Convert touch coordinates from viewport to SVG coordinates
+        const svgRect = svg.node().getBoundingClientRect();
+        x = touch.clientX - svgRect.left - defaultStyles.stickyNoteSize / 2;
+        y = touch.clientY - svgRect.top - defaultStyles.stickyNoteSize / 2;
+    }
+
+    // Find the section that was clicked
+    const clickedSection = canvasData.sections.find(section => {
+        const sectionRect = {
+            x: section.gridPosition.column * cellWidth + 2 * defaultStyles.padding,
+            y: section.gridPosition.row * cellHeight + defaultStyles.headerHeight,
+            width: section.gridPosition.colSpan * cellWidth,
+            height: section.gridPosition.rowSpan * cellHeight,
+        };
+        return isPointInRect(x + defaultStyles.stickyNoteSize / 2, y + defaultStyles.stickyNoteSize / 2, sectionRect);
+    });
+
+    if (clickedSection) {
+        const contentSection = contentData.sections.find(section => section.sectionId === clickedSection.id);
         contentSection.stickyNotes.push({
-          content: sanitizeInput(
-            "Double-click *on text* to edit. Click and select color ",
-          ), // Sanitize initial content
-          position: { x, y },
-          size: defaultStyles.stickyNoteSize,
-          color: currentColor, // Use the currentColor
-        })
-
-        // Update the sticky notes on the canvas
-        updateStickyNotes(contentData)
-      }
-    })
+            content: sanitizeInput("Double-click on text to edit. Click and select color "),
+            position: { x, y },
+            size: defaultStyles.stickyNoteSize,
+            color: currentColor,
+        });
+        updateStickyNotes(contentData);
+    }
+}
 
     // Call updateStickyNotes to display initial sticky notes
     updateStickyNotes(contentData)
   }
 
   const updateStickyNotes = (contentData) => {
-    //const svg = d3.select("svg");
+
     svg.selectAll(".sticky-note").remove()
 
     if (!contentData || !contentData.sections) {
@@ -1683,7 +1734,7 @@ function loadCanvas(locale, canvasId) {
             return `translate(${d.position.x || 0},${y})`
           })
 
-        stickyNotes.on("click", function (event, d) {
+        stickyNotes.on("click touchstart", function (event, d) {
           event.stopPropagation()
           selectedNote = d
         })
@@ -1718,7 +1769,7 @@ function loadCanvas(locale, canvasId) {
                 .text(lines[i])
             }
           })
-          .on("dblclick", function (event, d) {
+          .on("dblclick touchend", function (event, d) {
             event.stopPropagation()
 
             const parentG = d3.select(this.parentNode)
@@ -1789,14 +1840,16 @@ function loadCanvas(locale, canvasId) {
         .on("drag", function (event, d) {
           d.position.x = event.x
           d.position.y = event.y
-          d3.select(this) // Add d3.select(this) here
+          d3.select(this) 
             .attr("transform", `translate(${d.position.x},${d.position.y})`)
         })
         .on("end", function (event, d) {
           // Do not updateStickyNotes here
+
         }),
     )
 
+		//right click on mouse or long press on touch open alert to remove sticky note
     svg.on("contextmenu", function (event) {
       event.preventDefault() // Prevent default right-click menu
 
@@ -1967,8 +2020,11 @@ function handleSelectorFocus(event) {
   }
 }
 
+
 localeSelector.addEventListener("focus", handleSelectorFocus)
 canvasSelector.addEventListener("focus", handleSelectorFocus)
+
+
 
 // Function to sanitize text input
 function sanitizeInput(text) {
@@ -1985,3 +2041,4 @@ function validateInput(text) {
   }
   return text
 }
+

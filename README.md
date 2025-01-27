@@ -18,6 +18,7 @@ For similar, but more integrated commercial tool, you can refer to one of our pa
      data/localizationData.json
      ```
 - **Sticky Notes**: Users can create, edit, move, and delete sticky notes dynamically.
+- **Mobile and touch support**: While the canvas it self does not scale for usability, the touch events for mobile devices and responsive styles have been implemented. Turn small devices in landscape position.  
 - **Metadata Editing**: Allows customization of metadata (source, license, authors, website). Metadata will show at the footer of the canvas. **Do not edit the template metadata unless you are contributing to the canvas structure**. The canvases are licensed under CC-BY-SA 4.0, so share a like and mention original authors if you create any derivatives.
 - **Export & Import**: Save and load canvases using JSON files. Allows saving data in version control or file server, or using it for other purposes. 
 - **SVG Export**: Generate vector images for presentations and documentation (in slides, collaboration tools, print or web).
