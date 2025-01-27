@@ -149,8 +149,8 @@
       />
       <h1>APIOps Cycles Canvas Creator</h1>
       <p>
-        For <b>instructions</b> how to use the APIOps Cycles canvases, check the
-        method and
+        For <b>instructions</b> how to use the APIOps Cycles canvases, check
+        the method and
         <a
           href="https://www.apiopscycles.com/collecting-requirements"
           target="_blank"
@@ -165,6 +165,15 @@
           target="_blank"
           >the Github repository
         </a>
+      </p>
+      <p>
+        For similar, but more integrated commercial tool, you can refer to one
+        of our partners Qriar Labs. For consulting or training services on how
+        to use the canvases,<a
+          href="https://www.apiopscycles.com/partners"
+          target="_blank"
+          >check our partner page for more information</a
+        >.
       </p>
       <ul>
         <li>
@@ -272,10 +281,17 @@
         stickyNoteSpacing: 10,
         stickyNoteCornerRadius: 3,
         maxLineWidth: 70,
-        stickyNoteColor: "#FFFFE0",
+        stickyNoteColor: "#FFF399",
+        stickyNoteBorderColor: "#333",
         defaultLocale: "en-US",
       }
     </script>
-    <script defer src="/canvasCreatorUI.v1_1.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.body.addEventListener("touchstart", function () {}, { passive: true });
+        });
+    </script>
+    <script defer src="/canvasCreatorUI.v1_2.min.js"></script>
   </body>
 </html>
