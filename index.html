@@ -1,229 +1,19 @@
 <!doctype html>
 <html>
   <head>
-    <link
-      rel="icon"
-      type="image/png"
-      href="/img/apiops-cycles-logo-2025-32.png"
-    />
     <title>APIOps Cycles - Canvas Creator</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <style>
-        /* General Styles */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f7fc;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-        }
-
-        h1 {
-            color: #1a3987;
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        p, ul {
-            font-size: 1rem;
-            max-width: 800px;
-            margin: 0 auto 10px auto;
-            text-align: left;
-        }
-
-        ul {
-            list-style-type: disc;
-            padding-left: 20px;
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            p, ul {
-                font-size: 0.9rem;
-            }
-        }
-
-        /* Container */
-        #canvasCreator {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            max-width: 1000px;
-            margin: auto;
-        }
-
-        svg {
-            touch-action: manipulation; /* Prevents double-tap zoom */
-        }
-
-        /* Form Elements */
-        #localeSelector, #canvasSelector {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        select {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1rem;
-            width: auto;
-            min-width: 200px;
-        }
-
-        /* Buttons */
-        #canvasToolGroup {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .canvas-tools {
-            background: #0073e6;
-            color: white;
-            border: none;
-            padding: 10px 10px;
-            margin: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: 0.3s;
-            width: auto;
-            max-width: 200px;
-        }
-
-        .canvas-tools:hover {
-            background: #005bb5;
-        }
-
-        /* Color Palette */
-        #colorPalette {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-            gap: 8px;
-            flex-wrap: wrap;
-            max-width: 200px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .colorSwatch {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            border: 2px solid #ccc;
-            cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
-        }
-
-        .colorSwatch:hover {
-            transform: scale(1.1);
-            border-color: #0073e6;
-        }
-
-        @media (max-width: 768px) {
-            .canvas-tools {
-                font-size: 0.9rem;
-                padding: 8px 14px;
-                max-width: 250px;
-            }
-
-            select {
-                font-size: 0.9rem;
-                padding: 8px;
-                min-width: 180px;
-            }
-
-            #colorPalette {
-                justify-content: center;
-                max-width: 200px;
-            }
-
-            .colorSwatch {
-                width: 30px;
-                height: 30px;
-            }
-        }
-
-    </style>
+    <style src="/canvascreator.v1.min.css"></style>
   </head>
-
   <body>
-    <div id="canvasCreator">
+    <span style="font-size: 30px; cursor: pointer" onclick="openNav()">&#9776;</span>
+    <div id="toolContainer">
       <img
         src="/img/apiops-cycles-logo2025-blue.svg"
-        width="200px"
-        height="200px"
+        width="100px"
+        height="100px"
       />
       <h1>APIOps Cycles Canvas Creator</h1>
-      <p>
-        For <b>instructions</b> how to use the APIOps Cycles canvases, check
-        the method and
-        <a
-          href="https://www.apiopscycles.com/collecting-requirements"
-          target="_blank"
-          >the canvas instructions at apiopscycles.com.</a
-        >
-      </p>
-      <p>
-        If you are insterested in the canvases as <b>JSON files</b> or helping
-        to <b>localize</b> the canvases or use and contribute this code, check
-        <a
-          href="https://github.com/APIOpsCycles/CanvasCreator.git"
-          target="_blank"
-          >the Github repository
-        </a>
-      </p>
-      <p>
-        For similar, but more integrated commercial tool, you can refer to one
-        of our partners Qriar Labs. For consulting or training services on how
-        to use the canvases,<a
-          href="https://www.apiopscycles.com/partners"
-          target="_blank"
-          >check our partner page for more information</a
-        >.
-      </p>
-      <ul>
-        <li>
-          <b>Open a canvas:</b> Select the locale (language) and then the
-          canvas.
-        </li>
-        <li>
-          <b>Create sticky notes:</b> Import from JSON file or double-click to create or edit sticky notes.
-        </li>
-        <li>
-          <b>Change note color:</b> Click sticky note and then pick color.
-          Selected color will be used for new stickies, too.
-        </li>
-        <li>
-          <b>Remove note:</b> Right click (on touch devices long press) and confirm to remove a sticky note.
-        </li>
-        <li>
-          <b>Save your content:</b> Export as JSON. For security and simplicity
-          reasons, everything is done in your browser and not sent to any
-          server.
-        </li>
-        <li>
-          <b>Export as image:</b> You can export the whole canvas and content as
-          SVG (vector image) to use in slides, Miro / Mural, print or web.
-        </li>
-      </ul>
       <div id="localeSelector">
         <label for="locale">Select Locale:</label>
         <select id="locale"></select>
@@ -267,6 +57,8 @@
           ></button>
         </div>
       </div>
+    </div>
+    <div id="canvasCreator">
       <div id="metadataForm" style="display: none">
         <h2>Content Metadata</h2>
         <label for="source">Source:</label>
@@ -280,6 +72,42 @@
         <button id="saveMetadata">Save Metadata</button>
       </div>
     </div>
+    <!-- Help Icon and Tooltip -->
+    <div class="help-container">
+      <div class="help-icon">?</div>
+      <div class="help-tooltip">
+        <strong>Canvas Help</strong>
+        <ul>
+          <li><b>Open:</b> Select locale & canvas.</li>
+          <li><b>Create/Edit:</b> Import JSON or double-click.</li>
+          <li><b>Change Color:</b> Click note, pick color.</li>
+          <li><b>Remove:</b> Right-click & confirm.</li>
+          <li><b>Save:</b> Export as JSON (local only).</li>
+          <li><b>Export:</b> Save as SVG for slides/web.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"
+        >&times;</a
+      >
+      <a
+        href="https://www.apiopscycles.com/collecting-requirements"
+        target="_blank"
+        >Canvas guides</a
+      >
+      <a
+        href="https://github.com/APIOpsCycles/CanvasCreator.git"
+        target="_blank"
+        >Code in Github</a
+      >
+      <a href="https://www.apiopscycles.com/partners" target="_blank"
+        >Partners</a
+      >
+      <a href="https://www.osaango.com/contact-us" target="_blank">Contact</a>
+    </div>
+
     <script>
       //configure styles for canvas creator here
       const defaultStyles = {
@@ -304,11 +132,20 @@
         stickyNoteSpacing: 10,
         stickyNoteCornerRadius: 3,
         maxLineWidth: 70,
-        stickyNoteColor: "#FFF399",
-        stickyNoteBorderColor: "#333",
+        stickyNoteColor: "#fff399",
+        stickyNoteBorderColor: "#000",
         defaultLocale: "en-US",
       }
     </script>
-    <script defer src="/canvasCreatorUI.v1_4.min.js"></script>
+    <script>
+      function openNav() {
+        document.getElementById("mySidenav").style.width = "250px"
+      }
+
+      function closeNav() {
+        document.getElementById("mySidenav").style.width = "0"
+      }
+    </script>
+    <script defer src="/canvasCreatorUI.v1_1.min.js"></script>
   </body>
 </html>

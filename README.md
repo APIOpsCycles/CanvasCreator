@@ -33,9 +33,11 @@ This project can be hosted on any web server that allows execution of HTML and J
 ## File Structure
 ```
 CanvasCreator/
-├── index.html            # Main HTML file (includes also CSS, because SVG export works more reliably with inline styling).
+├── index.html            # Main HTML file.
 ├── canvasCreatorUI.v1_1.min.js  # Minified JS version
 ├── scripts/canvasCreatorUI.js     # Main JavaScript logic
+├── canvasCreator.v1.min.css  # Minified CSS version
+├── styles/canvasCreator.css     # Main CSS
 ├── data/canvasData.json       # Contains predefined canvas layouts
 ├── data/localizedData.json    # Stores localization strings
 ├── LICENSE               # Open-source license information
@@ -62,7 +64,7 @@ Follow these steps to contribute:
 5. **Submit a Pull Request**
 
 ## Versioning & Caching
-JavaScript files should include a version number in the filename to ensure updates are reflected in users' browsers. Use a versioning pattern like `canvasCreatorUI.vX_Y.min.js`, where `X_Y` represents the version number. This prevents caching issues when updates are deployed.
+JavaScript and CSS files should include a version number in the filename to ensure updates are reflected in users' browsers. Use a versioning pattern like `canvasCreatorUI.vX_Y.min.js`, where `X_Y` represents the version number. This prevents caching issues when updates are deployed.
 
 ## License
 This project is licensed under the **Apache 2.0 License**. See the `LICENSE` file for details.
