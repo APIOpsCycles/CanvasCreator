@@ -1,9 +1,9 @@
 {
   "de-DE": {
     "apiBusinessModelCanvas": {
-      "title": "API-Geschäftsmodell Canvas",
+      "title": "API Business Model Canvas",
       "purpose": "Wie praktikabel und wiederverwendbar wird diese API sein? Haben wir einen Business Case aus Kosten-Nutzen-Sicht?",
-      "howToUse": "Fassen Sie das Wertversprechen einer API aus dem API-Wertversprechen-Canvas zusammen und folgen Sie dann der nummerierten Reihenfolge.",
+      "howToUse": "Fassen Sie das Wertversprechen einer API aus dem API Value Proposition Canvas zusammen und folgen Sie dann der nummerierten Reihenfolge.",
       "sections": {
         "keyPartners": {
           "section": "Schlüsselpartner",
@@ -18,7 +18,7 @@
           "description": "Welche einzigartigen strategischen Vermögenswerte muss der API-Anbieter erwerben oder aufbauen?"
         },
         "apiValueProposition": {
-          "section": "API-Wertversprechen",
+          "section": "Wertversprechen der API",
           "description": "Welchen Wert bietet die API den API-Konsumenten?"
         },
         "developerRelations": {
@@ -30,7 +30,7 @@
           "description": "Über welche Mechanismen interagieren API-Konsumenten mit der API?"
         },
         "apiConsumerSegments": {
-          "section": "API-Konsumentensegmente",
+          "section": "Konsumenten der API",
           "description": "Wer sind die Zielgruppen für die API?"
         },
         "costs": {
@@ -44,7 +44,7 @@
       }
     },
     "apiValuePropositionCanvas": {
-      "title": "API-Wertversprechen Canvas",
+      "title": "API Value Proposition Canvas",
       "purpose": "Berücksichtigt diese API die Aufgaben, Probleme (Pains) und Bedürfnisse (Gains) der API-Konsumenten?",
       "howToUse": "Beschreiben Sie die Sichtweise des API-Konsumenten, beginnend mit seinen Aufgaben, dann seine Pains und Gains, und schließlich die API-Produkte und -Features.",
       "sections": {
@@ -53,11 +53,11 @@
           "description": "Was wollen die API-Konsumenten erreichen?"
         },
         "gainEnablingFeatures": {
-          "section": "Bedürfnissstillende Features",
+          "section": "Nutzenstiftende Features",
           "description": "Welche Features ermöglichen es API-Konsumenten ihre Bedürfnisse zu bedienen?"
         },
         "painRelievingFeatures": {
-          "section": "Problembewältigende Features",
+          "section": "Problemlösende Features",
           "description": "Welche Features ermöglichen es API-Konsumenten ihre Probleme zu überwinden?"
         },
         "apiProducts": {
@@ -67,12 +67,12 @@
       }
     },
     "businessImpactCanvas": {
-      "title": "Geschäftsauswirkung Canvas",
-      "purpose": "Was sind die potenziellen geschäftlichen Auswirkungen eines API-Ausfalls?",
+      "title": "Business Impact Canvas",
+      "purpose": "Was sind die potenziellen geschäftlichen Auswirkungen eines Ausfalls einer API?",
       "howToUse": "Berücksichtigen Sie die potenziellen Auswirkungen auf Verfügbarkeit, Sicherheit und Daten für jede API.",
       "sections": {
         "availabilityRisks": {
-          "section": "Verfügbarkeitsrisiken",
+          "section": "Risiken der Verfügbarkeit",
           "description": "Was sind die potenziellen Risiken für die API-Verfügbarkeit?"
         },
         "securityRisks": {
@@ -84,8 +84,8 @@
           "description": "Welche potenziellen Risiken bestehen für die Datenintegrität oder -Vertraulichkeit?"
         },
         "mitigateAvailabilityRisks": {
-          "section": "Reduktion der Verfügbarkeitsrisiken",
-          "description": "Wie kann der API-Anbieter die Verfügbarkeitsrisiken reduzieren?"
+          "section": "Reduzierung von Risiken der Verfügbarkeit",
+          "description": "Wie kann der API-Anbieter die Risiken der Verfügbarkeit reduzieren?"
         },
         "mitigateSecurityRisks": {
           "section": "Reduktion der Sicherheitsrisiken",
@@ -98,8 +98,8 @@
       }
     },
     "capacityCanvas": {
-      "title": "Kapazität Canvas",
-      "purpose": "Wie viel Kapazität wird für den API-Konsum benötigt",
+      "title": "Capacity Canvas",
+      "purpose": "Welche Anforderungen ergeben sich, um den Konsum der API zu gewährleisten?",
       "howToUse": "Analysieren Sie die aktuellen und zukünftigen Kapazitätsanforderungen für jede API.",
       "sections": {
         "currentBusinessVolumes": {
@@ -123,8 +123,8 @@
           "description": "Welche Rate-Limiting-Strategien können zur Konsumsteuerung eingesetzt werden?"
         },
         "scalingStrategies": {
-          "section": "Skalierungs-Strategien",
-          "description": "Welche Skalierungs-Strategien können eingesetzt werden, um das Wachstum zu unterstützen?"
+          "section": "Strategien zur Skalierung",
+          "description": "Welche Strategien zur Skalierung können eingesetzt werden, um das Wachstum zu unterstützen?"
         }
       }
     },
@@ -168,7 +168,7 @@
       }
     },
     "domainCanvas": {
-      "title": "Domäne Canvas",
+      "title": "Domain Canvas",
       "purpose": "Was sind die wesentlichen Entitäten und Geschäftsregeln im Zusammenhang mit der API?",
       "howToUse": "Definieren Sie das Domänenmodell für jede API, einschließlich Entitäten, Attribute und Beziehungen.",
       "sections": {
@@ -222,7 +222,7 @@
       }
     },
     "interactionCanvas": {
-      "title": "Interaktion Canvas",
+      "title": "Interaction Canvas",
       "purpose": "Welche verschiedenen Interaktionsarten werden von der API unterstützt?",
       "howToUse": "Definieren Sie die CRUD-, abfrage-, befehlsgesteuerten und eventgesteuerten Interaktionen für jede API.",
       "sections": {
@@ -277,7 +277,7 @@
       }
     },
     "locationsCanvas": {
-      "title": "Standorte Canvas",
+      "title": "Location Canvas",
       "purpose": "Was sind die relevanten Standorte und ihre Merkmale?",
       "howToUse": "Definieren Sie die Standorte, ihre Entfernungen und ihre Endpunkte für jede API.",
       "sections": {
