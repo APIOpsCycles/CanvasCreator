@@ -1,0 +1,290 @@
+{
+  "templateId": "apiBusinessModelCanvas",
+  "metadata": {
+    "source": "",
+    "license": "",
+    "authors": [],
+    "website": "",
+    "date": "2025-04-02T16:17:44.913Z"
+  },
+  "sections": [
+    {
+      "sectionId": "keyPartners",
+      "stickyNotes": [
+        {
+          "content": "You?                                                                   ",
+          "position": {
+            "x": 115.5,
+            "y": 231.5625
+          },
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "Osaango                                                                           ",
+          "position": {
+            "x": 28.5,
+            "y": 147.5625
+          },
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "Codecentric                                                                          ",
+          "position": {
+            "x": 115.5,
+            "y": 145.5625
+          },
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "Konnect                                                                        ",
+          "position": {
+            "x": 26.5,
+            "y": 233.5625
+          },
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "APIsFirst                                                                      ",
+          "position": {
+            "x": 25.5,
+            "y": 320.5625
+          },
+          "size": 80,
+          "color": "#FFF399"
+        }
+      ]
+    },
+    {
+      "sectionId": "keyActivities",
+      "stickyNotes": [
+        {
+          "content": "APIOps Cycles Metro Map helps find what you need                           ",
+          "position": {
+            "x": 238.5,
+            "y": 339.5625
+          },
+          "size": 80,
+          "color": "#FFF399"
+        }
+      ]
+    },
+    {
+      "sectionId": "keyResources",
+      "stickyNotes": [
+        {
+          "content": "Collab withbiz, tech, etc. using canvases                                ",
+          "position": {
+            "x": 241.5,
+            "y": 166.5625
+          },
+          "size": 80,
+          "color": "#FFF399"
+        }
+      ]
+    },
+    {
+      "sectionId": "apiValueProposition",
+      "stickyNotes": [
+        {
+          "content": "The Best Open-source API Canvas Tool in the World                                                                                      ",
+          "position": {
+            "x": 415.5,
+            "y": 164.5625
+          },
+          "size": 80,
+          "color": "#C0EB6A"
+        },
+        {
+          "content": "Doesn't have a n API yet, but does have JSON import/export                                                                ",
+          "position": {
+            "x": 417.5,
+            "y": 255.5625
+          },
+          "size": 80,
+          "color": "#FFAFAF"
+        },
+        {
+          "content": "Great for designing API products, business & tech                                           ",
+          "position": {
+            "x": 503.5,
+            "y": 163.5625
+          },
+          "size": 80,
+          "color": "#DFDDC5"
+        },
+        {
+          "content": "Export canvases as JSON and SVG vector images                                         ",
+          "position": {
+            "x": 504.5,
+            "y": 254.5625
+          },
+          "size": 80,
+          "color": "#DFDDC5"
+        },
+        {
+          "content": "Import from JSON (cool for version controling your canvases)                                   ",
+          "position": {
+            "x": 504.5,
+            "y": 346.5625
+          },
+          "size": 80,
+          "color": "#DFDDC5"
+        },
+        {
+          "content": "Use with AI-assisted, business-enabled API design                                   ",
+          "position": {
+            "x": 418.5,
+            "y": 346.5625
+          },
+          "size": 80,
+          "color": "#DFDDC5"
+        }
+      ]
+    },
+    {
+      "sectionId": "developerRelations",
+      "stickyNotes": []
+    },
+    {
+      "sectionId": "channels",
+      "stickyNotes": [
+        {
+          "content": "https://github.com/ APIOpsCycles/ CanvasCreator                                                        ",
+          "position": {
+            "x": 636.5,
+            "y": 167.5625
+          },
+          "size": 80,
+          "color": "#DFDDC5"
+        },
+        {
+          "content": "APIOps Cycles.com                                                 ",
+          "position": {
+            "x": 598.5,
+            "y": 349.5625
+          },
+          "size": 80,
+          "color": "#DFDDC5"
+        },
+        {
+          "content": "Partners                                             ",
+          "position": {
+            "x": 684.5,
+            "y": 352.5625
+          },
+          "size": 80,
+          "color": "#DFDDC5"
+        }
+      ]
+    },
+    {
+      "sectionId": "apiConsumerSegments",
+      "stickyNotes": [
+        {
+          "content": "API teams                                                              ",
+          "position": {
+            "x": 824.5,
+            "y": 161.5625
+          },
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "Consultants                                                            ",
+          "position": {
+            "x": 823.5,
+            "y": 258.5625
+          },
+          "size": 80,
+          "color": "#7DC9E7"
+        },
+        {
+          "content": "Tool vendors                                                          ",
+          "position": {
+            "x": 823.5,
+            "y": 350.5625
+          },
+          "size": 80,
+          "color": "#C0EB6A"
+        }
+      ]
+    },
+    {
+      "sectionId": "costs",
+      "stickyNotes": [
+        {
+          "content": "Figuring out what the real need is              ",
+          "position": {
+            "x": 23,
+            "y": 504
+          },
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "Collaborating with API consumers            ",
+          "position": {
+            "x": 120.5,
+            "y": 508.5625
+          },
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "Learning about tools and standards to design APIs properly          ",
+          "position": {
+            "x": 215.5,
+            "y": 508.5625
+          },
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "Bunch of other important tech and business thngs....        ",
+          "position": {
+            "x": 318.5,
+            "y": 508.5625
+          },
+          "size": 80,
+          "color": "#FFF399"
+        }
+      ]
+    },
+    {
+      "sectionId": "benefits",
+      "stickyNotes": [
+        {
+          "content": "Improved customer retention and satisfaction      ",
+          "position": {
+            "x": 512.5,
+            "y": 508.5625
+          },
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "Clearer architecture,  flexiblility for business    ",
+          "position": {
+            "x": 614.5,
+            "y": 507.5625
+          },
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "New innovation potential internally and externally  ",
+          "position": {
+            "x": 714.5,
+            "y": 509.5625
+          },
+          "size": 80,
+          "color": "#FFF399"
+        }
+      ]
+    }
+  ]
+}
