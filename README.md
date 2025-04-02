@@ -1,5 +1,14 @@
 # APIOps Cycles Canvas Creator
 
+
+![example API Business Model Canvas filled with the CanvasCreator](examples/Canvas_apiBusinessModelCanvas_en-US.svg)
+
+See the same canvas exported from CanvasCreator as [SVG vector image](examples/Canvas_apiBusinessModelCanvas_en-US.svg) or [structured JSON](examples/Canvas_apiBusinessModelCanvas_en-US.json) that you can save to version control or your computer and upload again, to continue editing or share with your colleagues, customers or fellow students.
+
+Example of localized version in German (de-DE) - join the translation effort by creating a pull request. See more info below.
+
+![example of German canvas](examples/Canvas_apiBusinessModelCanvas_de-DE.svg)
+
 ## Overview
 The **APIOps Cycles Canvas Creator** is a web-based tool designed to create and manage various API-related canvases, such as API Business Model Canvas, API Value Proposition Canvas, and others. The tool allows users to:
 
