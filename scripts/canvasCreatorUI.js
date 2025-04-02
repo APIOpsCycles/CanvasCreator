@@ -1288,11 +1288,7 @@ const canvasData = {
   let currentColor = defaultStyles.stickyNoteColor
   let selectedNote = null
   
-  // Placeholder function to load canvas data (replace with API call later)
-  function loadCanvasData(canvasId) {
-    // You can remove this function entirely since canvasData is already loaded
-    return canvasData[canvasId]
-  }
+
   
   // Function to populate the locale selector
   function populateLocaleSelector() {
@@ -1374,35 +1370,106 @@ const canvasData = {
     { once: true },
   )
   
+// Create file input once globally
+const fileInput = document.createElement("input")
+fileInput.type = "file"
+fileInput.accept = "application/json"
+
+// Ensure change handler is attached once
+fileInput.addEventListener("change", function () {
+  const file = fileInput.files[0]
+  if (!file) return
+
+  const reader = new FileReader()
+  reader.onload = function (event) {
+    try {
+      const importedData = JSON.parse(event.target.result)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+      if (
+        !importedData.templateId ||
+        !importedData.metadata ||
+        !importedData.sections
+      ) {
+        alert("Invalid JSON file format.")
+        return
+      }
+  
+      // Save the imported values
+      canvasId = importedData.templateId
+      contentData = importedData
+      canvasDataForId = canvasData[canvasId]
+      
+      if (!canvasDataForId) {
+        alert("Canvas data not found for canvasId: " + canvasId)
+        return
+      }
+      
+      // Sync selectors
+      const canvasSelector = document.getElementById("canvas")
+      const canvasChangeHandler = canvasSelector.onchange
+      canvasSelector.onchange = null
+      canvasSelector.value = canvasId
+      setTimeout(() => {
+        canvasSelector.onchange = canvasChangeHandler
+      }, 0)
+      
+      const locale = importedData.locale || "en-US"
+      document.getElementById("locale").value = locale
+      document.getElementById("canvasSelector").style.display = "block"
+      document.getElementById("canvasCreator").style.display = "flex"
+      
+      // Render canvas
+      loadCanvas(locale, canvasId, true)
+      
+      // Mark as dirty
+      unsavedChanges = true
+      
+      alert("Canvas imported successfully.")
+      
+    } catch (err) {
+      alert("Failed to parse JSON: " + err.message)
+      console.error(err)
+    }
+  }
+  
+
+  reader.readAsText(file)
+  fileInput.value = "" // Reset so same file can be selected again
+})
+
+  
+
+
   let canvasDataForId = null
   let contentData = {}
   
-  function loadCanvas(locale, canvasId) {
+  function loadCanvas(locale, canvasId, preserveContentData = false) {
     // Access canvasData directly
     canvasDataForId = canvasData[canvasId]
   
-    // Check if canvasDataForId is defined before accessing its properties
     if (!canvasDataForId) {
       console.error(`Canvas data not found for canvasId: ${canvasId}`)
-      return // Or handle the error appropriately
+      return
     }
   
-    // Initialize contentData based on the selected canvas
-    contentData = {
-      templateId: canvasId,
-      locale: locale,
-      metadata: {
-        source: "",
-        license: "",
-        authors: [],
-        website: "",
-      },
-      sections: canvasDataForId.sections
-        ? canvasDataForId.sections.map((section) => ({
-            sectionId: section.id,
-            stickyNotes: [],
-          }))
-        : [],
+    // Only reset contentData if NOT importing
+    if (!preserveContentData) {
+      contentData = {
+        templateId: canvasId,
+        locale: locale,
+        metadata: {
+          source: "",
+          license: "",
+          authors: [],
+          website: "",
+        },
+        sections: canvasDataForId.sections
+          ? canvasDataForId.sections.map((section) => ({
+              sectionId: section.id,
+              stickyNotes: [],
+            }))
+          : [],
+      }
     }
   
     const fetchAPIOpsLogo = async (
@@ -1799,99 +1866,14 @@ const canvasData = {
   
       // Import canvas content from JSON
   
-      const importButton = document.getElementById("importButton")
-  
       if (!importButton.dataset.listenerAttached) {
-        importButton.addEventListener("click", (event) => {
-          event.stopPropagation() // Prevent event bubbling
-          const input = document.createElement("input")
-          input.type = "file"
-          input.accept = ".json"
-  
-          // Add the onchange listener directly without storing it in a variable
-          input.onchange = (event) => {
-            const file = event.target.files[0]
-            const reader = new FileReader()
-            reader.onload = (event) => {
-              const jsonData = JSON.parse(event.target.result)
-  
-              // Update canvasData with imported data
-              canvasData.id = jsonData.templateId
-              contentData.metadata = jsonData.metadata // Import metadata into contentData
-              // Update the metadata form fields with the imported values
-              document.getElementById("source").value = jsonData.metadata.source
-              document.getElementById("license").value = jsonData.metadata.license
-              document.getElementById("authors").value =
-                jsonData.metadata.authors.join(",")
-              document.getElementById("website").value = jsonData.metadata.website
-  
-              contentData.sections = jsonData.sections.map(
-                (section, sectionIndex) => {
-                  const canvasSection = canvasData.sections.find(
-                    (s) => s.id === section.sectionId,
-                  )
-                  let nextX = 3 * defaultStyles.stickyNoteSpacing // Initial x-coordinate for sticky notes in this section
-                  let nextY = defaultStyles.stickyNoteSize // Initial y-coordinate for sticky notes in this section
-  
-                  return {
-                    sectionId: section.sectionId,
-                    stickyNotes: section.stickyNotes.map((note) => {
-                      const newNote = {
-                        content: validateInput(
-                          wrapText(svg, note.content.trim()),
-                        ), // Validate the content
-                        size: note.size || defaultStyles.stickyNoteSize,
-                        color: note.color || defaultStyles.stickyNoteColor,
-                      }
-  
-                      // Calculate position if not provided
-                      if (!note.position) {
-                        newNote.position = {
-                          x:
-                            canvasSection.gridPosition.column * cellWidth + nextX,
-                          y:
-                            canvasSection.gridPosition.row * cellHeight +
-                            defaultStyles.headerHeight +
-                            nextY,
-                        }
-  
-                        // Update nextX and nextY for the next sticky note in this section
-                        nextX +=
-                          defaultStyles.stickyNoteSize +
-                          defaultStyles.stickyNoteSpacing
-                        if (
-                          nextX + defaultStyles.stickyNoteSize >
-                          canvasSection.gridPosition.colSpan * cellWidth
-                        ) {
-                          nextX = 2 * defaultStyles.stickyNoteSpacing
-                          nextY +=
-                            defaultStyles.stickyNoteSize +
-                            defaultStyles.stickyNoteSpacing
-                        }
-                      } else {
-                        newNote.position = note.position
-                      }
-  
-                      return newNote
-                    }),
-                  }
-                },
-              )
-  
-              // Force a refresh of the SVG element
-              svg = d3.select("svg")
-              svg.node().innerHTML = svg.node().innerHTML
-              // Update sticky notes on the canvas
-              updateStickyNotes(contentData) // Pass contentData to updateStickyNotes
-              updateFooter()
-            }
-            reader.readAsText(file)
-          }
-  
-          input.click() // Trigger the file selection
+        importButton.addEventListener("click", () => {
+          fileInput.click()
         })
-        importButton.dataset.listenerAttached = true // Mark the listener as attached
+        importButton.dataset.listenerAttached = "true"
       }
+      
+      
   
       // Export the canvas content as SVG (attach listener only once)
       const exportSVGButton = document.getElementById("exportSVGButton")
