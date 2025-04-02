@@ -1768,45 +1768,34 @@ const canvasData = {
   
       // Export the canvas content as JSON (attach listener only once)
       const exportJSONButton = document.getElementById("exportButton")
-      if (!exportJSONButton.dataset.listenerAttached) {
-        // Check if listener is already attached
-        exportJSONButton.addEventListener("click", (event) => {
-          // Gather the content data
-          const exportData = {
-            templateId: canvasData.id,
-            metadata: {
-              ...contentData.metadata, // Use contentData.metadata
-              date: new Date().toISOString(),
-            },
-            sections: contentData.sections.map((section) => ({
-              // Map sections to the new format
-              sectionId: section.sectionId,
-              stickyNotes: section.stickyNotes.map((note) => ({
-                content: note.content.replace(/\n/g, ""), // Remove newlines
-                position: note.position,
-                size: note.size,
-                color: note.color,
-              })),
+      exportJSONButton.onclick = () => {
+        const exportData = {
+          templateId: contentData.templateId,
+          metadata: {
+            ...contentData.metadata,
+            date: new Date().toISOString(),
+          },
+          sections: contentData.sections.map((section) => ({
+            sectionId: section.sectionId,
+            stickyNotes: section.stickyNotes.map((note) => ({
+              content: note.content.replace(/\n/g, ""),
+              position: note.position,
+              size: note.size,
+              color: note.color,
             })),
-          }
-          // Convert to JSON string
-          const jsonString = JSON.stringify(exportData, null, 2)
-  
-          // Create a download link
-          const link = document.createElement("a")
-          link.href =
-            "data:application/json;charset=utf-8," +
-            encodeURIComponent(jsonString)
-          const filename = `${contentData.metadata.source}${contentData.templateId}_${locale}.json`
-          link.download = filename
-  
-          document.body.appendChild(link)
-          link.click()
-          document.body.removeChild(link)
-        })
-  
-        exportJSONButton.dataset.listenerAttached = true // Mark the listener as attached
-      }
+          })),
+        };
+      
+        const jsonString = JSON.stringify(exportData, null, 2);
+        const link = document.createElement("a");
+        link.href =
+          "data:application/json;charset=utf-8," + encodeURIComponent(jsonString);
+        const filename = `${contentData.metadata.source || "Canvas"}_${contentData.templateId}_${contentData.locale}.json`;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
   
       // Import canvas content from JSON
   
@@ -1906,27 +1895,22 @@ const canvasData = {
   
       // Export the canvas content as SVG (attach listener only once)
       const exportSVGButton = document.getElementById("exportSVGButton")
-      if (!exportSVGButton.dataset.listenerAttached) {
-        // Check if listener is already attached
-        exportSVGButton.addEventListener("click", (event) => {
-          const svgNode = svg.node()
-          const serializer = new XMLSerializer()
-          const svgString = serializer.serializeToString(svgNode)
-          const blob = new Blob([svgString], {
-            type: "image/svg+xml;charset=utf-8",
-          })
-          const link = document.createElement("a")
-          link.href = URL.createObjectURL(blob)
-          // Create a download link with the desired filename format
-          const filename = `${contentData.metadata.source}${contentData.templateId}_${locale}.svg`
-          link.download = filename
-          document.body.appendChild(link)
-          link.click()
-          document.body.removeChild(link)
-        })
-  
-        exportSVGButton.dataset.listenerAttached = true // Mark the listener as attached
-      }
+      exportSVGButton.onclick = () => {
+        const svgNode = svg.node();
+        const serializer = new XMLSerializer();
+        const svgString = serializer.serializeToString(svgNode);
+        const blob = new Blob([svgString], {
+          type: "image/svg+xml;charset=utf-8",
+        });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        const filename = `${contentData.metadata.source || "Canvas"}_${contentData.templateId}_${contentData.locale}.svg`;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
+      
   
       // Color selection
       const colorSwatches = document.querySelectorAll(".colorSwatch")
