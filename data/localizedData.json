@@ -678,5 +678,345 @@
         }
       }
     }
+  },
+  "fi-FI": {
+    "apiBusinessModelCanvas": {
+      "title": "API Business Model Canvas",
+      "purpose": "Kuinka toteuttamiskelpoinen ja uudelleenkäytettävä API on? Onko meillä liiketoimintaperuste kustannus-hyötynäkökulmasta?",
+      "howToUse": "Yhteenveto APIn arvolupauksesta API Value Proposition Canvasin pohjalta, ja etene sitten numeroidussa järjestyksessä.",
+      "sections": {
+        "keyPartners": {
+          "section": "Keskeiset kumppanit",
+          "description": "Ketkä ovat tärkeimmät sidosryhmät?"
+        },
+        "keyActivities": {
+          "section": "Keskeiset toiminnot",
+          "description": "Mitkä ovat tärkeimmät toimet, jotka API-tarjoajan on toteutettava menestyäkseen?"
+        },
+        "keyResources": {
+          "section": "Keskeiset resurssit",
+          "description": "Mitä ainutlaatuisia strategisia resursseja API-tarjoajan on hankittava tai kehitettävä?"
+        },
+        "apiValueProposition": {
+          "section": "APIn arvolupaus",
+          "description": "Mitä arvoa API tarjoaa sen käyttäjille?"
+        },
+        "developerRelations": {
+          "section": "Suhde kehittäjiin",
+          "description": "Miten API-tarjoaja tavoittaa ja tukee APIn käyttäjiä?"
+        },
+        "channels": {
+          "section": "Kanavat",
+          "description": "Minkä kanavien kautta APIn käyttäjät ovat vuorovaikutuksessa APIn kanssa?"
+        },
+        "apiConsumerSegments": {
+          "section": "APIn kohderyhmät",
+          "description": "Keitä ovat APIn kohdeyleisöt?"
+        },
+        "costs": {
+          "section": "Kustannukset",
+          "description": "Mitkä ovat merkittävimmät kustannukset APIn rakentamisessa, julkaisemisessa ja ylläpidossa?"
+        },
+        "benefits": {
+          "section": "Hyödyt",
+          "description": "Mitkä ovat APIn tuottamat merkittävät hyödyt tai tulovirrat?"
+        }
+      }
+    },
+    "apiValuePropositionCanvas": {
+      "title": "API Value Proposition Canvas",
+      "purpose": "Vastaako tämä API API-käyttäjien tehtäviin, kipupisteisiin ja hyötyihin?",
+      "howToUse": "Kuvaile API-käyttäjän näkökulma: aloita tehtävistä, siirry kipupisteisiin ja hyötyihin ja lopuksi esittele API-tuotteet ja -ominaisuudet.",
+      "sections": {
+        "tasks": {
+          "section": "Tehtävät",
+          "description": "Mitä API-käyttäjät yrittävät saavuttaa?"
+        },
+        "gainEnablingFeatures": {
+          "section": "Hyötyä mahdollistavat ominaisuudet",
+          "description": "Mitkä ominaisuudet mahdollistavat API-käyttäjien hyötyjen saavuttamisen?"
+        },
+        "painRelievingFeatures": {
+          "section": "Kipua lievittävät ominaisuudet",
+          "description": "Mitkä ominaisuudet auttavat API-käyttäjiä poistamaan kipupisteet?"
+        },
+        "apiProducts": {
+          "section": "APIn tuotteet",
+          "description": "Mitkä API-tuotteet ja -ominaisuudet vastaavat tehtäviin, kipupisteisiin ja hyötyihin?"
+        }
+      }
+    },
+    "businessImpactCanvas": {
+      "title": "Business Impact Canvas",
+      "purpose": "Mitkä ovat mahdolliset liiketoiminnalliset vaikutukset APIn virhetilanteissa?",
+      "howToUse": "Ota huomioon mahdolliset vaikutukset saatavuuteen, tietoturvaan ja dataan kullekin APIlle.",
+      "sections": {
+        "availabilityRisks": {
+          "section": "Saatavuuteen liittyvät riskit",
+          "description": "Mitkä ovat APIn saatavuuteen liittyvät mahdolliset riskit?"
+        },
+        "securityRisks": {
+          "section": "Tietoturvariskit",
+          "description": "Mitkä ovat APIin liittyvät mahdolliset tietoturvariskit?"
+        },
+        "dataRisks": {
+          "section": "Tietoriskit",
+          "description": "Mitkä ovat mahdolliset riskit tiedon eheydelle tai luottamuksellisuudelle?"
+        },
+        "mitigateAvailabilityRisks": {
+          "section": "Saatavuusriskien vähentäminen",
+          "description": "Miten API-tarjoaja voi vähentää saatavuuteen liittyviä riskejä?"
+        },
+        "mitigateSecurityRisks": {
+          "section": "Tietoturvariskien vähentäminen",
+          "description": "Miten API-tarjoaja voi vähentää tietoturvariskejä?"
+        },
+        "mitigateDataRisks": {
+          "section": "Tietoriskien vähentäminen",
+          "description": "Miten API-tarjoaja voi vähentää tietoriskejä?"
+        }
+      }
+    },
+    "capacityCanvas": {
+      "title": "Capacity Canvas",
+      "purpose": "Kuinka paljon kapasiteettia tarvitaan APIn käytön tukemiseksi?",
+      "howToUse": "Analysoi kunkin APIn nykyiset ja tulevat kapasiteettitarpeet.",
+      "sections": {
+        "currentBusinessVolumes": {
+          "section": "Nykyinen liiketoimintavolyymi",
+          "description": "Mitkä ovat nykyiset liiketoimintavolyymit ja transaktiomäärät?"
+        },
+        "futureConsumptionTrends": {
+          "section": "Tulevat kulutustrendit",
+          "description": "Mitkä ovat ennakoidut tulevat kulutustrendit?"
+        },
+        "peakLoadAndAvailabilityRequirements": {
+          "section": "Huipputehon ja saatavuuden vaatimukset",
+          "description": "Mitkä ovat huippukuormituksen ja saatavuuden vaatimukset?"
+        },
+        "cachingStrategies": {
+          "section": "Välimuististrategiat",
+          "description": "Mitä välimuististrategioita voidaan käyttää suorituskyvyn optimoimiseksi?"
+        },
+        "rateLimitingStrategies": {
+          "section": "Kutsunopeuden rajoitusstrategiat",
+          "description": "Mitä kutsunopeuden rajoitusstrategioita voidaan käyttää kulutuksen hallintaan?"
+        },
+        "scalingStrategies": {
+          "section": "Skaalausstrategiat",
+          "description": "Mitä skaalausstrategioita voidaan käyttää kasvun tukemiseen?"
+        }
+      }
+    },
+    "customerJourneyCanvas": {
+      "title": "Customer Journey Canvas",
+      "purpose": "Miten APIn käyttäjät ovat vuorovaikutuksessa APIn kanssa ajan myötä?",
+      "howToUse": "Kuvaa kunkin APIn asiakaspolku aloitusvaiheesta jatkuvaan käyttöön.",
+      "sections": {
+        "customerDiscoversNeed": {
+          "section": "Asiakas havaitsee tarpeen",
+          "description": "Miten asiakas havaitsee tarpeen APIlle?"
+        },
+        "persona": {
+          "section": "Persona",
+          "description": "Kuka on tyypillinen API:n asiakas tai käyttäjä?"
+        },
+        "pains": {
+          "section": "Kipupisteet",
+          "description": "Mitkä ovat asiakkaan kipupisteet tai haasteet?"
+        },
+        "journeySteps": {
+          "section": "Asiakaspolun vaiheet",
+          "description": "Mitä vaiheita asiakas käy läpi asiakaspolullaan?"
+        },
+        "customerNeedIsResolved": {
+          "section": "Asiakkaan tarve täyttyy",
+          "description": "Miten asiakkaan tarve lopulta ratkaistaan?"
+        },
+        "gains": {
+          "section": "Hyödyt",
+          "description": "Mitä hyötyä asiakkaalle syntyy?"
+        },
+        "inputsOutputs": {
+          "section": "Syötteet ja tulosteet",
+          "description": "Mitkä ovat syötteet ja tulosteet kussakin vaiheessa?"
+        },
+        "interactionProcessingRules": {
+          "section": "Vuorovaikutuksen ja käsittelyn säännöt",
+          "description": "Mitkä ovat vuorovaikutuksen ja käsittelyn säännöt kussakin vaiheessa?"
+        }
+      }
+    },
+    "domainCanvas": {
+      "title": "Domain Canvas",
+      "purpose": "Mitkä ovat APIn keskeiset entiteetit ja liiketoimintasäännöt?",
+      "howToUse": "Määrittele kunkin APIn toimialuemalli, mukaan lukien entiteetit, attribuutit ja suhteet.",
+      "sections": {
+        "selectedCustomerJourneySteps": {
+          "section": "Valitut asiakaspolun vaiheet",
+          "description": "Mitkä asiakaspolun vaiheet ovat olennaisia tälle toimialueelle?"
+        },
+        "coreEntitiesAndBusinessMeaning": {
+          "section": "Ydinkohteet ja liiketoiminnallinen merkitys",
+          "description": "Mitkä ovat keskeiset entiteetit ja niiden liiketoiminnallinen merkitys?"
+        },
+        "attributesAndBusinessImportance": {
+          "section": "Attribuutit ja liiketoiminnallinen merkitys",
+          "description": "Mitkä ovat kunkin entiteetin keskeiset attribuutit ja niiden liiketoiminnallinen merkitys?"
+        },
+        "relationshipsBetweenEntities": {
+          "section": "Entiteettien väliset suhteet",
+          "description": "Mitkä ovat entiteettien väliset suhteet?"
+        },
+        "businessComplianceAndIntegrityRules": {
+          "section": "Liiketoiminta-, sääntely- ja eheysvaatimukset",
+          "description": "Mitkä ovat entiteetteihin liittyvät liiketoiminta-, sääntely- ja eheysvaatimukset?"
+        },
+        "securityAndPrivacyConsiderations": {
+          "section": "Tietoturva- ja yksityisyysnäkökohdat",
+          "description": "Mitä tietoturvaan ja yksityisyyteen liittyviä näkökulmia entiteetteihin liittyy?"
+        }
+      }
+    },
+    "eventCanvas": {
+      "title": "Event Canvas",
+      "purpose": "Mitkä tapahtumat liittyvät APIin ja miten ne käsitellään?",
+      "howToUse": "Määrittele tapahtumat, niiden laukaisijat ja käsittelylogiikka kullekin APIlle.",
+      "sections": {
+        "userTaskTrigger": {
+          "section": "Käyttäjän tehtävä / Laukaisija",
+          "description": "Mikä käyttäjän toiminto tai järjestelmätapahtuma laukaisee tämän tapahtuman?"
+        },
+        "inputEventPayload": {
+          "section": "Syöte / Tapahtumakuorma",
+          "description": "Mitä tietoja saapuva tapahtumakuorma sisältää? Määrittele keskeiset attribuutit."
+        },
+        "processingLogic": {
+          "section": "Käsittely / Logiikka",
+          "description": "Kuvaile taustajärjestelmän käsittelylogiikka mukaan lukien validoinnit, muunnokset ja reitityspäätökset."
+        },
+        "outputEventResult": {
+          "section": "Tulos / Tapahtuman lopputulos",
+          "description": "Mikä tapahtuma tai kuittaus syntyy? Sisällytä vastauksen attribuutit."
+        }
+      }
+    },
+    "interactionCanvas": {
+      "title": "Interaction Canvas",
+      "purpose": "Mitä erilaisia vuorovaikutustyyppejä API tukee?",
+      "howToUse": "Määrittele CRUD-, kysely-, käsky- ja tapahtumapohjaiset vuorovaikutukset jokaiselle APIlle.",
+      "sections": {
+        "crudInteractions": {
+          "section": "CRUD-vuorovaikutukset",
+          "description": "Mitä CRUD (luo, lue, päivitä, poista) -toimintoja API tukee?"
+        },
+        "crudInputOutputModels": {
+          "section": "CRUD-syöte- ja tulostemallit",
+          "description": "Mitkä ovat syöte- ja tulostemallit CRUD-toiminnoille?"
+        },
+        "crudProcessingValidation": {
+          "section": "CRUD-käsittely ja validointi",
+          "description": "Mitkä ovat CRUD-toimintojen käsittely- ja validointisäännöt?"
+        },
+        "queryDrivenInteractions": {
+          "section": "Kyselypohjaiset vuorovaikutukset",
+          "description": "Mitä kyselypohjaisia vuorovaikutuksia API tukee?"
+        },
+        "queryDrivenInputOutputModels": {
+          "section": "Kyselypohjaiset syöte- ja tulostemallit",
+          "description": "Mitkä ovat syöte- ja tulostemallit kyselypohjaisille vuorovaikutuksille?"
+        },
+        "queryDrivenProcessingValidation": {
+          "section": "Kyselypohjainen käsittely ja validointi",
+          "description": "Mitkä ovat kyselypohjaisten vuorovaikutusten käsittely- ja validointisäännöt?"
+        },
+        "commandDrivenInteractions": {
+          "section": "Käskyohjatut vuorovaikutukset",
+          "description": "Mitkä käskyohjatut vuorovaikutukset API tukee?"
+        },
+        "commandDrivenInputOutputModels": {
+          "section": "Käskyohjatut syöte- ja tulostemallit",
+          "description": "Mitkä ovat käskyohjattujen vuorovaikutusten syöte- ja tulostemallit?"
+        },
+        "commandDrivenProcessingValidation": {
+          "section": "Käskyohjattu käsittely ja validointi",
+          "description": "Mitkä ovat käskyohjattujen vuorovaikutusten käsittely- ja validointisäännöt?"
+        },
+        "eventDrivenInteractions": {
+          "section": "Tapahtumapohjaiset vuorovaikutukset",
+          "description": "Mitkä tapahtumapohjaiset vuorovaikutukset API tukee?"
+        },
+        "eventDrivenInputOutputModels": {
+          "section": "Tapahtumapohjaiset syöte- ja tulostemallit",
+          "description": "Mitkä ovat tapahtumapohjaisten vuorovaikutusten syöte- ja tulostemallit?"
+        },
+        "eventDrivenProcessingValidation": {
+          "section": "Tapahtumapohjainen käsittely ja validointi",
+          "description": "Mitkä ovat tapahtumapohjaisten vuorovaikutusten käsittely- ja validointisäännöt?"
+        }
+      }
+    },
+    "locationsCanvas": {
+      "title": "Locations Canvas",
+      "purpose": "Mitkä ovat olennaiset sijainnit ja niiden ominaisuudet?",
+      "howToUse": "Määrittele sijainnit, välimatkat ja päätepisteet kullekin APIlle.",
+      "sections": {
+        "locationGroups": {
+          "section": "Sijaintiryhmät",
+          "description": "Mitkä ovat olennaiset sijaintiryhmät?"
+        },
+        "locationGroupCharacteristics": {
+          "section": "Sijaintiryhmien ominaisuudet",
+          "description": "Mitkä ovat sijaintiryhmien ominaisuudet?"
+        },
+        "locations": {
+          "section": "Sijainnit",
+          "description": "Mitkä ovat olennaiset sijainnit kussakin ryhmässä?"
+        },
+        "locationCharacteristics": {
+          "section": "Sijaintien ominaisuudet",
+          "description": "Mitkä ovat sijaintien ominaisuudet?"
+        },
+        "locationDistances": {
+          "section": "Sijaintien väliset etäisyydet",
+          "description": "Mitkä ovat etäisyydet sijaintien välillä?"
+        },
+        "locationDistanceCharacteristics": {
+          "section": "Sijaintien välimatkojen ominaisuudet",
+          "description": "Mitkä ovat sijaintien välimatkojen ominaisuudet?"
+        },
+        "locationEndpoints": {
+          "section": "Sijainnin päätepisteet",
+          "description": "Mitkä päätepisteet liittyvät sijainteihin?"
+        },
+        "locationEndpointCharacteristics": {
+          "section": "Sijaintipisteiden ominaisuudet",
+          "description": "Mitkä ovat sijaintiin liittyvien päätepisteiden ominaisuudet?"
+        }
+      }
+    },
+    "restCanvas": {
+      "title": "REST Canvas",
+      "purpose": "Miten API voidaan suunnitella REST-periaatteiden mukaisesti?",
+      "howToUse": "Määrittele APIn resurssit, verbit sekä esimerkkipyynnöt ja -vastaukset.",
+      "sections": {
+        "apiResources": {
+          "section": "APIn resurssit",
+          "description": "Mitkä ovat keskeiset resurssit, joita API paljastaa?"
+        },
+        "apiResourceModel": {
+          "section": "APIn resurssimalli",
+          "description": "Millainen on APIn resurssimallin rakenne?"
+        },
+        "apiVerbs": {
+          "section": "APIn verbit",
+          "description": "Mitä HTTP-verbejä käytetään APIn resurssien kanssa vuorovaikutuksessa?"
+        },
+        "apiVerbExample": {
+          "section": "API-verbin esimerkki",
+          "description": "Anna esimerkki API-pyynnöstä ja -vastauksesta kullekin verbille."
+        }
+      }
+    }
   }
 }

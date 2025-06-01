@@ -547,742 +547,1027 @@ const canvasData = {
   }
   
   const localizedData = {
-    "de-DE": {
-      apiBusinessModelCanvas: {
-      title: "API Business Model Canvas",
-      purpose: "Wie praktikabel und wiederverwendbar wird diese API sein? Haben wir einen Business Case aus Kosten-Nutzen-Sicht?",
-      howToUse: "Fassen Sie das Wertversprechen einer API aus dem API Value Proposition Canvas zusammen und folgen Sie dann der nummerierten Reihenfolge.",
-      sections: {
-         keyPartners : {
-           section: "Schlüsselpartner",
-          description: "Wer sind die wichtigsten beteiligten Stakeholder?"
+  "de-DE": {
+    "apiBusinessModelCanvas": {
+      "title": "API Business Model Canvas",
+      "purpose": "Wie praktikabel und wiederverwendbar wird diese API sein? Haben wir einen Business Case aus Kosten-Nutzen-Sicht?",
+      "howToUse": "Fassen Sie das Wertversprechen einer API aus dem API Value Proposition Canvas zusammen und folgen Sie dann der nummerierten Reihenfolge.",
+      "sections": {
+        "keyPartners": {
+          "section": "Schlüsselpartner",
+          "description": "Wer sind die wichtigsten beteiligten Stakeholder?"
         },
-        keyActivities: {
-          section: "Schlüsselaktivitäten",
-          description: "Was sind die wichtigsten Maßnahmen, die der API-Anbieter ergreifen muss, um erfolgreich zu arbeiten?"
+        "keyActivities": {
+          "section": "Schlüsselaktivitäten",
+          "description": "Was sind die wichtigsten Maßnahmen, die der API-Anbieter ergreifen muss, um erfolgreich zu arbeiten?"
         },
-        keyResources: {
-          section: "Schlüsselressourcen",
-          description: "Welche einzigartigen strategischen Vermögenswerte muss der API-Anbieter erwerben oder aufbauen?"
+        "keyResources": {
+          "section": "Schlüsselressourcen",
+          "description": "Welche einzigartigen strategischen Vermögenswerte muss der API-Anbieter erwerben oder aufbauen?"
         },
-        apiValueProposition: {
-          section: "Wertversprechen der API",
-          description: "Welchen Wert bietet die API den API-Konsumenten?"
+        "apiValueProposition": {
+          "section": "Wertversprechen der API",
+          "description": "Welchen Wert bietet die API den API-Konsumenten?"
         },
-        developerRelations: {
-          section: "Entwicklerbeziehungen",
-          description: "Wie erreicht und unterstützt der API-Anbieter API-Konsumenten?"
+        "developerRelations": {
+          "section": "Entwicklerbeziehungen",
+          "description": "Wie erreicht und unterstützt der API-Anbieter API-Konsumenten?"
         },
-        channels: {
-          section: "Kanäle",
-          description: "Über welche Mechanismen interagieren API-Konsumenten mit der API?"
+        "channels": {
+          "section": "Kanäle",
+          "description": "Über welche Mechanismen interagieren API-Konsumenten mit der API?"
         },
-        apiConsumerSegments: {
-          section: "Konsumenten der API",
-          description: "Wer sind die Zielgruppen für die API?"
+        "apiConsumerSegments": {
+          "section": "Konsumenten der API",
+          "description": "Wer sind die Zielgruppen für die API?"
         },
-        costs: {
-          section: "Kosten",
-          description: "Was sind die wesentlichen Kosten für die Erstellung, Bereitstellung und den Betrieb der API?"
+        "costs": {
+          "section": "Kosten",
+          "description": "Was sind die wesentlichen Kosten für die Erstellung, Bereitstellung und den Betrieb der API?"
         },
-        benefits: {
-          section: "Vorteile",
-          description: "Was sind die wesentlichen Vorteile oder Einnahmequellen, die durch die API generiert werden?"
+        "benefits": {
+          "section": "Vorteile",
+          "description": "Was sind die wesentlichen Vorteile oder Einnahmequellen, die durch die API generiert werden?"
         }
       }
     },
-    apiValuePropositionCanvas: {
-      title: "API Value Proposition Canvas",
-      purpose: "Berücksichtigt diese API die Aufgaben, Probleme (Pains) und Bedürfnisse (Gains) der API-Konsumenten?",
-      howToUse: "Beschreiben Sie die Sichtweise des API-Konsumenten, beginnend mit seinen Aufgaben, dann seine Pains und Gains, und schließlich die API-Produkte und -Features.",
-      sections: {
-        tasks: {
-          section: "Aufgaben",
-          description: "Was wollen die API-Konsumenten erreichen?"
+    "apiValuePropositionCanvas": {
+      "title": "API Value Proposition Canvas",
+      "purpose": "Berücksichtigt diese API die Aufgaben, Probleme (Pains) und Bedürfnisse (Gains) der API-Konsumenten?",
+      "howToUse": "Beschreiben Sie die Sichtweise des API-Konsumenten, beginnend mit seinen Aufgaben, dann seine Pains und Gains, und schließlich die API-Produkte und -Features.",
+      "sections": {
+        "tasks": {
+          "section": "Aufgaben",
+          "description": "Was wollen die API-Konsumenten erreichen?"
         },
-        gainEnablingFeatures: {
-          section: "Nutzenstiftende Features",
-          description: "Welche Features ermöglichen es API-Konsumenten ihre Bedürfnisse zu bedienen?"
+        "gainEnablingFeatures": {
+          "section": "Nutzenstiftende Features",
+          "description": "Welche Features ermöglichen es API-Konsumenten ihre Bedürfnisse zu bedienen?"
         },
-        painRelievingFeatures: {
-          section: "Problemlösende Features",
-          description: "Welche Features ermöglichen es API-Konsumenten ihre Probleme zu überwinden?"
+        "painRelievingFeatures": {
+          "section": "Problemlösende Features",
+          "description": "Welche Features ermöglichen es API-Konsumenten ihre Probleme zu überwinden?"
         },
-        apiProducts: {
-          section: "API-Produkte",
-          description: "Welche API-Produkte und -Features eigenen sich für diese Aufgaben, Probleme und Bedürfnisse?"
+        "apiProducts": {
+          "section": "API-Produkte",
+          "description": "Welche API-Produkte und -Features eigenen sich für diese Aufgaben, Probleme und Bedürfnisse?"
         }
       }
     },
-    businessImpactCanvas: {
-      title: "Business Impact Canvas",
-      purpose: "Was sind die potenziellen geschäftlichen Auswirkungen eines Ausfalls einer API?",
-      howToUse: "Berücksichtigen Sie die potenziellen Auswirkungen auf Verfügbarkeit, Sicherheit und Daten für jede API.",
-      sections: {
-        availabilityRisks: {
-          section: "Risiken der Verfügbarkeit",
-          description: "Was sind die potenziellen Risiken für die API-Verfügbarkeit?"
+    "businessImpactCanvas": {
+      "title": "Business Impact Canvas",
+      "purpose": "Was sind die potenziellen geschäftlichen Auswirkungen eines Ausfalls einer API?",
+      "howToUse": "Berücksichtigen Sie die potenziellen Auswirkungen auf Verfügbarkeit, Sicherheit und Daten für jede API.",
+      "sections": {
+        "availabilityRisks": {
+          "section": "Risiken der Verfügbarkeit",
+          "description": "Was sind die potenziellen Risiken für die API-Verfügbarkeit?"
         },
-        securityRisks: {
-          section: "Sicherheitsrisiken",
-          description: "Welche potenziellen Sicherheitsrisiken sind mit der API assoziiert?"
+        "securityRisks": {
+          "section": "Sicherheitsrisiken",
+          "description": "Welche potenziellen Sicherheitsrisiken sind mit der API assoziiert?"
         },
-        dataRisks: {
-          section: "Datenrisiken",
-          description: "Welche potenziellen Risiken bestehen für die Datenintegrität oder -Vertraulichkeit?"
+        "dataRisks": {
+          "section": "Datenrisiken",
+          "description": "Welche potenziellen Risiken bestehen für die Datenintegrität oder -Vertraulichkeit?"
         },
-        mitigateAvailabilityRisks: {
-          section: "Reduzierung von Risiken der Verfügbarkeit",
-          description: "Wie kann der API-Anbieter die Risiken der Verfügbarkeit reduzieren?"
+        "mitigateAvailabilityRisks": {
+          "section": "Reduzierung von Risiken der Verfügbarkeit",
+          "description": "Wie kann der API-Anbieter die Risiken der Verfügbarkeit reduzieren?"
         },
-        mitigateSecurityRisks: {
-          section: "Reduktion der Sicherheitsrisiken",
-          description: "Wie kann der API-Anbieter die Sicherheitsrisiken reduzieren?"
+        "mitigateSecurityRisks": {
+          "section": "Reduktion der Sicherheitsrisiken",
+          "description": "Wie kann der API-Anbieter die Sicherheitsrisiken reduzieren?"
         },
-        mitigateDataRisks: {
-          section: "Reduktion der Datenrisiken",
-          description: "Wie kann der API-Anbieter die Datenrisiken reduzieren?"
+        "mitigateDataRisks": {
+          "section": "Reduktion der Datenrisiken",
+          "description": "Wie kann der API-Anbieter die Datenrisiken reduzieren?"
         }
       }
     },
-    capacityCanvas: {
-      title: "Capacity Canvas",
-      purpose: "Welche Anforderungen ergeben sich, um den Konsum der API zu gewährleisten?",
-      howToUse: "Analysieren Sie die aktuellen und zukünftigen Kapazitätsanforderungen für jede API.",
-      sections: {
-        currentBusinessVolumes: {
-          section: "Aktuelles Geschäftsvolumen",
-          description: "Wie hoch sind das aktuelle Geschäftsvolumen und die Transaktionsraten?"
+    "capacityCanvas": {
+      "title": "Capacity Canvas",
+      "purpose": "Welche Anforderungen ergeben sich, um den Konsum der API zu gewährleisten?",
+      "howToUse": "Analysieren Sie die aktuellen und zukünftigen Kapazitätsanforderungen für jede API.",
+      "sections": {
+        "currentBusinessVolumes": {
+          "section": "Aktuelles Geschäftsvolumen",
+          "description": "Wie hoch sind das aktuelle Geschäftsvolumen und die Transaktionsraten?"
         },
-        futureConsumptionTrends: {
-          section: "Zukünftige Konsumtrends",
-          description: "Was sind die erwarteten künftigen Konsumtrends?"
+        "futureConsumptionTrends": {
+          "section": "Zukünftige Konsumtrends",
+          "description": "Was sind die erwarteten künftigen Konsumtrends?"
         },
-        peakLoadAndAvailabilityRequirements: {
-          section: "Spitzenlast- und Verfügbarkeitsanforderungen",
-          description: "Was sind die Spitzenlast- und Verfügbarkeitsanforderungen?"
+        "peakLoadAndAvailabilityRequirements": {
+          "section": "Spitzenlast- und Verfügbarkeitsanforderungen",
+          "description": "Was sind die Spitzenlast- und Verfügbarkeitsanforderungen?"
         },
-        cachingStrategies: {
-          section: "Caching-Strategien",
-          description: "Welche Caching-Strategien können zur Performanceoptimierung eingesetzt werden?"
+        "cachingStrategies": {
+          "section": "Caching-Strategien",
+          "description": "Welche Caching-Strategien können zur Performanceoptimierung eingesetzt werden?"
         },
-        rateLimitingStrategies: {
-          section: "Rate-Limiting-Strategien",
-          description: "Welche Rate-Limiting-Strategien können zur Konsumsteuerung eingesetzt werden?"
+        "rateLimitingStrategies": {
+          "section": "Rate-Limiting-Strategien",
+          "description": "Welche Rate-Limiting-Strategien können zur Konsumsteuerung eingesetzt werden?"
         },
-        scalingStrategies: {
-          section: "Strategien zur Skalierung",
-          description: "Welche Strategien zur Skalierung können eingesetzt werden, um das Wachstum zu unterstützen?"
+        "scalingStrategies": {
+          "section": "Strategien zur Skalierung",
+          "description": "Welche Strategien zur Skalierung können eingesetzt werden, um das Wachstum zu unterstützen?"
         }
       }
     },
-    customerJourneyCanvas: {
-      title: "Customer Journey Canvas",
-      purpose: "Wie interagieren die API-Konsumenten im Laufe der Zeit mit der API?",
-      howToUse: "Erfassen Sie das Customer Journey für jede API, von der ersten Entdeckung bis zur aktuellen Nutzung.",
-      sections: {
-        customerDiscoversNeed: {
-          section: "Kunde erkennt Bedarf",
-          description: "Wie erkennt der Kunde den Bedarf an der API?"
+    "customerJourneyCanvas": {
+      "title": "Customer Journey Canvas",
+      "purpose": "Wie interagieren die API-Konsumenten im Laufe der Zeit mit der API?",
+      "howToUse": "Erfassen Sie das Customer Journey für jede API, von der ersten Entdeckung bis zur aktuellen Nutzung.",
+      "sections": {
+        "customerDiscoversNeed": {
+          "section": "Kunde erkennt Bedarf",
+          "description": "Wie erkennt der Kunde den Bedarf an der API?"
         },
-        persona: {
-          section: "Persona",
-          description: "Wie sieht der typische Kunde oder Nutzer der API aus?"
+        "persona": {
+          "section": "Persona",
+          "description": "Wie sieht der typische Kunde oder Nutzer der API aus?"
         },
-        pains: {
-          section: "Probleme",
-          description: "Was sind die Probleme oder Herausforderungen des Kunden?"
+        "pains": {
+          "section": "Probleme",
+          "description": "Was sind die Probleme oder Herausforderungen des Kunden?"
         },
-        journeySteps: {
-          section: "Customer Journey Schritte",
-          description: "Welche Schritte durchläuft der Kunde bei der Nutzung der API?"
+        "journeySteps": {
+          "section": "Customer Journey Schritte",
+          "description": "Welche Schritte durchläuft der Kunde bei der Nutzung der API?"
         },
-        customerNeedIsResolved: {
-          section: "Kundenbedürfnis wird gelöst",
-          description: "Wie wird das Bedürfnis des Kunden letztendlich gelöst?"
+        "customerNeedIsResolved": {
+          "section": "Kundenbedürfnis wird gelöst",
+          "description": "Wie wird das Bedürfnis des Kunden letztendlich gelöst?"
         },
-        gains: {
-          section: "Nutzen",
-          description: "Welchen Gewinn oder Nutzen hat der Kunde?"
+        "gains": {
+          "section": "Nutzen",
+          "description": "Welchen Gewinn oder Nutzen hat der Kunde?"
         },
-        inputsOutputs: {
-          section: "Inputs & Outputs",
-          description: "Was sind die Inputs und Outputs bei jedem Schritt?"
+        "inputsOutputs": {
+          "section": "Inputs & Outputs",
+          "description": "Was sind die Inputs und Outputs bei jedem Schritt?"
         },
-        interactionProcessingRules: {
-          section: "Interaktions- und Verarbeitungsregeln",
-          description: "Wie lauten die Interaktions- und Verarbeitungsregeln bei jedem Schritt?"
+        "interactionProcessingRules": {
+          "section": "Interaktions- und Verarbeitungsregeln",
+          "description": "Wie lauten die Interaktions- und Verarbeitungsregeln bei jedem Schritt?"
         }
       }
     },
-    domainCanvas: {
-      title: "Domain Canvas",
-      purpose: "Was sind die wesentlichen Entitäten und Geschäftsregeln im Zusammenhang mit der API?",
-      howToUse: "Definieren Sie das Domänenmodell für jede API, einschließlich Entitäten, Attribute und Beziehungen.",
-      sections: {
-        selectedCustomerJourneySteps: {
-          section: "Ausgewählte Customer Journey Schritte",
-          description: "Welche Customer Journey Schritte sind für diese Domäne relevant?"
+    "domainCanvas": {
+      "title": "Domain Canvas",
+      "purpose": "Was sind die wesentlichen Entitäten und Geschäftsregeln im Zusammenhang mit der API?",
+      "howToUse": "Definieren Sie das Domänenmodell für jede API, einschließlich Entitäten, Attribute und Beziehungen.",
+      "sections": {
+        "selectedCustomerJourneySteps": {
+          "section": "Ausgewählte Customer Journey Schritte",
+          "description": "Welche Customer Journey Schritte sind für diese Domäne relevant?"
         },
-        coreEntitiesAndBusinessMeaning: {
-          section: "Grundlegende Entitäten & geschäftliche Bedeutung",
-          description: "Welches sind die wesentlichen Entitäten und ihre Bedeutung für das Geschäft?"
+        "coreEntitiesAndBusinessMeaning": {
+          "section": "Grundlegende Entitäten & geschäftliche Bedeutung",
+          "description": "Welches sind die wesentlichen Entitäten und ihre Bedeutung für das Geschäft?"
         },
-        attributesAndBusinessImportance: {
-          section: "Attribute & geschäftliche Wichtigkeit",
-          description: "Welches sind die Schlüsselattribute der einzelnen Entitäten und ihre geschäftliche Wichtigkeit?"
+        "attributesAndBusinessImportance": {
+          "section": "Attribute & geschäftliche Wichtigkeit",
+          "description": "Welches sind die Schlüsselattribute der einzelnen Entitäten und ihre geschäftliche Wichtigkeit?"
         },
-        relationshipsBetweenEntities: {
-          section: "Beziehungen zwischen Entitäten",
-          description: "Welche Beziehungen bestehen zwischen den Entitäten?"
+        "relationshipsBetweenEntities": {
+          "section": "Beziehungen zwischen Entitäten",
+          "description": "Welche Beziehungen bestehen zwischen den Entitäten?"
         },
-        businessComplianceAndIntegrityRules: {
-          section: "Geschäfts-, Compliance- und Integritätsregeln",
-          description: "Welche Geschäfts-, Compliance- und Integritätsregeln gelten für die Entitäten?"
+        "businessComplianceAndIntegrityRules": {
+          "section": "Geschäfts-, Compliance- und Integritätsregeln",
+          "description": "Welche Geschäfts-, Compliance- und Integritätsregeln gelten für die Entitäten?"
         },
-        securityAndPrivacyConsiderations: {
-          section: "Überlegungen zu Sicherheit und Datenschutz",
-          description: "Welche Überlegungen zur Sicherheit und zum Datenschutz gibt es im Zusammenhang mit den Entitäten?"
+        "securityAndPrivacyConsiderations": {
+          "section": "Überlegungen zu Sicherheit und Datenschutz",
+          "description": "Welche Überlegungen zur Sicherheit und zum Datenschutz gibt es im Zusammenhang mit den Entitäten?"
         }
       }
     },
-    eventCanvas: {
-      title: "Event Canvas",
-      purpose: "Welche Events sind für die API relevant, und wie werden sie verarbeitet?",
-      howToUse: "Definieren Sie die Events, ihre Trigger und die Verarbeitungslogik für jede API.",
-      sections: {
-        userTaskTrigger: {
-          section: "Nutzeraufgabe / Trigger",
-          description: "Welche Nutzeraktion oder welches System-Event löst diese Eventoperation aus?"
+    "eventCanvas": {
+      "title": "Event Canvas",
+      "purpose": "Welche Events sind für die API relevant, und wie werden sie verarbeitet?",
+      "howToUse": "Definieren Sie die Events, ihre Trigger und die Verarbeitungslogik für jede API.",
+      "sections": {
+        "userTaskTrigger": {
+          "section": "Nutzeraufgabe / Trigger",
+          "description": "Welche Nutzeraktion oder welches System-Event löst diese Eventoperation aus?"
         },
-        inputEventPayload: {
-          section: "Input / Event-Payload",
-          description: "Welche Daten sind in der eingehenden Event-Payload enthalten? Geben Sie die Schlüsselattribute an."
+        "inputEventPayload": {
+          "section": "Input / Event-Payload",
+          "description": "Welche Daten sind in der eingehenden Event-Payload enthalten? Geben Sie die Schlüsselattribute an."
         },
-        processingLogic: {
-          section: "Verarbeitung / Logik",
-          description: "Beschreiben Sie die Backend-Verarbeitungslogik, inklusive Validierungen, Transformationen, oder Routing-Entscheidungen."
+        "processingLogic": {
+          "section": "Verarbeitung / Logik",
+          "description": "Beschreiben Sie die Backend-Verarbeitungslogik, inklusive Validierungen, Transformationen, oder Routing-Entscheidungen."
         },
-        outputEventResult: {
-          section: "Output / Event-Ergebnis",
-          description: "Welches Event oder welche Bestätigungsmeldung wird erzeugt? Geben Sie die Attribute des Output-Payloads an."
+        "outputEventResult": {
+          "section": "Output / Event-Ergebnis",
+          "description": "Welches Event oder welche Bestätigungsmeldung wird erzeugt? Geben Sie die Attribute des Output-Payloads an."
         }
       }
     },
-    interactionCanvas: {
-      title: "Interaction Canvas",
-      purpose: "Welche verschiedenen Interaktionsarten werden von der API unterstützt?",
-      howToUse: "Definieren Sie die CRUD-, abfrage-, befehlsgesteuerten und eventgesteuerten Interaktionen für jede API.",
-      sections: {
-        crudInteractions: {
-          section: "CRUD Interaktionen",
-          description: "Welche CRUD-Interaktionen (Create, Read, Update, Delete) werden von der API unterstützt?"
+    "interactionCanvas": {
+      "title": "Interaction Canvas",
+      "purpose": "Welche verschiedenen Interaktionsarten werden von der API unterstützt?",
+      "howToUse": "Definieren Sie die CRUD-, abfrage-, befehlsgesteuerten und eventgesteuerten Interaktionen für jede API.",
+      "sections": {
+        "crudInteractions": {
+          "section": "CRUD Interaktionen",
+          "description": "Welche CRUD-Interaktionen (Create, Read, Update, Delete) werden von der API unterstützt?"
         },
-        crudInputOutputModels: {
-          section: "CRUD Input- & Output-Modelle",
-          description: "Was sind die Input- und Output-Modelle für die CRUD-Interaktionen?"
+        "crudInputOutputModels": {
+          "section": "CRUD Input- & Output-Modelle",
+          "description": "Was sind die Input- und Output-Modelle für die CRUD-Interaktionen?"
         },
-        crudProcessingValidation: {
-          section: "CRUD Verarbeitung & Validierung",
-          description: "Wie sehen die Verarbeitungs- und Validierungsregeln für die CRUD-Interaktionen aus?"
+        "crudProcessingValidation": {
+          "section": "CRUD Verarbeitung & Validierung",
+          "description": "Wie sehen die Verarbeitungs- und Validierungsregeln für die CRUD-Interaktionen aus?"
         },
-        queryDrivenInteractions: {
-          section: "Abfragegesteuerte Interaktionen",
-          description: "Welche abfragegesteuerten Interaktionen werden von der API unterstützt?"
+        "queryDrivenInteractions": {
+          "section": "Abfragegesteuerte Interaktionen",
+          "description": "Welche abfragegesteuerten Interaktionen werden von der API unterstützt?"
         },
-        queryDrivenInputOutputModels: {
-          section: "Abfragegesteuerte Input- & Output-Modelle",
-          description: "Was sind die Input- und Output-Modelle für die abfragegesteuerten Interaktionen"
+        "queryDrivenInputOutputModels": {
+          "section": "Abfragegesteuerte Input- & Output-Modelle",
+          "description": "Was sind die Input- und Output-Modelle für die abfragegesteuerten Interaktionen"
         },
-        queryDrivenProcessingValidation: {
-          section: "Abfragegesteuerte Verarbeitung & Validierung",
-          description: "Wie sehen die Verarbeitungs- und Validierungsregeln für die abfragegesteuerten Interaktionen aus?"
+        "queryDrivenProcessingValidation": {
+          "section": "Abfragegesteuerte Verarbeitung & Validierung",
+          "description": "Wie sehen die Verarbeitungs- und Validierungsregeln für die abfragegesteuerten Interaktionen aus?"
         },
-        commandDrivenInteractions: {
-          section: "Befehlsgesteuerte Interaktionen",
-          description: "Welche befehlsgesteuerten Interaktionen werden von der API unterstützt?"
+        "commandDrivenInteractions": {
+          "section": "Befehlsgesteuerte Interaktionen",
+          "description": "Welche befehlsgesteuerten Interaktionen werden von der API unterstützt?"
         },
-        commandDrivenInputOutputModels: {
-          section: "Befehlsgesteuerte Input- & Output-Modelle",
-          description: "Was sind die Input- und Output-Modelle für die befehlsgesteuerten Interaktionen?"
+        "commandDrivenInputOutputModels": {
+          "section": "Befehlsgesteuerte Input- & Output-Modelle",
+          "description": "Was sind die Input- und Output-Modelle für die befehlsgesteuerten Interaktionen?"
         },
-        commandDrivenProcessingValidation: {
-          section: "Befehlsgesteuerte Verarbeitung & Validierung",
-          description: "Wie sehen die Verarbeitungs- und Validierungsregeln für die befehlsgesteuerten Interaktionen aus?"
+        "commandDrivenProcessingValidation": {
+          "section": "Befehlsgesteuerte Verarbeitung & Validierung",
+          "description": "Wie sehen die Verarbeitungs- und Validierungsregeln für die befehlsgesteuerten Interaktionen aus?"
         },
-        eventDrivenInteractions: {
-          section: "Eventgesteuerte Interaktionen",
-          description: "Welche eventgesteuerten Interaktionen werden von der API unterstützt?"
+        "eventDrivenInteractions": {
+          "section": "Eventgesteuerte Interaktionen",
+          "description": "Welche eventgesteuerten Interaktionen werden von der API unterstützt?"
         },
-        eventDrivenInputOutputModels: {
-          section: "Eventgesteuerte Input- & Output-Modelle",
-          description: "Was sind die Input- und Output-Modelle für die eventgesteuerten Interaktionen?"
+        "eventDrivenInputOutputModels": {
+          "section": "Eventgesteuerte Input- & Output-Modelle",
+          "description": "Was sind die Input- und Output-Modelle für die eventgesteuerten Interaktionen?"
         },
-        eventDrivenProcessingValidation: {
-          section: "Eventgesteuerte Verarbeitung & Validierung",
-          description: "Wie sehen die Verarbeitungs- und Validierungsregeln für die eventgesteuerten Interaktionen aus?"
+        "eventDrivenProcessingValidation": {
+          "section": "Eventgesteuerte Verarbeitung & Validierung",
+          "description": "Wie sehen die Verarbeitungs- und Validierungsregeln für die eventgesteuerten Interaktionen aus?"
         }
       }
     },
-    locationsCanvas: {
-      title: "Location Canvas",
-      purpose: "Was sind die relevanten Standorte und ihre Merkmale?",
-      howToUse: "Definieren Sie die Standorte, ihre Entfernungen und ihre Endpunkte für jede API.",
-      sections: {
-        locationGroups: {
-          section: "Standortgruppen",
-          description: "Welches sind die relevanten Standortgruppen?"
+    "locationsCanvas": {
+      "title": "Location Canvas",
+      "purpose": "Was sind die relevanten Standorte und ihre Merkmale?",
+      "howToUse": "Definieren Sie die Standorte, ihre Entfernungen und ihre Endpunkte für jede API.",
+      "sections": {
+        "locationGroups": {
+          "section": "Standortgruppen",
+          "description": "Welches sind die relevanten Standortgruppen?"
         },
-        locationGroupCharacteristics: {
-          section: "Standortgruppenmerkmale",
-          description: "Was sind die Merkmale der Standortgruppen?"
+        "locationGroupCharacteristics": {
+          "section": "Standortgruppenmerkmale",
+          "description": "Was sind die Merkmale der Standortgruppen?"
         },
-        locations: {
-          section: "Standorte",
-          description: "Welches sind die relevanten Standorte innerhalb jeder Gruppe?"
+        "locations": {
+          "section": "Standorte",
+          "description": "Welches sind die relevanten Standorte innerhalb jeder Gruppe?"
         },
-        locationCharacteristics: {
-          section: "Standortmerkmale",
-          description: "Was sind die Merkmale der Standorte?"
+        "locationCharacteristics": {
+          "section": "Standortmerkmale",
+          "description": "Was sind die Merkmale der Standorte?"
         },
-        locationDistances: {
-          section: "Standortentfernungen",
-          description: "Wie groß sind die Entfernungen zwischen den Standorten?"
+        "locationDistances": {
+          "section": "Standortentfernungen",
+          "description": "Wie groß sind die Entfernungen zwischen den Standorten?"
         },
-        locationDistanceCharacteristics: {
-          section: "Standort-Entfernungsmerkmale",
-          description: "Was sind die Merkmale der Standortentfernungen?"
+        "locationDistanceCharacteristics": {
+          "section": "Standort-Entfernungsmerkmale",
+          "description": "Was sind die Merkmale der Standortentfernungen?"
         },
-        locationEndpoints: {
-          section: "Standort-Endpunkte",
-          description: "Welche Endpunkte sind mit den Standorten assoziiert?"
+        "locationEndpoints": {
+          "section": "Standort-Endpunkte",
+          "description": "Welche Endpunkte sind mit den Standorten assoziiert?"
         },
-        locationEndpointCharacteristics: {
-          section: "Standort-Endpunktemerkmale",
-          description: "Was sind die Merkmale der Standort-Endpunkte?"
+        "locationEndpointCharacteristics": {
+          "section": "Standort-Endpunktemerkmale",
+          "description": "Was sind die Merkmale der Standort-Endpunkte?"
         }
       }
     },
-    restCanvas: {
-      title: "REST Canvas",
-      purpose: "Wie kann die API nach RESTful-Prinzipien gestaltet werden?",
-      howToUse: "Definieren Sie die API-Ressourcen, HTTP-Methoden und Beispielanfragen und -antworten.",
-      sections: {
-        apiResources: {
-          section: "API-Ressourcen",
-          description: "Was sind die Schlüsselressourcen, die von der API bereitgestellt werden?"
+    "restCanvas": {
+      "title": "REST Canvas",
+      "purpose": "Wie kann die API nach RESTful-Prinzipien gestaltet werden?",
+      "howToUse": "Definieren Sie die API-Ressourcen, HTTP-Methoden und Beispielanfragen und -antworten.",
+      "sections": {
+        "apiResources": {
+          "section": "API-Ressourcen",
+          "description": "Was sind die Schlüsselressourcen, die von der API bereitgestellt werden?"
         },
-        apiResourceModel: {
-          section: "API-Ressourcenmodell",
-          description: "Wie sieht die Struktur des API-Ressourcenmodells aus?"
+        "apiResourceModel": {
+          "section": "API-Ressourcenmodell",
+          "description": "Wie sieht die Struktur des API-Ressourcenmodells aus?"
         },
-        apiVerbs: {
+        "apiVerbs": {
           "section": "HTTP-Methoden der API",
           "description": "Welche HTTP-Methoden werden für die Interaktion mit den API-Ressourcen verwendet?"
         },
-        apiVerbExample: {
-          section: "HTTP-Methoden-Beispiel",
-          description: "Geben Sie für jede HTTP-Methode ein Beispiel für eine API-Anfrage und -Antwort an."
+        "apiVerbExample": {
+          "section": "HTTP-Methoden-Beispiel",
+          "description": "Geben Sie für jede HTTP-Methode ein Beispiel für eine API-Anfrage und -Antwort an."
+        }
+      }
+    }
+  },
+  "en-US": {
+    "apiBusinessModelCanvas": {
+      "title": "API Business Model Canvas",
+      "purpose": "How feasible and reusable will this API be? Do we have a business case from a cost - benefit point of view?",
+      "howToUse": "Summarize the value proposition of one API from the API Value Proposition Canvas, then follow the numbered sequence.",
+      "sections": {
+        "keyPartners": {
+          "section": "Key Partners",
+          "description": "Who are the key stakeholders involved?"
         },
-      },
+        "keyActivities": {
+          "section": "Key Activities",
+          "description": "What are the most important actions the API provider must take to operate successfully?"
+        },
+        "keyResources": {
+          "section": "Key Resources",
+          "description": "What unique strategic assets must the API provider acquire or build?"
+        },
+        "apiValueProposition": {
+          "section": "API Value Proposition",
+          "description": "What value does the API offer to API consumers?"
+        },
+        "developerRelations": {
+          "section": "Developer Relations",
+          "description": "How does the API provider reach and support API consumers?"
+        },
+        "channels": {
+          "section": "Channels",
+          "description": "Through which mechanisms do API consumers interact with the API?"
+        },
+        "apiConsumerSegments": {
+          "section": "API Consumer Segments",
+          "description": "Who are the target audiences for the API?"
+        },
+        "costs": {
+          "section": "Costs",
+          "description": "What are the significant costs involved in building, deploying, and operating the API?"
+        },
+        "benefits": {
+          "section": "Benefits",
+          "description": "What are the significant benefits or revenue streams generated by the API?"
+        }
+      }
     },
+    "apiValuePropositionCanvas": {
+      "title": "API Value Proposition Canvas",
+      "purpose": "Does this API address the jobs, pains, and gains of API consumers?",
+      "howToUse": "Describe the API consumer's perspective, starting with their tasks, then their pains and gains, and finally the API's products and features.",
+      "sections": {
+        "tasks": {
+          "section": "Tasks",
+          "description": "What are the API consumers trying to achieve?"
+        },
+        "gainEnablingFeatures": {
+          "section": "Gain Enabling Features",
+          "description": "What features enable API consumers to achieve gains?"
+        },
+        "painRelievingFeatures": {
+          "section": "Pain Relieving Features",
+          "description": "What features help API consumers overcome pains?"
+        },
+        "apiProducts": {
+          "section": "API Products",
+          "description": "What API products and features address the tasks, pains, and gains?"
+        }
+      }
     },
-    "en-US": {
-      apiBusinessModelCanvas: {
-        title: "API Business Model Canvas",
-        purpose:
-          "How feasible and reusable will this API be? Do we have a business case from a cost - benefit point of view?",
-        howToUse:
-          "Summarize the value proposition of one API from the API Value Proposition Canvas, then follow the numbered sequence.",
-        sections: {
-          keyPartners: {
-            section: "Key Partners",
-            description: "Who are the key stakeholders involved?",
-          },
-          keyActivities: {
-            section: "Key Activities",
-            description:
-              "What are the most important actions the API provider must take to operate successfully?",
-          },
-          keyResources: {
-            section: "Key Resources",
-            description:
-              "What unique strategic assets must the API provider acquire or build?",
-          },
-          apiValueProposition: {
-            section: "API Value Proposition",
-            description: "What value does the API offer to API consumers?",
-          },
-          developerRelations: {
-            section: "Developer Relations",
-            description:
-              "How does the API provider reach and support API consumers?",
-          },
-          channels: {
-            section: "Channels",
-            description:
-              "Through which mechanisms do API consumers interact with the API?",
-          },
-          apiConsumerSegments: {
-            section: "API Consumer Segments",
-            description: "Who are the target audiences for the API?",
-          },
-          costs: {
-            section: "Costs",
-            description:
-              "What are the significant costs involved in building, deploying, and operating the API?",
-          },
-          benefits: {
-            section: "Benefits",
-            description:
-              "What are the significant benefits or revenue streams generated by the API?",
-          },
+    "businessImpactCanvas": {
+      "title": "Business Impact Canvas",
+      "purpose": "What are the potential business impacts of API failure?",
+      "howToUse": "Consider the potential impact on availability, security, and data for each API.",
+      "sections": {
+        "availabilityRisks": {
+          "section": "Availability Risks",
+          "description": "What are the potential risks to API availability?"
         },
-      },
-      apiValuePropositionCanvas: {
-        title: "API Value Proposition Canvas",
-        purpose:
-          "Does this API address the jobs, pains, and gains of API consumers?",
-        howToUse:
-          "Describe the API consumer's perspective, starting with their tasks, then their pains and gains, and finally the API's products and features.",
-        sections: {
-          tasks: {
-            section: "Tasks",
-            description: "What are the API consumers trying to achieve?",
-          },
-          gainEnablingFeatures: {
-            section: "Gain Enabling Features",
-            description: "What features enable API consumers to achieve gains?",
-          },
-          painRelievingFeatures: {
-            section: "Pain Relieving Features",
-            description: "What features help API consumers overcome pains?",
-          },
-          apiProducts: {
-            section: "API Products",
-            description:
-              "What API products and features address the tasks, pains, and gains?",
-          },
+        "securityRisks": {
+          "section": "Security Risks",
+          "description": "What are the potential security risks associated with the API?"
         },
-      },
-      businessImpactCanvas: {
-        title: "Business Impact Canvas",
-        purpose: "What are the potential business impacts of API failure?",
-        howToUse:
-          "Consider the potential impact on availability, security, and data for each API.",
-        sections: {
-          availabilityRisks: {
-            section: "Availability Risks",
-            description: "What are the potential risks to API availability?",
-          },
-          securityRisks: {
-            section: "Security Risks",
-            description:
-              "What are the potential security risks associated with the API?",
-          },
-          dataRisks: {
-            section: "Data Risks",
-            description:
-              "What are the potential risks to data integrity or confidentiality?",
-          },
-          mitigateAvailabilityRisks: {
-            section: "Mitigate Availability Risks",
-            description:
-              "How can the API provider mitigate the availability risks?",
-          },
-          mitigateSecurityRisks: {
-            section: "Mitigate Security Risks",
-            description: "How can the API provider mitigate the security risks?",
-          },
-          mitigateDataRisks: {
-            section: "Mitigate Data Risks",
-            description: "How can the API provider mitigate the data risks?",
-          },
+        "dataRisks": {
+          "section": "Data Risks",
+          "description": "What are the potential risks to data integrity or confidentiality?"
         },
-      },
-      capacityCanvas: {
-        title: "Capacity Canvas",
-        purpose: "How much capacity is needed to support API consumption?",
-        howToUse:
-          "Analyze the current and future capacity requirements for each API.",
-        sections: {
-          currentBusinessVolumes: {
-            section: "Current Business Volumes",
-            description:
-              "What are the current business volumes and transaction rates?",
-          },
-          futureConsumptionTrends: {
-            section: "Future Consumption Trends",
-            description: "What are the anticipated future consumption trends?",
-          },
-          peakLoadAndAvailabilityRequirements: {
-            section: "Peak Load and Availability Requirements",
-            description: "What are the peak load and availability requirements?",
-          },
-          cachingStrategies: {
-            section: "Caching Strategies",
-            description:
-              "What caching strategies can be used to optimize performance?",
-          },
-          rateLimitingStrategies: {
-            section: "Rate Limiting Strategies",
-            description:
-              "What rate limiting strategies can be used to manage consumption?",
-          },
-          scalingStrategies: {
-            section: "Scaling Strategies",
-            description:
-              "What scaling strategies can be used to accommodate growth?",
-          },
+        "mitigateAvailabilityRisks": {
+          "section": "Mitigate Availability Risks",
+          "description": "How can the API provider mitigate the availability risks?"
         },
-      },
-      customerJourneyCanvas: {
-        title: "Customer Journey Canvas",
-        purpose: "How do API consumers interact with the API over time?",
-        howToUse:
-          "Map the customer journey for each API, from initial discovery to ongoing use.",
-        sections: {
-          customerDiscoversNeed: {
-            section: "Customer Discovers Need",
-            description: "How does the customer discover the need for the API?",
-          },
-          persona: {
-            section: "Persona",
-            description: "Who is the typical customer or user of the API?",
-          },
-          pains: {
-            section: "Pains",
-            description: "What are the customer's pain points or challenges?",
-          },
-          journeySteps: {
-            section: "Journey Steps",
-            description:
-              "What are the steps the customer takes in their journey?",
-          },
-          customerNeedIsResolved: {
-            section: "Customer Need Is Resolved",
-            description: "How is the customer's need ultimately resolved?",
-          },
-          gains: {
-            section: "Gains",
-            description: "What are the customer's gains or benefits?",
-          },
-          inputsOutputs: {
-            section: "Inputs & Outputs",
-            description: "What are the inputs and outputs at each step?",
-          },
-          interactionProcessingRules: {
-            section: "Interaction & Processing Rules",
-            description:
-              "What are the interaction and processing rules at each step?",
-          },
+        "mitigateSecurityRisks": {
+          "section": "Mitigate Security Risks",
+          "description": "How can the API provider mitigate the security risks?"
         },
-      },
-      domainCanvas: {
-        title: "Domain Canvas",
-        purpose:
-          "What are the core entities and business rules related to the API?",
-        howToUse:
-          "Define the domain model for each API, including entities, attributes, and relationships.",
-        sections: {
-          selectedCustomerJourneySteps: {
-            section: "Selected Customer Journey Steps",
-            description:
-              "Which customer journey steps are relevant to this domain?",
-          },
-          coreEntitiesAndBusinessMeaning: {
-            section: "Core Entities & Business Meaning",
-            description: "What are the core entities and their business meaning?",
-          },
-          attributesAndBusinessImportance: {
-            section: "Attributes & Business Importance",
-            description:
-              "What are the key attributes of each entity and their business importance?",
-          },
-          relationshipsBetweenEntities: {
-            section: "Relationships Between Entities",
-            description: "What are the relationships between the entities?",
-          },
-          businessComplianceAndIntegrityRules: {
-            section: "Business, Compliance & Integrity Rules",
-            description:
-              "What are the business, compliance, and integrity rules related to the entities?",
-          },
-          securityAndPrivacyConsiderations: {
-            section: "Security & Privacy Considerations",
-            description:
-              "What are the security and privacy considerations related to the entities?",
-          },
-        },
-      },
-      eventCanvas: {
-        title: "Event Canvas",
-        purpose:
-          "What events are relevant to the API, and how are they processed?",
-        howToUse:
-          "Define the events, their triggers, and the processing logic for each API.",
-        sections: {
-          userTaskTrigger: {
-            section: "User Task / Trigger",
-            description:
-              "What user action or system event triggers this event operation?",
-          },
-          inputEventPayload: {
-            section: "Input / Event Payload",
-            description:
-              "What data is included in the incoming event payload? Specify key attributes.",
-          },
-          processingLogic: {
-            section: "Processing / Logic",
-            description:
-              "Describe the backend processing logic, including validations, transformations, or routing decisions.",
-          },
-          outputEventResult: {
-            section: "Output / Event Result",
-            description:
-              "What resulting event or acknowledgment is produced? Include attributes of the output payload.",
-          },
-        },
-      },
-      interactionCanvas: {
-        title: "Interaction Canvas",
-        purpose:
-          "What are the different types of interactions supported by the API?",
-        howToUse:
-          "Define the CRUD, query-driven, command-driven, and event-driven interactions for each API.",
-        sections: {
-          crudInteractions: {
-            section: "CRUD Interactions",
-            description:
-              "What are the CRUD (Create, Read, Update, Delete) interactions supported by the API?",
-          },
-          crudInputOutputModels: {
-            section: "CRUD Input & Output Models",
-            description:
-              "What are the input and output models for the CRUD interactions?",
-          },
-          crudProcessingValidation: {
-            section: "CRUD Processing & Validation",
-            description:
-              "What are the processing and validation rules for the CRUD interactions?",
-          },
-          queryDrivenInteractions: {
-            section: "Query-Driven Interactions",
-            description:
-              "What are the query-driven interactions supported by the API?",
-          },
-          queryDrivenInputOutputModels: {
-            section: "Query-Driven Input & Output Models",
-            description:
-              "What are the input and output models for the query-driven interactions?",
-          },
-          queryDrivenProcessingValidation: {
-            section: "Query-Driven Processing & Validation",
-            description:
-              "What are the processing and validation rules for the query-driven interactions?",
-          },
-          commandDrivenInteractions: {
-            section: "Command-Driven Interactions",
-            description:
-              "What are the command-driven interactions supported by the API?",
-          },
-          commandDrivenInputOutputModels: {
-            section: "Command-Driven Input & Output Models",
-            description:
-              "What are the input and output models for the command-driven interactions?",
-          },
-          commandDrivenProcessingValidation: {
-            section: "Command-Driven Processing & Validation",
-            description:
-              "What are the processing and validation rules for the command-driven interactions?",
-          },
-          eventDrivenInteractions: {
-            section: "Event-Driven Interactions",
-            description:
-              "What are the event-driven interactions supported by the API?",
-          },
-          eventDrivenInputOutputModels: {
-            section: "Event-Driven Input & Output Models",
-            description:
-              "What are the input and output models for the event-driven interactions?",
-          },
-          eventDrivenProcessingValidation: {
-            section: "Event-Driven Processing & Validation",
-            description:
-              "What are the processing and validation rules for the event-driven interactions?",
-          },
-        },
-      },
-      locationsCanvas: {
-        title: "Locations Canvas",
-        purpose: "What are the relevant locations and their characteristics?",
-        howToUse:
-          "Define the locations, their distances, and their endpoints for each API.",
-        sections: {
-          locationGroups: {
-            section: "Location Groups",
-            description: "What are the relevant location groups?",
-          },
-          locationGroupCharacteristics: {
-            section: "Location Group Characteristics",
-            description: "What are the characteristics of the location groups?",
-          },
-          locations: {
-            section: "Locations",
-            description: "What are the relevant locations within each group?",
-          },
-          locationCharacteristics: {
-            section: "Location Characteristics",
-            description: "What are the characteristics of the locations?",
-          },
-          locationDistances: {
-            section: "Location Distances",
-            description: "What are the distances between the locations?",
-          },
-          locationDistanceCharacteristics: {
-            section: "Location Distance Characteristics",
-            description:
-              "What are the characteristics of the location distances?",
-          },
-          locationEndpoints: {
-            section: "Location Endpoints",
-            description: "What are the endpoints associated with the locations?",
-          },
-          locationEndpointCharacteristics: {
-            section: "Location Endpoint Characteristics",
-            description:
-              "What are the characteristics of the location endpoints?",
-          },
-        },
-      },
-      restCanvas: {
-        title: "REST Canvas",
-        purpose: "How can the API be designed using RESTful principles?",
-        howToUse:
-          "Define the API resources, verbs, and example requests and responses.",
-        sections: {
-          apiResources: {
-            section: "API Resources",
-            description: "What are the key resources exposed by the API?",
-          },
-          apiResourceModel: {
-            section: "API Resource Model",
-            description: "What is the structure of the API resource model?",
-          },
-          apiVerbs: {
-            section: "API Verbs",
-            description:
-              "What HTTP verbs are used to interact with the API resources?",
-          },
-          apiVerbExample: {
-            section: "API Verb Example",
-            description:
-              "Provide an example of an API request and response for each verb.",
-          },
-        },
-      },
+        "mitigateDataRisks": {
+          "section": "Mitigate Data Risks",
+          "description": "How can the API provider mitigate the data risks?"
+        }
+      }
     },
+    "capacityCanvas": {
+      "title": "Capacity Canvas",
+      "purpose": "How much capacity is needed to support API consumption?",
+      "howToUse": "Analyze the current and future capacity requirements for each API.",
+      "sections": {
+        "currentBusinessVolumes": {
+          "section": "Current Business Volumes",
+          "description": "What are the current business volumes and transaction rates?"
+        },
+        "futureConsumptionTrends": {
+          "section": "Future Consumption Trends",
+          "description": "What are the anticipated future consumption trends?"
+        },
+        "peakLoadAndAvailabilityRequirements": {
+          "section": "Peak Load and Availability Requirements",
+          "description": "What are the peak load and availability requirements?"
+        },
+        "cachingStrategies": {
+          "section": "Caching Strategies",
+          "description": "What caching strategies can be used to optimize performance?"
+        },
+        "rateLimitingStrategies": {
+          "section": "Rate Limiting Strategies",
+          "description": "What rate limiting strategies can be used to manage consumption?"
+        },
+        "scalingStrategies": {
+          "section": "Scaling Strategies",
+          "description": "What scaling strategies can be used to accommodate growth?"
+        }
+      }
+    },
+    "customerJourneyCanvas": {
+      "title": "Customer Journey Canvas",
+      "purpose": "How do API consumers interact with the API over time?",
+      "howToUse": "Map the customer journey for each API, from initial discovery to ongoing use.",
+      "sections": {
+        "customerDiscoversNeed": {
+          "section": "Customer Discovers Need",
+          "description": "How does the customer discover the need for the API?"
+        },
+        "persona": {
+          "section": "Persona",
+          "description": "Who is the typical customer or user of the API?"
+        },
+        "pains": {
+          "section": "Pains",
+          "description": "What are the customer's pain points or challenges?"
+        },
+        "journeySteps": {
+          "section": "Journey Steps",
+          "description": "What are the steps the customer takes in their journey?"
+        },
+        "customerNeedIsResolved": {
+          "section": "Customer Need Is Resolved",
+          "description": "How is the customer's need ultimately resolved?"
+        },
+        "gains": {
+          "section": "Gains",
+          "description": "What are the customer's gains or benefits?"
+        },
+        "inputsOutputs": {
+          "section": "Inputs & Outputs",
+          "description": "What are the inputs and outputs at each step?"
+        },
+        "interactionProcessingRules": {
+          "section": "Interaction & Processing Rules",
+          "description": "What are the interaction and processing rules at each step?"
+        }
+      }
+    },
+    "domainCanvas": {
+      "title": "Domain Canvas",
+      "purpose": "What are the core entities and business rules related to the API?",
+      "howToUse": "Define the domain model for each API, including entities, attributes, and relationships.",
+      "sections": {
+        "selectedCustomerJourneySteps": {
+          "section": "Selected Customer Journey Steps",
+          "description": "Which customer journey steps are relevant to this domain?"
+        },
+        "coreEntitiesAndBusinessMeaning": {
+          "section": "Core Entities & Business Meaning",
+          "description": "What are the core entities and their business meaning?"
+        },
+        "attributesAndBusinessImportance": {
+          "section": "Attributes & Business Importance",
+          "description": "What are the key attributes of each entity and their business importance?"
+        },
+        "relationshipsBetweenEntities": {
+          "section": "Relationships Between Entities",
+          "description": "What are the relationships between the entities?"
+        },
+        "businessComplianceAndIntegrityRules": {
+          "section": "Business, Compliance & Integrity Rules",
+          "description": "What are the business, compliance, and integrity rules related to the entities?"
+        },
+        "securityAndPrivacyConsiderations": {
+          "section": "Security & Privacy Considerations",
+          "description": "What are the security and privacy considerations related to the entities?"
+        }
+      }
+    },
+    "eventCanvas": {
+      "title": "Event Canvas",
+      "purpose": "What events are relevant to the API, and how are they processed?",
+      "howToUse": "Define the events, their triggers, and the processing logic for each API.",
+      "sections": {
+        "userTaskTrigger": {
+          "section": "User Task / Trigger",
+          "description": "What user action or system event triggers this event operation?"
+        },
+        "inputEventPayload": {
+          "section": "Input / Event Payload",
+          "description": "What data is included in the incoming event payload? Specify key attributes."
+        },
+        "processingLogic": {
+          "section": "Processing / Logic",
+          "description": "Describe the backend processing logic, including validations, transformations, or routing decisions."
+        },
+        "outputEventResult": {
+          "section": "Output / Event Result",
+          "description": "What resulting event or acknowledgment is produced? Include attributes of the output payload."
+        }
+      }
+    },
+    "interactionCanvas": {
+      "title": "Interaction Canvas",
+      "purpose": "What are the different types of interactions supported by the API?",
+      "howToUse": "Define the CRUD, query-driven, command-driven, and event-driven interactions for each API.",
+      "sections": {
+        "crudInteractions": {
+          "section": "CRUD Interactions",
+          "description": "What are the CRUD (Create, Read, Update, Delete) interactions supported by the API?"
+        },
+        "crudInputOutputModels": {
+          "section": "CRUD Input & Output Models",
+          "description": "What are the input and output models for the CRUD interactions?"
+        },
+        "crudProcessingValidation": {
+          "section": "CRUD Processing & Validation",
+          "description": "What are the processing and validation rules for the CRUD interactions?"
+        },
+        "queryDrivenInteractions": {
+          "section": "Query-Driven Interactions",
+          "description": "What are the query-driven interactions supported by the API?"
+        },
+        "queryDrivenInputOutputModels": {
+          "section": "Query-Driven Input & Output Models",
+          "description": "What are the input and output models for the query-driven interactions?"
+        },
+        "queryDrivenProcessingValidation": {
+          "section": "Query-Driven Processing & Validation",
+          "description": "What are the processing and validation rules for the query-driven interactions?"
+        },
+        "commandDrivenInteractions": {
+          "section": "Command-Driven Interactions",
+          "description": "What are the command-driven interactions supported by the API?"
+        },
+        "commandDrivenInputOutputModels": {
+          "section": "Command-Driven Input & Output Models",
+          "description": "What are the input and output models for the command-driven interactions?"
+        },
+        "commandDrivenProcessingValidation": {
+          "section": "Command-Driven Processing & Validation",
+          "description": "What are the processing and validation rules for the command-driven interactions?"
+        },
+        "eventDrivenInteractions": {
+          "section": "Event-Driven Interactions",
+          "description": "What are the event-driven interactions supported by the API?"
+        },
+        "eventDrivenInputOutputModels": {
+          "section": "Event-Driven Input & Output Models",
+          "description": "What are the input and output models for the event-driven interactions?"
+        },
+        "eventDrivenProcessingValidation": {
+          "section": "Event-Driven Processing & Validation",
+          "description": "What are the processing and validation rules for the event-driven interactions?"
+        }
+      }
+    },
+    "locationsCanvas": {
+      "title": "Locations Canvas",
+      "purpose": "What are the relevant locations and their characteristics?",
+      "howToUse": "Define the locations, their distances, and their endpoints for each API.",
+      "sections": {
+        "locationGroups": {
+          "section": "Location Groups",
+          "description": "What are the relevant location groups?"
+        },
+        "locationGroupCharacteristics": {
+          "section": "Location Group Characteristics",
+          "description": "What are the characteristics of the location groups?"
+        },
+        "locations": {
+          "section": "Locations",
+          "description": "What are the relevant locations within each group?"
+        },
+        "locationCharacteristics": {
+          "section": "Location Characteristics",
+          "description": "What are the characteristics of the locations?"
+        },
+        "locationDistances": {
+          "section": "Location Distances",
+          "description": "What are the distances between the locations?"
+        },
+        "locationDistanceCharacteristics": {
+          "section": "Location Distance Characteristics",
+          "description": "What are the characteristics of the location distances?"
+        },
+        "locationEndpoints": {
+          "section": "Location Endpoints",
+          "description": "What are the endpoints associated with the locations?"
+        },
+        "locationEndpointCharacteristics": {
+          "section": "Location Endpoint Characteristics",
+          "description": "What are the characteristics of the location endpoints?"
+        }
+      }
+    },
+    "restCanvas": {
+      "title": "REST Canvas",
+      "purpose": "How can the API be designed using RESTful principles?",
+      "howToUse": "Define the API resources, verbs, and example requests and responses.",
+      "sections": {
+        "apiResources": {
+          "section": "API Resources",
+          "description": "What are the key resources exposed by the API?"
+        },
+        "apiResourceModel": {
+          "section": "API Resource Model",
+          "description": "What is the structure of the API resource model?"
+        },
+        "apiVerbs": {
+          "section": "API Verbs",
+          "description": "What HTTP verbs are used to interact with the API resources?"
+        },
+        "apiVerbExample": {
+          "section": "API Verb Example",
+          "description": "Provide an example of an API request and response for each verb."
+        }
+      }
+    }
+  },
+  "fi-FI": {
+    "apiBusinessModelCanvas": {
+      "title": "API Business Model Canvas",
+      "purpose": "Kuinka toteuttamiskelpoinen ja uudelleenkäytettävä API on? Onko meillä liiketoimintaperuste kustannus-hyötynäkökulmasta?",
+      "howToUse": "Yhteenveto APIn arvolupauksesta API Value Proposition Canvasin pohjalta, ja etene sitten numeroidussa järjestyksessä.",
+      "sections": {
+        "keyPartners": {
+          "section": "Keskeiset kumppanit",
+          "description": "Ketkä ovat tärkeimmät sidosryhmät?"
+        },
+        "keyActivities": {
+          "section": "Keskeiset toiminnot",
+          "description": "Mitkä ovat tärkeimmät toimet, jotka API-tarjoajan on toteutettava menestyäkseen?"
+        },
+        "keyResources": {
+          "section": "Keskeiset resurssit",
+          "description": "Mitä ainutlaatuisia strategisia resursseja API-tarjoajan on hankittava tai kehitettävä?"
+        },
+        "apiValueProposition": {
+          "section": "APIn arvolupaus",
+          "description": "Mitä arvoa API tarjoaa sen käyttäjille?"
+        },
+        "developerRelations": {
+          "section": "Suhde kehittäjiin",
+          "description": "Miten API-tarjoaja tavoittaa ja tukee APIn käyttäjiä?"
+        },
+        "channels": {
+          "section": "Kanavat",
+          "description": "Minkä kanavien kautta APIn käyttäjät ovat vuorovaikutuksessa APIn kanssa?"
+        },
+        "apiConsumerSegments": {
+          "section": "APIn kohderyhmät",
+          "description": "Keitä ovat APIn kohdeyleisöt?"
+        },
+        "costs": {
+          "section": "Kustannukset",
+          "description": "Mitkä ovat merkittävimmät kustannukset APIn rakentamisessa, julkaisemisessa ja ylläpidossa?"
+        },
+        "benefits": {
+          "section": "Hyödyt",
+          "description": "Mitkä ovat APIn tuottamat merkittävät hyödyt tai tulovirrat?"
+        }
+      }
+    },
+    "apiValuePropositionCanvas": {
+      "title": "API Value Proposition Canvas",
+      "purpose": "Vastaako tämä API API-käyttäjien tehtäviin, kipupisteisiin ja hyötyihin?",
+      "howToUse": "Kuvaile API-käyttäjän näkökulma: aloita tehtävistä, siirry kipupisteisiin ja hyötyihin ja lopuksi esittele API-tuotteet ja -ominaisuudet.",
+      "sections": {
+        "tasks": {
+          "section": "Tehtävät",
+          "description": "Mitä API-käyttäjät yrittävät saavuttaa?"
+        },
+        "gainEnablingFeatures": {
+          "section": "Hyötyä mahdollistavat ominaisuudet",
+          "description": "Mitkä ominaisuudet mahdollistavat API-käyttäjien hyötyjen saavuttamisen?"
+        },
+        "painRelievingFeatures": {
+          "section": "Kipua lievittävät ominaisuudet",
+          "description": "Mitkä ominaisuudet auttavat API-käyttäjiä poistamaan kipupisteet?"
+        },
+        "apiProducts": {
+          "section": "APIn tuotteet",
+          "description": "Mitkä API-tuotteet ja -ominaisuudet vastaavat tehtäviin, kipupisteisiin ja hyötyihin?"
+        }
+      }
+    },
+    "businessImpactCanvas": {
+      "title": "Business Impact Canvas",
+      "purpose": "Mitkä ovat mahdolliset liiketoiminnalliset vaikutukset APIn virhetilanteissa?",
+      "howToUse": "Ota huomioon mahdolliset vaikutukset saatavuuteen, tietoturvaan ja dataan kullekin APIlle.",
+      "sections": {
+        "availabilityRisks": {
+          "section": "Saatavuuteen liittyvät riskit",
+          "description": "Mitkä ovat APIn saatavuuteen liittyvät mahdolliset riskit?"
+        },
+        "securityRisks": {
+          "section": "Tietoturvariskit",
+          "description": "Mitkä ovat APIin liittyvät mahdolliset tietoturvariskit?"
+        },
+        "dataRisks": {
+          "section": "Tietoriskit",
+          "description": "Mitkä ovat mahdolliset riskit tiedon eheydelle tai luottamuksellisuudelle?"
+        },
+        "mitigateAvailabilityRisks": {
+          "section": "Saatavuusriskien vähentäminen",
+          "description": "Miten API-tarjoaja voi vähentää saatavuuteen liittyviä riskejä?"
+        },
+        "mitigateSecurityRisks": {
+          "section": "Tietoturvariskien vähentäminen",
+          "description": "Miten API-tarjoaja voi vähentää tietoturvariskejä?"
+        },
+        "mitigateDataRisks": {
+          "section": "Tietoriskien vähentäminen",
+          "description": "Miten API-tarjoaja voi vähentää tietoriskejä?"
+        }
+      }
+    },
+    "capacityCanvas": {
+      "title": "Capacity Canvas",
+      "purpose": "Kuinka paljon kapasiteettia tarvitaan APIn käytön tukemiseksi?",
+      "howToUse": "Analysoi kunkin APIn nykyiset ja tulevat kapasiteettitarpeet.",
+      "sections": {
+        "currentBusinessVolumes": {
+          "section": "Nykyinen liiketoimintavolyymi",
+          "description": "Mitkä ovat nykyiset liiketoimintavolyymit ja transaktiomäärät?"
+        },
+        "futureConsumptionTrends": {
+          "section": "Tulevat kulutustrendit",
+          "description": "Mitkä ovat ennakoidut tulevat kulutustrendit?"
+        },
+        "peakLoadAndAvailabilityRequirements": {
+          "section": "Huipputehon ja saatavuuden vaatimukset",
+          "description": "Mitkä ovat huippukuormituksen ja saatavuuden vaatimukset?"
+        },
+        "cachingStrategies": {
+          "section": "Välimuististrategiat",
+          "description": "Mitä välimuististrategioita voidaan käyttää suorituskyvyn optimoimiseksi?"
+        },
+        "rateLimitingStrategies": {
+          "section": "Kutsunopeuden rajoitusstrategiat",
+          "description": "Mitä kutsunopeuden rajoitusstrategioita voidaan käyttää kulutuksen hallintaan?"
+        },
+        "scalingStrategies": {
+          "section": "Skaalausstrategiat",
+          "description": "Mitä skaalausstrategioita voidaan käyttää kasvun tukemiseen?"
+        }
+      }
+    },
+    "customerJourneyCanvas": {
+      "title": "Customer Journey Canvas",
+      "purpose": "Miten APIn käyttäjät ovat vuorovaikutuksessa APIn kanssa ajan myötä?",
+      "howToUse": "Kuvaa kunkin APIn asiakaspolku aloitusvaiheesta jatkuvaan käyttöön.",
+      "sections": {
+        "customerDiscoversNeed": {
+          "section": "Asiakas havaitsee tarpeen",
+          "description": "Miten asiakas havaitsee tarpeen APIlle?"
+        },
+        "persona": {
+          "section": "Persona",
+          "description": "Kuka on tyypillinen API:n asiakas tai käyttäjä?"
+        },
+        "pains": {
+          "section": "Kipupisteet",
+          "description": "Mitkä ovat asiakkaan kipupisteet tai haasteet?"
+        },
+        "journeySteps": {
+          "section": "Asiakaspolun vaiheet",
+          "description": "Mitä vaiheita asiakas käy läpi asiakaspolullaan?"
+        },
+        "customerNeedIsResolved": {
+          "section": "Asiakkaan tarve täyttyy",
+          "description": "Miten asiakkaan tarve lopulta ratkaistaan?"
+        },
+        "gains": {
+          "section": "Hyödyt",
+          "description": "Mitä hyötyä asiakkaalle syntyy?"
+        },
+        "inputsOutputs": {
+          "section": "Syötteet ja tulosteet",
+          "description": "Mitkä ovat syötteet ja tulosteet kussakin vaiheessa?"
+        },
+        "interactionProcessingRules": {
+          "section": "Vuorovaikutuksen ja käsittelyn säännöt",
+          "description": "Mitkä ovat vuorovaikutuksen ja käsittelyn säännöt kussakin vaiheessa?"
+        }
+      }
+    },
+    "domainCanvas": {
+      "title": "Domain Canvas",
+      "purpose": "Mitkä ovat APIn keskeiset entiteetit ja liiketoimintasäännöt?",
+      "howToUse": "Määrittele kunkin APIn toimialuemalli, mukaan lukien entiteetit, attribuutit ja suhteet.",
+      "sections": {
+        "selectedCustomerJourneySteps": {
+          "section": "Valitut asiakaspolun vaiheet",
+          "description": "Mitkä asiakaspolun vaiheet ovat olennaisia tälle toimialueelle?"
+        },
+        "coreEntitiesAndBusinessMeaning": {
+          "section": "Ydinkohteet ja liiketoiminnallinen merkitys",
+          "description": "Mitkä ovat keskeiset entiteetit ja niiden liiketoiminnallinen merkitys?"
+        },
+        "attributesAndBusinessImportance": {
+          "section": "Attribuutit ja liiketoiminnallinen merkitys",
+          "description": "Mitkä ovat kunkin entiteetin keskeiset attribuutit ja niiden liiketoiminnallinen merkitys?"
+        },
+        "relationshipsBetweenEntities": {
+          "section": "Entiteettien väliset suhteet",
+          "description": "Mitkä ovat entiteettien väliset suhteet?"
+        },
+        "businessComplianceAndIntegrityRules": {
+          "section": "Liiketoiminta-, sääntely- ja eheysvaatimukset",
+          "description": "Mitkä ovat entiteetteihin liittyvät liiketoiminta-, sääntely- ja eheysvaatimukset?"
+        },
+        "securityAndPrivacyConsiderations": {
+          "section": "Tietoturva- ja yksityisyysnäkökohdat",
+          "description": "Mitä tietoturvaan ja yksityisyyteen liittyviä näkökulmia entiteetteihin liittyy?"
+        }
+      }
+    },
+    "eventCanvas": {
+      "title": "Event Canvas",
+      "purpose": "Mitkä tapahtumat liittyvät APIin ja miten ne käsitellään?",
+      "howToUse": "Määrittele tapahtumat, niiden laukaisijat ja käsittelylogiikka kullekin APIlle.",
+      "sections": {
+        "userTaskTrigger": {
+          "section": "Käyttäjän tehtävä / Laukaisija",
+          "description": "Mikä käyttäjän toiminto tai järjestelmätapahtuma laukaisee tämän tapahtuman?"
+        },
+        "inputEventPayload": {
+          "section": "Syöte / Tapahtumakuorma",
+          "description": "Mitä tietoja saapuva tapahtumakuorma sisältää? Määrittele keskeiset attribuutit."
+        },
+        "processingLogic": {
+          "section": "Käsittely / Logiikka",
+          "description": "Kuvaile taustajärjestelmän käsittelylogiikka mukaan lukien validoinnit, muunnokset ja reitityspäätökset."
+        },
+        "outputEventResult": {
+          "section": "Tulos / Tapahtuman lopputulos",
+          "description": "Mikä tapahtuma tai kuittaus syntyy? Sisällytä vastauksen attribuutit."
+        }
+      }
+    },
+    "interactionCanvas": {
+      "title": "Interaction Canvas",
+      "purpose": "Mitä erilaisia vuorovaikutustyyppejä API tukee?",
+      "howToUse": "Määrittele CRUD-, kysely-, käsky- ja tapahtumapohjaiset vuorovaikutukset jokaiselle APIlle.",
+      "sections": {
+        "crudInteractions": {
+          "section": "CRUD-vuorovaikutukset",
+          "description": "Mitä CRUD (luo, lue, päivitä, poista) -toimintoja API tukee?"
+        },
+        "crudInputOutputModels": {
+          "section": "CRUD-syöte- ja tulostemallit",
+          "description": "Mitkä ovat syöte- ja tulostemallit CRUD-toiminnoille?"
+        },
+        "crudProcessingValidation": {
+          "section": "CRUD-käsittely ja validointi",
+          "description": "Mitkä ovat CRUD-toimintojen käsittely- ja validointisäännöt?"
+        },
+        "queryDrivenInteractions": {
+          "section": "Kyselypohjaiset vuorovaikutukset",
+          "description": "Mitä kyselypohjaisia vuorovaikutuksia API tukee?"
+        },
+        "queryDrivenInputOutputModels": {
+          "section": "Kyselypohjaiset syöte- ja tulostemallit",
+          "description": "Mitkä ovat syöte- ja tulostemallit kyselypohjaisille vuorovaikutuksille?"
+        },
+        "queryDrivenProcessingValidation": {
+          "section": "Kyselypohjainen käsittely ja validointi",
+          "description": "Mitkä ovat kyselypohjaisten vuorovaikutusten käsittely- ja validointisäännöt?"
+        },
+        "commandDrivenInteractions": {
+          "section": "Käskyohjatut vuorovaikutukset",
+          "description": "Mitkä käskyohjatut vuorovaikutukset API tukee?"
+        },
+        "commandDrivenInputOutputModels": {
+          "section": "Käskyohjatut syöte- ja tulostemallit",
+          "description": "Mitkä ovat käskyohjattujen vuorovaikutusten syöte- ja tulostemallit?"
+        },
+        "commandDrivenProcessingValidation": {
+          "section": "Käskyohjattu käsittely ja validointi",
+          "description": "Mitkä ovat käskyohjattujen vuorovaikutusten käsittely- ja validointisäännöt?"
+        },
+        "eventDrivenInteractions": {
+          "section": "Tapahtumapohjaiset vuorovaikutukset",
+          "description": "Mitkä tapahtumapohjaiset vuorovaikutukset API tukee?"
+        },
+        "eventDrivenInputOutputModels": {
+          "section": "Tapahtumapohjaiset syöte- ja tulostemallit",
+          "description": "Mitkä ovat tapahtumapohjaisten vuorovaikutusten syöte- ja tulostemallit?"
+        },
+        "eventDrivenProcessingValidation": {
+          "section": "Tapahtumapohjainen käsittely ja validointi",
+          "description": "Mitkä ovat tapahtumapohjaisten vuorovaikutusten käsittely- ja validointisäännöt?"
+        }
+      }
+    },
+    "locationsCanvas": {
+      "title": "Locations Canvas",
+      "purpose": "Mitkä ovat olennaiset sijainnit ja niiden ominaisuudet?",
+      "howToUse": "Määrittele sijainnit, välimatkat ja päätepisteet kullekin APIlle.",
+      "sections": {
+        "locationGroups": {
+          "section": "Sijaintiryhmät",
+          "description": "Mitkä ovat olennaiset sijaintiryhmät?"
+        },
+        "locationGroupCharacteristics": {
+          "section": "Sijaintiryhmien ominaisuudet",
+          "description": "Mitkä ovat sijaintiryhmien ominaisuudet?"
+        },
+        "locations": {
+          "section": "Sijainnit",
+          "description": "Mitkä ovat olennaiset sijainnit kussakin ryhmässä?"
+        },
+        "locationCharacteristics": {
+          "section": "Sijaintien ominaisuudet",
+          "description": "Mitkä ovat sijaintien ominaisuudet?"
+        },
+        "locationDistances": {
+          "section": "Sijaintien väliset etäisyydet",
+          "description": "Mitkä ovat etäisyydet sijaintien välillä?"
+        },
+        "locationDistanceCharacteristics": {
+          "section": "Sijaintien välimatkojen ominaisuudet",
+          "description": "Mitkä ovat sijaintien välimatkojen ominaisuudet?"
+        },
+        "locationEndpoints": {
+          "section": "Sijainnin päätepisteet",
+          "description": "Mitkä päätepisteet liittyvät sijainteihin?"
+        },
+        "locationEndpointCharacteristics": {
+          "section": "Sijaintipisteiden ominaisuudet",
+          "description": "Mitkä ovat sijaintiin liittyvien päätepisteiden ominaisuudet?"
+        }
+      }
+    },
+    "restCanvas": {
+      "title": "REST Canvas",
+      "purpose": "Miten API voidaan suunnitella REST-periaatteiden mukaisesti?",
+      "howToUse": "Määrittele APIn resurssit, verbit sekä esimerkkipyynnöt ja -vastaukset.",
+      "sections": {
+        "apiResources": {
+          "section": "APIn resurssit",
+          "description": "Mitkä ovat keskeiset resurssit, joita API paljastaa?"
+        },
+        "apiResourceModel": {
+          "section": "APIn resurssimalli",
+          "description": "Millainen on APIn resurssimallin rakenne?"
+        },
+        "apiVerbs": {
+          "section": "APIn verbit",
+          "description": "Mitä HTTP-verbejä käytetään APIn resurssien kanssa vuorovaikutuksessa?"
+        },
+        "apiVerbExample": {
+          "section": "API-verbin esimerkki",
+          "description": "Anna esimerkki API-pyynnöstä ja -vastauksesta kullekin verbille."
+        }
+      }
+    }
   }
+}
   
   // Sticky note variables
   let currentColor = defaultStyles.stickyNoteColor
