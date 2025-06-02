@@ -678,16 +678,16 @@ const canvasData = {
     },
     "customerJourneyCanvas": {
       "title": "Customer Journey Canvas",
-      "purpose": "Wie interagieren die API-Konsumenten im Laufe der Zeit mit der API?",
-      "howToUse": "Erfassen Sie das Customer Journey für jede API, von der ersten Entdeckung bis zur aktuellen Nutzung.",
+      "purpose": "Welche Reise eines Kunden oder Partners soll mit der API unterstützt werden?",
+      "howToUse": "Beschreiben Sie eine reale Reise eines Kunden oder Nutzers – nicht die API-Nutzung selbst. Diese Reise macht Probleme, Ziele und Kontexte sichtbar, um spätere API-Anforderungen und Nutzen zu definieren.",
       "sections": {
         "customerDiscoversNeed": {
           "section": "Kunde erkennt Bedarf",
-          "description": "Wie erkennt der Kunde den Bedarf an der API?"
+          "description": "Wie erkennt der Kunde oder Nutzer ein Bedürfnis oder Problem?"
         },
         "persona": {
           "section": "Persona",
-          "description": "Wie sieht der typische Kunde oder Nutzer der API aus?"
+          "description": "Wer ist der typische Kunde oder Nutzer, der diese Reise erlebt?"
         },
         "pains": {
           "section": "Probleme",
@@ -1018,16 +1018,16 @@ const canvasData = {
     },
     "customerJourneyCanvas": {
       "title": "Customer Journey Canvas",
-      "purpose": "How do API consumers interact with the API over time?",
-      "howToUse": "Map the customer journey for each API, from initial discovery to ongoing use.",
+      "purpose": "What is the customer or partner journey that the API is intended to support?",
+      "howToUse": "Describe a real-life customer or user journey — not the API usage — to reveal pain points, goals, and context. This insight helps define what kind of API support is truly needed later.",
       "sections": {
         "customerDiscoversNeed": {
           "section": "Customer Discovers Need",
-          "description": "How does the customer discover the need for the API?"
+          "description": "How does the customer recognize their need or problem?"
         },
         "persona": {
           "section": "Persona",
-          "description": "Who is the typical customer or user of the API?"
+          "description": "Who is the typical customer experiencing this journey?"
         },
         "pains": {
           "section": "Pains",
@@ -1358,40 +1358,40 @@ const canvasData = {
     },
     "customerJourneyCanvas": {
       "title": "Customer Journey Canvas",
-      "purpose": "Miten APIn käyttäjät ovat vuorovaikutuksessa APIn kanssa ajan myötä?",
-      "howToUse": "Kuvaa kunkin APIn asiakaspolku aloitusvaiheesta jatkuvaan käyttöön.",
+      "purpose": "Mikä on se asiakkaan tai kumppanin asiakaspolku, jota API:n tulisi tukea?",
+      "howToUse": "Kuvaa oikea asiakkaan tai käyttäjän polku, ei API:n käyttöpolkua. Tunnista kipupisteet, tavoitteet ja konteksti. Tämä toimii pohjana API-tarpeiden ja arvolupausten muotoilulle.",
       "sections": {
         "customerDiscoversNeed": {
           "section": "Asiakas havaitsee tarpeen",
-          "description": "Miten asiakas havaitsee tarpeen APIlle?"
+          "description": "Miten asiakas huomaa tarpeensa?"
         },
         "persona": {
           "section": "Persona",
-          "description": "Kuka on tyypillinen API:n asiakas tai käyttäjä?"
+          "description": "Kuka on tämän asiakaspolun kokija?"
         },
         "pains": {
           "section": "Kipupisteet",
-          "description": "Mitkä ovat asiakkaan kipupisteet tai haasteet?"
+          "description": "Mitkä haasteet tai ongelmat ilmenevät polun aikana?"
         },
         "journeySteps": {
           "section": "Asiakaspolun vaiheet",
-          "description": "Mitä vaiheita asiakas käy läpi asiakaspolullaan?"
+          "description": "Mitä vaiheita asiakas käy läpi?"
         },
         "customerNeedIsResolved": {
-          "section": "Asiakkaan tarve täyttyy",
-          "description": "Miten asiakkaan tarve lopulta ratkaistaan?"
+          "section": "Tarve täyttyy",
+          "description": "Miten tarve lopulta täyttyy — mahdollisesti ilman APIa?"
         },
         "gains": {
           "section": "Hyödyt",
-          "description": "Mitä hyötyä asiakkaalle syntyy?"
+          "description": "Mitä hyötyä tai arvoa asiakas saa lopputuloksena?"
         },
         "inputsOutputs": {
           "section": "Syötteet ja tulosteet",
-          "description": "Mitkä ovat syötteet ja tulosteet kussakin vaiheessa?"
+          "description": "Mitkä asiat käynnistävät ja seuraavat eri vaiheita?"
         },
         "interactionProcessingRules": {
-          "section": "Vuorovaikutuksen ja käsittelyn säännöt",
-          "description": "Mitkä ovat vuorovaikutuksen ja käsittelyn säännöt kussakin vaiheessa?"
+          "section": "Vuorovaikutus- ja käsittelysäännöt",
+          "description": "Mitkä roolit, järjestelmät tai säännöt vaikuttavat kulkuun?"
         }
       }
     },
