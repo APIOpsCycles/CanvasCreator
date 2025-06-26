@@ -2650,4 +2650,9 @@ fileInput.addEventListener("change", function () {
     }
     return text
   }
+
+  // Export for testing in Node environment
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports.sanitizeInput = sanitizeInput
+  }
   
