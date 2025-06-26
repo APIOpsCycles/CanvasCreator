@@ -1844,6 +1844,7 @@ fileInput.addEventListener("change", function () {
       
       const locale = importedData.locale || "en-US"
       document.getElementById("locale").value = locale
+      populateCanvasSelector(locale)
       document.getElementById("canvasSelector").style.display = "block"
       document.getElementById("canvasCreator").style.display = "flex"
       
@@ -2318,6 +2319,7 @@ fileInput.addEventListener("change", function () {
       exportJSONButton.onclick = () => {
         const exportData = {
           templateId: contentData.templateId,
+          locale: contentData.locale,
           metadata: {
             ...contentData.metadata,
             date: new Date().toISOString(),
