@@ -24,7 +24,7 @@ For similar, but more integrated commercial tool, you can refer to one of our pa
 - **Supports Multiple Canvases**: API Business Model, Value Proposition, Business Impact, Capacity, Customer Journey, Domain, Event, Interaction, Locations, and REST Canvases. Supports all canvases that are available at [the APIOps Cycles method website ](https://www.apiopscycles.com/) > Resources.
 - **Localization Support**: JSON-based language switching (currently supports English and German). To help with localization, contribute to the
      ```
-     data/localizationData.json
+     data/localizedData.json
      ```
 - **Sticky Notes**: Users can create, edit, move, and delete sticky notes dynamically.
 - **Mobile and touch support**: While the canvas it self does not scale for usability, the touch events for mobile devices and responsive styles have been implemented. Turn small devices in landscape position.  
