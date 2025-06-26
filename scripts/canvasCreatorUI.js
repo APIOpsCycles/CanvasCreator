@@ -1822,6 +1822,11 @@ fileInput.addEventListener("change", function () {
       canvasId = importedData.templateId
       contentData = importedData
       canvasDataForId = canvasData[canvasId]
+
+      if (canvasDataForId) {
+        // If sticky notes have no coordinates, distribute them evenly
+        distributeMissingPositions(contentData, canvasDataForId)
+      }
       
       if (!canvasDataForId) {
         alert("Canvas data not found for canvasId: " + canvasId)
@@ -1866,6 +1871,57 @@ fileInput.addEventListener("change", function () {
 
   let canvasDataForId = null
   let contentData = {}
+
+  function distributeMissingPositions(content, canvasDef) {
+    const cellWidth = Math.floor(
+      (defaultStyles.width - canvasDef.layout.columns * defaultStyles.padding) /
+        canvasDef.layout.columns,
+    )
+
+    const cellHeight = Math.floor(
+      (defaultStyles.height -
+        defaultStyles.headerHeight -
+        defaultStyles.footerHeight -
+        4 * defaultStyles.padding) /
+        canvasDef.layout.rows,
+    )
+
+    content.sections.forEach((section) => {
+      const templateSection = canvasDef.sections.find(
+        (sec) => sec.id === section.sectionId,
+      )
+      if (!templateSection) return
+
+      const notesToPlace = section.stickyNotes.filter(
+        (n) => !n.position || n.position.x === undefined || n.position.y === undefined,
+      )
+      if (notesToPlace.length === 0) return
+
+      const startX =
+        templateSection.gridPosition.column * cellWidth + 2 * defaultStyles.padding
+      const startY =
+        templateSection.gridPosition.row * cellHeight + defaultStyles.headerHeight
+      const secWidth = templateSection.gridPosition.colSpan * cellWidth
+      const secHeight = templateSection.gridPosition.rowSpan * cellHeight
+
+      const noteSize = defaultStyles.stickyNoteSize
+      const maxCols = Math.max(1, Math.floor(secWidth / (noteSize + defaultStyles.stickyNoteSpacing)))
+      const cols = Math.min(notesToPlace.length, maxCols)
+      const rows = Math.ceil(notesToPlace.length / cols)
+
+      const spaceX = Math.max(0, (secWidth - cols * noteSize) / (cols + 1))
+      const spaceY = Math.max(0, (secHeight - rows * noteSize) / (rows + 1))
+
+      notesToPlace.forEach((note, index) => {
+        const c = index % cols
+        const r = Math.floor(index / cols)
+        note.position = {
+          x: startX + spaceX + c * (noteSize + spaceX),
+          y: startY + spaceY + r * (noteSize + spaceY),
+        }
+      })
+    })
+  }
   
   function loadCanvas(locale, canvasId, preserveContentData = false) {
     // Access canvasData directly
@@ -2793,5 +2849,6 @@ fileInput.addEventListener("change", function () {
   // Export for testing in Node environment
   if (typeof module !== 'undefined' && module.exports) {
     module.exports.sanitizeInput = sanitizeInput
+    module.exports.distributeMissingPositions = distributeMissingPositions
   }
   
