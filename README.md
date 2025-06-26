@@ -78,6 +78,9 @@ JavaScript and CSS files should include a version number in the filename to ensu
 ## License
 This project is licensed under the **Apache 2.0 License**. See the `LICENSE` file for details.
 
+## Release Notes
+See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes.
+
 ## Contact
 For any issues, feature requests, or questions, please create an issue in the [GitHub repository](https://github.com/APIOpsCycles/CanvasCreator/issues).
 
