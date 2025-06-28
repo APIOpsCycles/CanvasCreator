@@ -12,4 +12,10 @@ describe('sanitizeInput', () => {
     const result = sanitizeInput(input);
     expect(result).toBe('Hello <b>World</b>');
   });
+
+  test('removes dangerous attributes', () => {
+    const input = '<img src="x" onerror="alert(1)">';
+    const result = sanitizeInput(input);
+    expect(result).toBe('<img src="x">');
+  });
 });
