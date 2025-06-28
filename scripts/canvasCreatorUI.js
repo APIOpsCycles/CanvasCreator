@@ -1707,7 +1707,11 @@ const canvasData = {
     }
   }
 }
-  
+
+  // DOMPurify for sanitization
+  const createDOMPurify = require('dompurify')
+  const DOMPurify = createDOMPurify(window)
+
   // Sticky note variables
   let currentColor = defaultStyles.stickyNoteColor
   let selectedNote = null
@@ -2834,9 +2838,7 @@ fileInput.addEventListener("change", function () {
   
   // Function to sanitize text input
   function sanitizeInput(text) {
-    // You can use a library like DOMPurify for more robust sanitization
-    // For now, a simple example to remove script tags:
-    return text.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+    return DOMPurify.sanitize(text)
   }
   
   // Function to validate text input (limit length)
