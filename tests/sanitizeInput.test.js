@@ -1,4 +1,4 @@
-const { sanitizeInput } = require('../scripts/canvasCreatorUI.js');
+const { sanitizeInput } = require('../scripts/utils.js');
 
 describe('sanitizeInput', () => {
   test('removes <script> tags', () => {
