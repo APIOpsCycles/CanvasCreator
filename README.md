@@ -72,6 +72,16 @@ Follow these steps to contribute:
    ```
 5. **Submit a Pull Request**
 
+## Testing
+Unit tests run with [Jest](https://jestjs.io/). Install dependencies and run:
+
+```sh
+npm install
+npm test
+```
+
+The test suite also runs automatically in GitHub Actions for each push and pull request.
+
 ## Versioning & Caching
 JavaScript and CSS files should include a version number in the filename to ensure updates are reflected in users' browsers. Use a versioning pattern like `canvasCreatorUI.vX_Y.min.js`, where `X_Y` represents the version number. This prevents caching issues when updates are deployed.
 
