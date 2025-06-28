@@ -1,17 +1,4 @@
-const { distributeMissingPositions } = require('../scripts/canvasCreatorUI.js');
-
-// minimal default styles used by the helper
-beforeAll(() => {
-  global.defaultStyles = {
-    width: 1000,
-    height: 712,
-    headerHeight: 80,
-    footerHeight: 30,
-    padding: 10,
-    stickyNoteSize: 80,
-    stickyNoteSpacing: 10,
-  };
-});
+const { distributeMissingPositions } = require('../scripts/utils.js');
 
 test('assigns positions when missing', () => {
   const canvasDef = {
@@ -27,7 +14,17 @@ test('assigns positions when missing', () => {
     ],
   };
 
-  distributeMissingPositions(content, canvasDef);
+  const styles = {
+    width: 1000,
+    height: 712,
+    headerHeight: 80,
+    footerHeight: 30,
+    padding: 10,
+    stickyNoteSize: 80,
+    stickyNoteSpacing: 10,
+  };
+
+  distributeMissingPositions(content, canvasDef, styles);
 
   for (const note of content.sections[0].stickyNotes) {
     expect(note.position).toBeDefined();
