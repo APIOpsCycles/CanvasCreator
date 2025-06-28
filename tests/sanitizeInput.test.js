@@ -1,5 +1,6 @@
 const { sanitizeInput } = require('../scripts/utils.js');
 
+
 describe('sanitizeInput', () => {
   test('removes <script> tags', () => {
     const input = 'Hello<script>alert("XSS")</script>World';
