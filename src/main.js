@@ -1715,6 +1715,7 @@ const canvasData = {
 }
 
 
+
   // Sticky note variables
   let currentColor = defaultStyles.stickyNoteColor
   let selectedNote = null
