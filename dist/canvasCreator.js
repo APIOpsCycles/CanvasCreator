@@ -1,3 +1,4 @@
+(function(global){
 function sanitizeInput(text) {
   // Remove script tags entirely
   let sanitized = text.replace(
@@ -69,12 +70,6 @@ function distributeMissingPositions(content, canvasDef, styles = defaultStyles) 
     });
   });
 }
-
-module.exports = {
-  sanitizeInput,
-  validateInput,
-  distributeMissingPositions,
-};
 
 /* 
 APIOps Cycles Canvas Creator
@@ -2868,15 +2863,16 @@ fileInput.addEventListener("change", function () {
   localeSelector.addEventListener("focus", handleSelectorFocus)
   canvasSelector.addEventListener("focus", handleSelectorFocus)
 }
-module.exports = { loadCanvas }
 
-const helpers = require('./helpers');
-const legacy = require('./main');
-
-module.exports = {
-  createCanvas: legacy.loadCanvas,
-  loadCanvas: legacy.loadCanvas,
-  sanitizeInput: helpers.sanitizeInput,
-  validateInput: helpers.validateInput,
-  distributeMissingPositions: helpers.distributeMissingPositions,
-};
+  const exportsObj = {
+    createCanvas: loadCanvas,
+    loadCanvas,
+    sanitizeInput,
+    validateInput,
+    distributeMissingPositions
+  };
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = exportsObj;
+  }
+  global.CanvasCreator = exportsObj;
+})(typeof window !== 'undefined' ? window : this);
