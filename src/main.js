@@ -2033,7 +2033,7 @@ fileInput.addEventListener("change", function () {
         .attr("font-size", defaultStyles.fontSize)
         .attr("fill", defaultStyles.fontColor)
         .html(
-          `Template by: ${canvasData.metadata.source} | ${canvasData.metadata.license} | ${canvasData.metadata.authors} | <a href='http://${canvasData.metadata.website}' target='_blank'>${canvasData.metadata.website}</a>`,
+          `Template by: ${canvasData.metadata.source} | ${canvasData.metadata.license} | ${canvasData.metadata.authors} | <a href='http://${canvasData.metadata.website}' target='_blank'>${canvasData.metadata.website}</a>`
         )
   
       canvasData.sections.forEach((block, index) => {
@@ -2268,7 +2268,7 @@ fileInput.addEventListener("change", function () {
           .attr("font-size", defaultStyles.fontSize)
           .attr("fill", defaultStyles.fontColor)
           .html(
-            `Content by: ${contentData?.metadata?.source} | ${contentData?.metadata?.license} | ${contentData?.metadata?.authors} | <a href='http://${contentData?.metadata?.website}' target='_blank'>${contentData?.metadata?.website}</a>`,
+            `Content by: ${contentData?.metadata?.source} | ${contentData?.metadata?.license} | ${contentData?.metadata?.authors} | <a href='http://${contentData?.metadata?.website}' target='_blank'>${contentData?.metadata?.website}</a>`
           )
       }
   
@@ -2789,5 +2789,4 @@ fileInput.addEventListener("change", function () {
   
   localeSelector.addEventListener("focus", handleSelectorFocus)
   canvasSelector.addEventListener("focus", handleSelectorFocus)
-}
 module.exports = { loadCanvas }
