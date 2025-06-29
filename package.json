@@ -6,9 +6,7 @@
     "test": "jest",
     "build": "node scripts/build.js"
   },
-  "dependencies": {
-    "dompurify": "^3.0.8"
-  },
+  "dependencies": {},
   "devDependencies": {
     "jest": "^29.6.0",
     "jest-environment-jsdom": "^29.6.0"
