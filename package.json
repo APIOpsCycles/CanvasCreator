@@ -1,8 +1,13 @@
 {
   "name": "canvascreator",
   "version": "1.0.0",
+  "main": "dist/canvasCreator.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "node scripts/build.js"
+  },
+  "dependencies": {
+    "dompurify": "^3.0.8"
   },
   "dependencies": {
     "dompurify": "^3.0.8"
