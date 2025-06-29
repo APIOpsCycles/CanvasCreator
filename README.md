@@ -42,16 +42,40 @@ This project can be hosted on any web server that allows execution of HTML and J
 ## File Structure
 ```
 CanvasCreator/
-├── index.html            # Main HTML file.
-├── canvasCreatorUI.v1_1.min.js  # Minified JS version
-├── scripts/canvasCreatorUI.js     # Main JavaScript logic
-├── canvasCreator.v1.min.css  # Minified CSS version
-├── styles/canvasCreator.css     # Main CSS
-├── data/canvasData.json       # Contains predefined canvas layouts
-├── data/localizedData.json    # Stores localization strings
-├── LICENSE               # Open-source license information
-└── img/               # Images
+├── index.html                 # Main HTML file
+├── dist/                      # Bundled output from `npm run build`
+│   ├── canvasCreator.js
+│   └── canvasCreator.min.js
+├── src/                       # Modular JavaScript source
+│   ├── helpers.js
+│   ├── main.js
+│   └── index.js
+├── scripts/                   # Build and helper scripts
+│   ├── build.js
+│   ├── noteManager.js
+│   └── utils.js
+├── styles/                    # Editable CSS sources
+│   └── canvascreator.css
+├── canvascreator.v1.min.css   # Minified CSS version
+├── data/                      # Canvas layouts and localization strings
+│   ├── canvasData.json
+│   └── localizedData.json
+├── examples/                  # Sample canvases
+├── tests/                     # Jest unit tests
+├── img/                       # Images
+└── LICENSE
 ```
+
+## Build
+
+Run `npm run build` to generate `dist/canvasCreator.js` and its minified
+counterpart `dist/canvasCreator.min.js`. The `scripts/build.js` script
+concatenates the sources in `src/` and performs a lightweight minification.
+
+The `dist` directory is committed because `package.json` points to the
+unminified bundle as its `main` entry. The minified bundle is loaded by
+`index.html` using a version query (`dist/canvasCreator.min.js?v=1.0.0`) to
+force browsers to fetch fresh code.
 
 ## How to Contribute
 Contributions are welcome, especially localization help, bug fixing, or contributing libraries in other languages or frameworks!
@@ -83,7 +107,9 @@ npm test
 The test suite also runs automatically in GitHub Actions for each push and pull request.
 
 ## Versioning & Caching
-JavaScript and CSS files should include a version number in the filename to ensure updates are reflected in users' browsers. Use a versioning pattern like `canvasCreatorUI.vX_Y.min.js`, where `X_Y` represents the version number. This prevents caching issues when updates are deployed.
+The bundled JavaScript is referenced in `index.html` as `dist/canvasCreator.min.js?v=1.0.0`.
+Updating the query string (or renaming the file) forces browsers to fetch the
+latest build so cached versions don't persist.
 
 ## License
 This project is licensed under the **Apache 2.0 License**. See the `LICENSE` file for details.
