@@ -76,10 +76,10 @@ function simpleMinify(code) {
 function stripCommon(code) {
   return code
     .replace(
-      /const\s+\{\s*sanitizeInput\s*,\s*validateInput\s*,\s*distributeMissingPositions\s*\}\s*=\s*require\(['"]\.\/helpers['"]\);?\n/,
+      /\s*const\s+\{[^}]+\}\s*=\s*require\(['"]\.\/helpers['"]\);?\r?\n/s,
       '',
     )
-    .replace(/module\.exports\s*=\s*\{[^}]*\};?\n?/g, '')
+    .replace(/module\.exports\s*=\s*\{[^}]*\};?\r?\n?/gs, '')
     .trim();
 }
 

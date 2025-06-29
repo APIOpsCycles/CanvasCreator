@@ -109,13 +109,6 @@ Original author Marjukka Niinioja, licensed under Apache 2.0
       }
   
 */
-
-const {
-  sanitizeInput,
-  validateInput,
-  distributeMissingPositions,
-} = require('./helpers');
-
 //load canvas layouts and localizations from json data
 const canvasData = {
     apiBusinessModelCanvas: {
