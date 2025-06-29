@@ -1,4 +1,4 @@
-const { distributeMissingPositions } = require('../scripts/utils.js');
+const { distributeMissingPositions } = require('../src/helpers.js');
 
 test('assigns positions when missing', () => {
   const canvasDef = {
