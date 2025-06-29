@@ -52,8 +52,7 @@ CanvasCreator/
 │   └── index.js
 ├── scripts/                   # Build and helper scripts
 │   ├── build.js
-│   ├── noteManager.js
-│   └── utils.js
+│   └── noteManager.js
 ├── styles/                    # Editable CSS sources
 │   └── canvascreator.css
 ├── canvascreator.v1.min.css   # Minified CSS version

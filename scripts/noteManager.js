@@ -1,4 +1,5 @@
-const { sanitizeInput } = require('./utils.js');
+// Use shared helpers for input handling
+const { sanitizeInput } = require('../src/helpers.js');
 
 function createStickyNote(contentData, sectionId, text, position = { x: 0, y: 0 }, color = '#FFF399') {
   const section = contentData.sections.find(s => s.sectionId === sectionId);

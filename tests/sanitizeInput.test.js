@@ -1,4 +1,4 @@
-const { sanitizeInput } = require('../scripts/utils.js');
+const { sanitizeInput } = require('../src/helpers.js');
 
 
 describe('sanitizeInput', () => {
