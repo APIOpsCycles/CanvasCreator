@@ -1714,7 +1714,7 @@ const canvasData = {
   }
 }
 
-
+  // No DOMPurify setup; sanitization is handled in helpers
 
   // Sticky note variables
   let currentColor = defaultStyles.stickyNoteColor
