@@ -9,6 +9,7 @@
   "dependencies": {},
   "devDependencies": {
     "jest": "^29.6.0",
-    "jest-environment-jsdom": "^29.6.0"
+    "jest-environment-jsdom": "^29.6.0",
+    "terser": "^5.20.0"
   }
 }
