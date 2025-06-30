@@ -55,7 +55,7 @@ CanvasCreator/
 │   └── noteManager.js
 ├── styles/                    # Editable CSS sources
 │   └── canvascreator.css
-├── canvascreator.min.css      # Minified CSS version
+├── canvascreator.v1.min.css      # Minified CSS version
 ├── data/                      # Canvas layouts and localization strings
 │   ├── canvasData.json
 │   └── localizedData.json
@@ -79,10 +79,10 @@ unminified bundle as its `main` entry. The minified bundle is loaded by
 force browsers to fetch fresh code.
 
 Run `npm run minify-css` to compress `styles/canvascreator.css` into
-`canvascreator.min.css` using
+`canvascreator.v1.min.css` using
 [clean-css](https://github.com/jakubpawlowicz/clean-css). The stylesheet is
 referenced in `index.html` with a version query
-(`canvascreator.min.css?v=1.0.0`) so browsers fetch the latest build.
+(`canvascreator.v1.min.css?v=1.0.0`) so browsers fetch the latest build.
 
 ## How to Contribute
 Contributions are welcome, especially localization help, bug fixing, or contributing libraries in other languages or frameworks!
@@ -115,7 +115,7 @@ The test suite also runs automatically in GitHub Actions for each push and pull 
 
 ## Versioning & Caching
 Both the JavaScript and CSS files are referenced with version queries
-(`dist/canvasCreator.min.js?v=1.0.0` and `canvascreator.min.css?v=1.0.0`).
+(`dist/canvasCreator.min.js?v=1.0.0` and `canvascreator.v1.min.css?v=1.0.0`).
 Updating these query strings (or renaming the files) forces browsers to fetch
 the latest build so cached versions don't persist.
 

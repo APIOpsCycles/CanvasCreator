@@ -5,13 +5,13 @@
   "scripts": {
     "test": "jest",
     "build": "node scripts/build.js",
-    "minify-css": "cleancss -o canvascreator.min.css styles/canvascreator.css"
+    "minify-css": "cleancss -o canvascreator.v1.min.css styles/canvascreator.css"
   },
   "dependencies": {},
   "devDependencies": {
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "terser": "^5.20.0",
-    "clean-css-cli": "^5.7.2"
+    "clean-css-cli": "^5.7.1"
   }
 }
