@@ -119,6 +119,38 @@ Both the JavaScript and CSS files are referenced with version queries
 Updating these query strings (or renaming the files) forces browsers to fetch
 the latest build so cached versions don't persist.
 
+## REST API
+
+The project includes a small HTTP server exposing the canvas functionality via a
+REST API. Run it with:
+
+```sh
+npm start
+```
+
+The API is documented using OpenAPI and the specification can be regenerated
+whenever the API changes:
+
+```sh
+npm run generate-openapi
+```
+
+The generated file is stored at `openapi/openapi.yaml` and can be accessed at
+`/api/openapi` when the server is running.
+
+When a canvas is requested for the first time, the server loads its structure
+from the JSON files under the `data` directory. This ensures the API serves the
+same default canvases as the web UI even before any data has been saved.
+
+To persist a canvas, send a `POST` or `PUT` request with the JSON data to
+`/api/canvases/{id}/{locale}`. If the body includes a `svg` property, it will be
+stored alongside the JSON. Once saved, you can download the canvas using:
+
+- `GET /api/canvases/{id}/{locale}/export/json` – returns the stored JSON file
+  with a `Content-Disposition` attachment header.
+- `GET /api/canvases/{id}/{locale}/export/svg` – returns the stored SVG file if
+  it exists.
+
 ## License
 This project is licensed under the **Apache 2.0 License**. See the `LICENSE` file for details.
 
