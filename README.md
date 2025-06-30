@@ -119,6 +119,25 @@ Both the JavaScript and CSS files are referenced with version queries
 Updating these query strings (or renaming the files) forces browsers to fetch
 the latest build so cached versions don't persist.
 
+## REST API
+
+The project includes a small HTTP server exposing the canvas functionality via a
+REST API. Run it with:
+
+```sh
+npm start
+```
+
+The API is documented using OpenAPI and the specification can be regenerated
+whenever the API changes:
+
+```sh
+npm run generate-openapi
+```
+
+The generated file is stored at `openapi/openapi.yaml` and can be accessed at
+`/api/openapi` when the server is running.
+
 ## License
 This project is licensed under the **Apache 2.0 License**. See the `LICENSE` file for details.
 

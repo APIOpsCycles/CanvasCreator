@@ -5,7 +5,9 @@
   "scripts": {
     "test": "jest",
     "build": "node scripts/build.js",
-    "minify-css": "cleancss -o canvascreator.min.css styles/canvascreator.css"
+    "minify-css": "cleancss -o canvascreator.min.css styles/canvascreator.css",
+    "start": "node api/server.js",
+    "generate-openapi": "node scripts/generateOpenAPI.js"
   },
   "dependencies": {},
   "devDependencies": {
