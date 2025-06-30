@@ -7,15 +7,41 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
+// Load default canvas templates and localized data from the main data directory
+const templatePath = path.join(__dirname, '../data/canvasData.json');
+const localePath = path.join(__dirname, '../data/localizedData.json');
+let templates = {};
+let localized = {};
+try {
+  templates = JSON.parse(fs.readFileSync(templatePath, 'utf8'));
+  localized = JSON.parse(fs.readFileSync(localePath, 'utf8'));
+} catch (err) {
+  console.error('Failed to load base data:', err);
+}
+
 function send(res, status, data, headers = {}) {
   res.writeHead(status, Object.assign({'Content-Type': 'application/json'}, headers));
   res.end(JSON.stringify(data));
 }
 
+function createDefaultCanvas(id, locale) {
+  const tpl = templates[id];
+  if (!tpl) return null;
+  const canvas = {
+    templateId: tpl.id,
+    locale,
+    metadata: Object.assign({}, tpl.metadata),
+    sections: tpl.sections.map(sec => ({ sectionId: sec.id, stickyNotes: [] }))
+  };
+  return canvas;
+}
+
 function loadCanvas(id, locale) {
   const file = path.join(dataDir, `${id}_${locale}.json`);
-  if (!fs.existsSync(file)) return null;
-  return JSON.parse(fs.readFileSync(file, 'utf8'));
+  if (fs.existsSync(file)) {
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  }
+  return createDefaultCanvas(id, locale);
 }
 
 function saveCanvas(id, locale, canvas) {
@@ -54,7 +80,8 @@ const server = http.createServer(async (req, res) => {
   const id = parts[2];
   const locale = parts[3];
   if (!id || !locale) { res.writeHead(404); res.end(); return; }
-  const canvas = loadCanvas(id, locale) || { templateId: id, locale, metadata: {}, sections: [] };
+  const canvas = loadCanvas(id, locale);
+  if (!canvas) { res.writeHead(404); res.end(); return; }
 
   // /api/canvases/:id/:locale
   if (parts.length === 4) {

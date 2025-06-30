@@ -138,6 +138,10 @@ npm run generate-openapi
 The generated file is stored at `openapi/openapi.yaml` and can be accessed at
 `/api/openapi` when the server is running.
 
+When a canvas is requested for the first time, the server loads its structure
+from the JSON files under the `data` directory. This ensures the API serves the
+same default canvases as the web UI even before any data has been saved.
+
 ## License
 This project is licensed under the **Apache 2.0 License**. See the `LICENSE` file for details.
 
