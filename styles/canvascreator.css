@@ -1,4 +1,5 @@
-      /* General Styles */
+/* Source CSS. Run `npm run minify-css` to regenerate canvascreator.min.css */
+/* General Styles */
       body {
         font-family: "Arial", sans-serif;
         background-color: #f4f7fc;
