@@ -119,13 +119,20 @@ paths:
           description: Deleted
   /api/canvases/{id}/{locale}/export/json:
     get:
-      summary: Export canvas JSON
+      summary: Download saved canvas as JSON
       responses:
         '200':
-          description: Canvas JSON
+          description: Canvas JSON file
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              description: attachment filename
+        '404':
+          description: Canvas not found
   /api/canvases/{id}/{locale}/export/svg:
     get:
-      summary: Export canvas SVG
+      summary: Download saved canvas SVG
       responses:
         '200':
           description: SVG image
@@ -134,6 +141,13 @@ paths:
               schema:
                 type: string
                 format: binary
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              description: attachment filename
+        '404':
+          description: SVG not found
 `;
 
 const outDir = path.join(__dirname, '../openapi');

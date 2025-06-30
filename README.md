@@ -142,6 +142,15 @@ When a canvas is requested for the first time, the server loads its structure
 from the JSON files under the `data` directory. This ensures the API serves the
 same default canvases as the web UI even before any data has been saved.
 
+To persist a canvas, send a `POST` or `PUT` request with the JSON data to
+`/api/canvases/{id}/{locale}`. If the body includes a `svg` property, it will be
+stored alongside the JSON. Once saved, you can download the canvas using:
+
+- `GET /api/canvases/{id}/{locale}/export/json` – returns the stored JSON file
+  with a `Content-Disposition` attachment header.
+- `GET /api/canvases/{id}/{locale}/export/svg` – returns the stored SVG file if
+  it exists.
+
 ## License
 This project is licensed under the **Apache 2.0 License**. See the `LICENSE` file for details.
 

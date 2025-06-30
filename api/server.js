@@ -89,6 +89,11 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' || req.method === 'PUT') {
       try {
         const body = await parseJSON(req);
+        if (body.svg) {
+          const svgFile = path.join(dataDir, `${id}_${locale}.svg`);
+          fs.writeFileSync(svgFile, body.svg);
+          delete body.svg;
+        }
         Object.assign(canvas, body);
         saveCanvas(id, locale, canvas);
         send(res, 200, canvas);
@@ -167,7 +172,16 @@ const server = http.createServer(async (req, res) => {
   // /api/canvases/:id/:locale/export/json
   if (parts[4] === 'export' && parts[5] === 'json') {
     if (req.method === 'GET') {
-      send(res, 200, canvas);
+      const file = path.join(dataDir, `${id}_${locale}.json`);
+      if (!fs.existsSync(file)) {
+        send(res, 404, { error: 'Canvas not found' });
+        return;
+      }
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Content-Disposition': `attachment; filename="${id}_${locale}.json"`
+      });
+      res.end(fs.readFileSync(file));
       return;
     }
   }
@@ -175,9 +189,16 @@ const server = http.createServer(async (req, res) => {
   // /api/canvases/:id/:locale/export/svg
   if (parts[4] === 'export' && parts[5] === 'svg') {
     if (req.method === 'GET') {
-      if (!canvas.svg) { res.writeHead(404); res.end(); return; }
-      res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
-      res.end(canvas.svg);
+      const file = path.join(dataDir, `${id}_${locale}.svg`);
+      if (!fs.existsSync(file)) {
+        send(res, 404, { error: 'SVG not found' });
+        return;
+      }
+      res.writeHead(200, {
+        'Content-Type': 'image/svg+xml',
+        'Content-Disposition': `attachment; filename="${id}_${locale}.svg"`
+      });
+      res.end(fs.readFileSync(file));
       return;
     }
   }
