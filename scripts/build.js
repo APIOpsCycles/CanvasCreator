@@ -1,14 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const terser = require('terser');
 
-// Very small minifier to avoid external deps
-function simpleMinify(code) {
-  return code
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter((line) => line.length)
-    .join('\n');
-}
 function stripCommon(code) {
   return code
     .replace(
@@ -29,10 +22,21 @@ const main = stripCommon(
 let bundle = `(function(global){\n${helpers}\n\n${main}\n\n  const exportsObj = {\n    createCanvas: loadCanvas,\n    loadCanvas,\n    sanitizeInput,\n    validateInput,\n    distributeMissingPositions\n  };\n  if (typeof module !== 'undefined' && module.exports) {\n    module.exports = exportsObj;\n  }\n  global.CanvasCreator = exportsObj;\n})(typeof window !== 'undefined' ? window : this);`;
 
 const outDir = path.join(__dirname, '../dist');
-if (!fs.existsSync(outDir)) fs.mkdirSync(outDir);
+fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, 'canvasCreator.js'), bundle);
 console.log('Bundle written to dist/canvasCreator.js');
 
-const minified = simpleMinify(bundle);
-fs.writeFileSync(path.join(outDir, 'canvasCreator.min.js'), minified);
-console.log('Minified bundle written to dist/canvasCreator.min.js');
+async function buildMin() {
+  const result = await terser.minify(bundle);
+  if (result.code) {
+    fs.writeFileSync(path.join(outDir, 'canvasCreator.min.js'), result.code);
+    console.log('Minified bundle written to dist/canvasCreator.min.js');
+  } else {
+    throw new Error('Terser minification failed');
+  }
+}
+
+buildMin().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

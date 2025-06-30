@@ -70,8 +70,8 @@ CanvasCreator/
 Run `npm run build` to generate `dist/canvasCreator.js` and its minified
 counterpart `dist/canvasCreator.min.js`. The `scripts/build.js` script
 strips the CommonJS boilerplate from the source files, wraps them in a small
-UMD-style factory for browser or Node use, and then performs a lightweight
-minification.
+UMD-style factory for browser or Node use, and then uses
+[Terser](https://github.com/terser/terser) for minification.
 
 The `dist` directory is committed because `package.json` points to the
 unminified bundle as its `main` entry. The minified bundle is loaded by
