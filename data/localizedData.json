@@ -337,6 +337,53 @@
           "description": "Geben Sie für jede HTTP-Methode ein Beispiel für eine API-Anfrage und -Antwort an."
         }
       }
+    },
+    "graphqlCanvas": {
+      "title": "GraphQL Canvas",
+      "purpose": "Wie kann die API unter Verwendung von GraphQL-Prinzipien gestaltet werden?",
+      "howToUse": "Definieren Sie die Schlüsseltypen, Abfragen, Mutationen und Einschränkungen für Ihre GraphQL-API.",
+      "sections": {
+        "apiName": {
+          "section": "API-Name",
+          "description": "Wie lautet der Name der GraphQL-API oder des Endpunkts?"
+        },
+        "consumerGoals": {
+          "section": "Ziele der Konsumenten",
+          "description": "Welche Probleme versuchen API-Konsumenten zu lösen? Welche Daten benötigen sie?"
+        },
+        "keyTypes": {
+          "section": "Schlüsseltypen",
+          "description": "Welche Kern-Typen werden bereitgestellt (z.B. Benutzer, Bestellung, Produkt)?"
+        },
+        "relationships": {
+          "section": "Beziehungen",
+          "description": "Wie stehen die Typen in verschachtelten Abfragen zueinander?"
+        },
+        "queries": {
+          "section": "Abfragen",
+          "description": "Welche typischen Abfragen sollten unterstützt werden?"
+        },
+        "mutations": {
+          "section": "Mutationen",
+          "description": "Welche Operationen verändern Daten (z.B. erstellen, aktualisieren, löschen)?"
+        },
+        "subscriptions": {
+          "section": "Subscriptions",
+          "description": "Gibt es Echtzeit-Updates oder Ereignisse, die Konsumenten abonnieren können?"
+        },
+        "authorizationRules": {
+          "section": "Autorisierungsregeln",
+          "description": "Wer darf auf welche Felder oder Typen zugreifen?"
+        },
+        "consumerConstraints": {
+          "section": "Einschränkungen für Konsumenten",
+          "description": "Gibt es Paginierungs-, Filter- oder Ratenbegrenzungen?"
+        },
+        "openQuestions": {
+          "section": "Notizen / Offene Fragen",
+          "description": "Gibt es noch offene Entscheidungen oder Integrationsüberlegungen?"
+        }
+      }
     }
   },
   "en-US": {
@@ -725,7 +772,7 @@
         }
       }
     }
-   },
+  },
   "fi-FI": {
     "apiBusinessModelCanvas": {
       "title": "API Business Model Canvas",
@@ -1062,6 +1109,53 @@
         "apiVerbExample": {
           "section": "API-verbin esimerkki",
           "description": "Anna esimerkki API-pyynnöstä ja -vastauksesta kullekin verbille."
+        }
+      }
+    },
+    "graphqlCanvas": {
+      "title": "GraphQL Canvas",
+      "purpose": "Kuinka API voidaan suunnitella GraphQL-periaatteiden mukaisesti?",
+      "howToUse": "Määrittele keskeiset tyypit, kyselyt, mutaatiot ja rajoitukset GraphQL-API:a varten.",
+      "sections": {
+        "apiName": {
+          "section": "APIn nimi",
+          "description": "Mikä on GraphQL-API:n tai päätepisteen nimi?"
+        },
+        "consumerGoals": {
+          "section": "Käyttäjien tavoitteet",
+          "description": "Mitä ongelmia API:n käyttäjät yrittävät ratkaista? Mitä dataa he tarvitsevat?"
+        },
+        "keyTypes": {
+          "section": "Keskeiset tyypit",
+          "description": "Mitkä ovat keskeiset tyypit (esim. User, Order, Product)?"
+        },
+        "relationships": {
+          "section": "Suhteet",
+          "description": "Miten tyypit liittyvät toisiinsa sisäkkäisissä kyselyissä?"
+        },
+        "queries": {
+          "section": "Kyselyt",
+          "description": "Mitä yleisiä kyselyitä pitäisi tukea?"
+        },
+        "mutations": {
+          "section": "Mutaatiot",
+          "description": "Mitkä toiminnot muuttavat dataa (esim. luonti, päivitys, poisto)?"
+        },
+        "subscriptions": {
+          "section": "Tilaukset",
+          "description": "Onko reaaliaikaisia päivityksiä tai tapahtumia, joita voi tilata?"
+        },
+        "authorizationRules": {
+          "section": "Valtuutussäännöt",
+          "description": "Kuka voi käyttää mitäkin kenttiä tai tyyppejä?"
+        },
+        "consumerConstraints": {
+          "section": "Käyttäjärajoitukset",
+          "description": "Onko sivutukseen, suodatukseen tai nopeusrajoihin liittyviä rajoitteita?"
+        },
+        "openQuestions": {
+          "section": "Huomiot / Avoimet kysymykset",
+          "description": "Onko keskeneräisiä päätöksiä tai integraatioon liittyviä huomioita?"
         }
       }
     }
@@ -1402,6 +1496,53 @@
         "apiVerbExample": {
           "section": "Exemple de verbe API",
           "description": "Fournissez un exemple de requête et de réponse API pour chaque verbe."
+        }
+      }
+    },
+    "graphqlCanvas": {
+      "title": "GraphQL Canvas",
+      "purpose": "Comment l'API peut-elle être conçue selon les principes GraphQL ?",
+      "howToUse": "Définissez les principaux types, requêtes, mutations et contraintes pour votre API GraphQL.",
+      "sections": {
+        "apiName": {
+          "section": "Nom de l'API",
+          "description": "Quel est le nom de l'API GraphQL ou du point de terminaison ?"
+        },
+        "consumerGoals": {
+          "section": "Objectifs des consommateurs",
+          "description": "Quels problèmes les consommateurs de l'API cherchent-ils à résoudre ? Quelles données leur sont nécessaires ?"
+        },
+        "keyTypes": {
+          "section": "Types clés",
+          "description": "Quels sont les types principaux exposés (ex. Utilisateur, Commande, Produit) ?"
+        },
+        "relationships": {
+          "section": "Relations",
+          "description": "Comment les types sont-ils liés dans les requêtes imbriquées ?"
+        },
+        "queries": {
+          "section": "Requêtes",
+          "description": "Quelles requêtes courantes doivent être prises en charge ?"
+        },
+        "mutations": {
+          "section": "Mutations",
+          "description": "Quelles opérations vont modifier les données (ex. créer, mettre à jour, supprimer) ?"
+        },
+        "subscriptions": {
+          "section": "Abonnements",
+          "description": "Existe-t-il des mises à jour en temps réel ou des événements auxquels les consommateurs peuvent s'abonner ?"
+        },
+        "authorizationRules": {
+          "section": "Règles d'autorisation",
+          "description": "Qui peut accéder à quels champs ou types ?"
+        },
+        "consumerConstraints": {
+          "section": "Contraintes des consommateurs",
+          "description": "Y a-t-il des contraintes de pagination, de filtrage ou de limitation du débit ?"
+        },
+        "openQuestions": {
+          "section": "Notes / Questions ouvertes",
+          "description": "Y a-t-il des décisions en attente ou des considérations d'intégration ?"
         }
       }
     }
