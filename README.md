@@ -77,14 +77,14 @@ for browser or Node use, and then uses
 
 The `dist` directory is committed because `package.json` points to the
 unminified bundle as its `main` entry. The minified bundle is loaded by
-`index.html` using a version query (`dist/canvasCreator.min.js?v=1.0.0`) to
+`index.html` using a version query (`dist/canvasCreator.min.js?v=1.0.1`) to
 force browsers to fetch fresh code.
 
 Run `npm run minify-css` to compress `styles/canvascreator.css` into
 `canvascreator.min.css` using
 [clean-css](https://github.com/jakubpawlowicz/clean-css). The stylesheet is
 referenced in `index.html` with a version query
-(`canvascreator.min.css?v=1.0.0`) so browsers fetch the latest build.
+(`canvascreator.min.css?v=1.0.1`) so browsers fetch the latest build.
 
 ## How to Contribute
 Contributions are welcome, especially localization help, bug fixing, or contributing libraries in other languages or frameworks!
@@ -117,7 +117,7 @@ The test suite also runs automatically in GitHub Actions for each push and pull 
 
 ## Versioning & Caching
 Both the JavaScript and CSS files are referenced with version queries
-(`dist/canvasCreator.min.js?v=1.0.0` and `canvascreator.min.css?v=1.0.0`).
+(`dist/canvasCreator.min.js?v=1.0.1` and `canvascreator.min.css?v=1.0.1`).
 Updating these query strings (or renaming the files) forces browsers to fetch
 the latest build so cached versions don't persist.
 
