@@ -2,6 +2,26 @@ const fs = require('fs');
 const path = require('path');
 const terser = require('terser');
 
+const pkg = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'),
+);
+const version = pkg.version;
+
+function updateIndexHtml() {
+  const indexPath = path.join(__dirname, '../index.html');
+  let html = fs.readFileSync(indexPath, 'utf8');
+  html = html.replace(
+    /canvascreator\.min\.css\?v=[0-9]+\.[0-9]+\.[0-9]+/i,
+    `canvascreator.min.css?v=${version}`,
+  );
+  html = html.replace(
+    /canvasCreator\.min\.js\?v=[0-9]+\.[0-9]+\.[0-9]+/,
+    `canvasCreator.min.js?v=${version}`,
+  );
+  fs.writeFileSync(indexPath, html);
+  console.log(`index.html updated to version ${version}`);
+}
+
 function stripCommon(code) {
   return code
     .replace(
@@ -55,6 +75,7 @@ async function buildMin() {
   if (result.code) {
     fs.writeFileSync(path.join(outDir, 'canvasCreator.min.js'), result.code);
     console.log('Minified bundle written to dist/canvasCreator.min.js');
+    updateIndexHtml();
   } else {
     throw new Error('Terser minification failed');
   }
