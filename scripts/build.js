@@ -15,9 +15,33 @@ function stripCommon(code) {
 const helpers = stripCommon(
   fs.readFileSync(path.join(__dirname, '../src/helpers.js'), 'utf8'),
 );
-const main = stripCommon(
-  fs.readFileSync(path.join(__dirname, '../src/main.js'), 'utf8'),
+
+// Load main source and inject latest JSON data
+let mainSrc = fs.readFileSync(
+  path.join(__dirname, '../src/main.js'),
+  'utf8',
 );
+
+const canvasData = JSON.stringify(
+  JSON.parse(fs.readFileSync(path.join(__dirname, '../data/canvasData.json'))),
+);
+const localizedData = JSON.stringify(
+  JSON.parse(
+    fs.readFileSync(path.join(__dirname, '../data/localizedData.json')),
+  ),
+);
+
+// Replace the embedded data between the two constants
+mainSrc = mainSrc.replace(
+  /const canvasData =[\s\S]*?const localizedData =/,
+  `const canvasData = ${canvasData};\n\n  const localizedData =`,
+);
+mainSrc = mainSrc.replace(
+  /const localizedData =[\s\S]*?\n\s*\/\/ No DOMPurify setup/,
+  `const localizedData = ${localizedData};\n\n  // No DOMPurify setup`,
+);
+
+const main = stripCommon(mainSrc);
 
 let bundle = `(function(global){\n${helpers}\n\n${main}\n\n  const exportsObj = {\n    createCanvas: loadCanvas,\n    loadCanvas,\n    sanitizeInput,\n    validateInput,\n    distributeMissingPositions\n  };\n  if (typeof module !== 'undefined' && module.exports) {\n    module.exports = exportsObj;\n  }\n  global.CanvasCreator = exportsObj;\n})(typeof window !== 'undefined' ? window : this);`;
 

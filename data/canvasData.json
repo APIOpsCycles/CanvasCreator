@@ -504,7 +504,7 @@
       }
     ]
   },
-  {
+  "graphqlCanvas": {
     "id": "graphqlCanvas",
     "layout": {
       "columns": 4,
