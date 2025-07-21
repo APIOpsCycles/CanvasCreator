@@ -677,8 +677,55 @@
           "description": "Provide an example of an API request and response for each verb."
         }
       }
+    },
+    "graphqlCanvas": {
+      "title": "GraphQL Canvas",
+      "purpose": "How can the API be designed using GraphQL principles?",
+      "howToUse": "Define the key types, queries, mutations, and constraints for your GraphQL API.",
+      "sections": {
+        "apiName": {
+          "section": "API Name",
+          "description": "What is the name of the GraphQL API or endpoint?"
+        },
+        "consumerGoals": {
+          "section": "Consumer Goals",
+          "description": "What problems are API consumers trying to solve? What data do they need?"
+        },
+        "keyTypes": {
+          "section": "Key Types",
+          "description": "What are the core types exposed (e.g., User, Order, Product)?"
+        },
+        "relationships": {
+          "section": "Relationships",
+          "description": "How do types relate to each other in nested queries?"
+        },
+        "queries": {
+          "section": "Queries",
+          "description": "What common queries should be supported?"
+        },
+        "mutations": {
+          "section": "Mutations",
+          "description": "What operations will modify data (e.g., create, update, delete)?"
+        },
+        "subscriptions": {
+          "section": "Subscriptions",
+          "description": "Are there any real-time updates or events consumers can subscribe to?"
+        },
+        "authorizationRules": {
+          "section": "Authorization Rules",
+          "description": "Who can access which fields or types?"
+        },
+        "consumerConstraints": {
+          "section": "Consumer Constraints",
+          "description": "Are there pagination, filtering, or rate-limiting constraints?"
+        },
+        "openQuestions": {
+          "section": "Notes / Open Questions",
+          "description": "Any pending decisions or integration considerations?"
+        }
+      }
     }
-  },
+   },
   "fi-FI": {
     "apiBusinessModelCanvas": {
       "title": "API Business Model Canvas",
