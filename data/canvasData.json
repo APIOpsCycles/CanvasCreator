@@ -503,5 +503,70 @@
         "fillOrder": 4
       }
     ]
+  },
+  {
+    "id": "graphqlCanvas",
+    "layout": {
+      "columns": 4,
+      "rows": 3
+    },
+    "metadata": {
+      "source": "APIOps Cycles",
+      "license": "CC-BY-SA 4.0",
+      "authors": ["Osaango Ltd"],
+      "website": "www.apiopscycles.com"
+    },
+    "sections": [
+      {
+        "id": "apiName",
+        "gridPosition": { "column": 0, "row": 0, "colSpan": 2, "rowSpan": 1 },
+        "fillOrder": 1
+      },
+      {
+        "id": "consumerGoals",
+        "gridPosition": { "column": 2, "row": 0, "colSpan": 2, "rowSpan": 1 },
+        "fillOrder": 2
+      },
+      {
+        "id": "keyTypes",
+        "gridPosition": { "column": 0, "row": 1, "colSpan": 1, "rowSpan": 1 },
+        "fillOrder": 3
+      },
+      {
+        "id": "relationships",
+        "gridPosition": { "column": 1, "row": 1, "colSpan": 1, "rowSpan": 1 },
+        "fillOrder": 4
+      },
+      {
+        "id": "queries",
+        "gridPosition": { "column": 2, "row": 1, "colSpan": 1, "rowSpan": 1 },
+        "fillOrder": 5
+      },
+      {
+        "id": "mutations",
+        "gridPosition": { "column": 3, "row": 1, "colSpan": 1, "rowSpan": 1 },
+        "fillOrder": 6
+      },
+      {
+        "id": "subscriptions",
+        "gridPosition": { "column": 0, "row": 2, "colSpan": 1, "rowSpan": 1 },
+        "fillOrder": 7
+      },
+      {
+        "id": "authorizationRules",
+        "gridPosition": { "column": 1, "row": 2, "colSpan": 1, "rowSpan": 1 },
+        "fillOrder": 8
+      },
+      {
+        "id": "consumerConstraints",
+        "gridPosition": { "column": 2, "row": 2, "colSpan": 1, "rowSpan": 1 },
+        "fillOrder": 9
+      },
+      {
+        "id": "openQuestions",
+        "gridPosition": { "column": 3, "row": 2, "colSpan": 1, "rowSpan": 1 },
+        "fillOrder": 10
+      }
+    ]
   }
 }
