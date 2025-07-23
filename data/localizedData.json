@@ -1697,7 +1697,7 @@
           "section": "Etapas da jornada",
           "description": "Quais são as etapas que o cliente percorre em sua jornada?"
         },
-        "ncustomerNeedIsResolved": {
+        "customerNeedIsResolved": {
           "section": "Necessidade do cliente resolvida",
           "description": "Como a necessidade do cliente é resolvida no final?"
         },
@@ -1826,10 +1826,10 @@
     },
     "locationsCanvas": {
       "title": "Location Canvas",
-      "finalidade": "Quais são os locais relevantes e suas características?",
-      "comoUsar": "Defina os locais, suas distâncias e seus pontos finais para cada API.",
-      "seções": {
-        "ocationGroups": {
+      "purpose": "Quais são os locais relevantes e suas características?",
+      "howToUse": "Defina os locais, suas distâncias e seus pontos finais para cada API.",
+      "sections": {
+        "locationGroups": {
           "section": "Grupos de Locais",
           "description": "Quais são os grupos de locais relevantes?"
         },
