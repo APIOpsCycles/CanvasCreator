@@ -209,26 +209,15 @@ function renderSVG(canvasDef, localizedData, content) {
     const w = secDef.gridPosition.colSpan * cellWidth;
     const h = secDef.gridPosition.rowSpan * cellHeight;
 
-    if (secDef.highlight) {
-      const hi = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      hi.setAttribute('x', x);
-      hi.setAttribute('y', y);
-      hi.setAttribute('width', w);
-      hi.setAttribute('height', h);
-      hi.setAttribute('fill', defaultStyles.highlightColor);
-      hi.setAttribute('stroke', defaultStyles.borderColor);
-      hi.setAttribute('rx', defaultStyles.cornerRadius);
-      hi.setAttribute('ry', defaultStyles.cornerRadius);
-      hi.setAttribute('stroke-width', 2 * defaultStyles.lineSize);
-      svg.appendChild(hi);
-    }
-
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     rect.setAttribute('x', x);
     rect.setAttribute('y', y);
     rect.setAttribute('width', w);
     rect.setAttribute('height', h);
-    rect.setAttribute('fill', defaultStyles.sectionColor);
+    rect.setAttribute(
+      'fill',
+      secDef.highlight ? defaultStyles.highlightColor : defaultStyles.sectionColor
+    );
     rect.setAttribute('stroke', defaultStyles.borderColor);
     rect.setAttribute('rx', defaultStyles.cornerRadius);
     rect.setAttribute('ry', defaultStyles.cornerRadius);
@@ -264,7 +253,7 @@ function renderSVG(canvasDef, localizedData, content) {
     svg.appendChild(text);
 
     const section = content.sections.find((s) => s.sectionId === secDef.id);
-    if (section) {
+    if (section && section.stickyNotes.length > 0) {
       for (const note of section.stickyNotes) {
         const noteRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         noteRect.setAttribute('x', note.position.x || 0);
@@ -292,6 +281,31 @@ function renderSVG(canvasDef, localizedData, content) {
           noteText.appendChild(tspan);
         });
         svg.appendChild(noteText);
+      }
+    } else {
+      const desc =
+        locCanvas.sections &&
+        locCanvas.sections[secDef.id] &&
+        locCanvas.sections[secDef.id].description;
+      if (desc) {
+        const dText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        dText.setAttribute('x', x + defaultStyles.padding);
+        dText.setAttribute(
+          'y',
+          y + defaultStyles.padding + defaultStyles.circleRadius + defaultStyles.fontSize
+        );
+        dText.setAttribute('fill', defaultStyles.contentFontColor);
+        const lines = wrapText(desc).split('\n');
+        lines.forEach((line, idx) => {
+          const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+          if (idx > 0) {
+            tspan.setAttribute('x', x + defaultStyles.padding);
+            tspan.setAttribute('dy', defaultStyles.fontSize + 2);
+          }
+          tspan.textContent = line;
+          dText.appendChild(tspan);
+        });
+        svg.appendChild(dText);
       }
     }
   }
@@ -360,7 +374,14 @@ async function main() {
     }
   }
   for (const id of canvasIds) {
-    const content = buildContent(canvasData, id, locale, !imports[id], imports[id]);
+    const addPlaceholder = format === 'json' && !imports[id];
+    const content = buildContent(
+      canvasData,
+      id,
+      locale,
+      addPlaceholder,
+      imports[id]
+    );
     const filename = (ext) => path.join(process.cwd(), buildFileName(prefix, id, locale, ext));
     if (format === 'json') {
       fs.writeFileSync(filename('json'), exportJSON(content));
@@ -384,4 +405,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { buildContent, buildFileName };
+module.exports = { buildContent, buildFileName, renderSVG };

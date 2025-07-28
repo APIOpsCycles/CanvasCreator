@@ -1,6 +1,7 @@
-const { buildContent, buildFileName } = require('../scripts/export.js');
+const { buildContent, buildFileName, renderSVG } = require('../scripts/export.js');
 const { exportJSON } = require('../scripts/noteManager.js');
 const canvasData = require('../data/canvasData.json');
+const localizedData = require('../data/localizedData.json');
 
 describe('export helpers', () => {
   test('buildFileName applies prefix', () => {
@@ -22,5 +23,13 @@ describe('export helpers', () => {
     for (const section of json.sections) {
       expect(section.stickyNotes[0].position).toBeUndefined();
     }
+  });
+
+  test('renderSVG uses highlight color and descriptions without placeholders', () => {
+    const content = buildContent(canvasData, 'apiBusinessModelCanvas', 'en-US', false);
+    const svg = renderSVG(canvasData['apiBusinessModelCanvas'], localizedData, content);
+    expect(svg).toContain('#d7e3fe');
+    expect(svg).toContain(localizedData['en-US']['apiBusinessModelCanvas'].sections.keyPartners.description.split(' ')[0]);
+    expect(svg.includes('Placeholder')).toBe(false);
   });
 });
