@@ -388,7 +388,11 @@ async function main() {
       addPlaceholder,
       imports[id]
     );
-    const filename = (ext) => path.join(process.cwd(), buildFileName(prefix, id, locale, ext));
+    const outDir = path.join(process.cwd(), 'export');
+    if (!fs.existsSync(outDir)) {
+      fs.mkdirSync(outDir, { recursive: true });
+    }
+    const filename = (ext) => path.join(outDir, buildFileName(prefix, id, locale, ext));
     if (format === 'json') {
       fs.writeFileSync(filename('json'), exportJSON(content));
     } else {
