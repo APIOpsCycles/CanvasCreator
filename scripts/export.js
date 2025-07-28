@@ -5,12 +5,11 @@ if (typeof TextEncoder === "undefined") {
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require("jsdom");
-let PDFDocument, SVGtoPDF;
+let pdfLib;
 try {
-  PDFDocument = require("pdfkit");
-  SVGtoPDF = require("svg-to-pdfkit");
+  pdfLib = require("pdf-lib");
 } catch (e) {
-  PDFDocument = null;
+  pdfLib = null;
 }
 const { createStickyNote, exportJSON } = require('./noteManager');
 const { distributeMissingPositions } = require('../src/helpers');
@@ -20,10 +19,26 @@ const defaultStyles = {
   height: 712,
   headerHeight: 80,
   footerHeight: 30,
+  fontSize: 12,
+  fontFamily: 'Arial, sans-serif',
+  backgroundColor: '#f5f5ff',
+  borderColor: '#1a3987',
+  fontColor: '#1a3987',
+  contentFontColor: '#333',
+  highlightColor: '#d7e3fe',
+  sectionColor: '#ffffff',
   padding: 10,
+  cornerRadius: 10,
+  circleRadius: 14,
+  lineSize: 1,
+  shadowColor: 'rgba(0, 0, 0, 0.2)',
   stickyNoteSize: 80,
   stickyNoteSpacing: 10,
+  stickyNoteCornerRadius: 3,
+  maxLineWidth: 70,
   stickyNoteColor: '#FFF399',
+  stickyNoteBorderColor: '#333',
+  defaultLocale: 'en-US',
 };
 
 function buildFileName(prefix, canvasId, locale, ext) {
@@ -64,19 +79,26 @@ function buildContent(canvasData, canvasId, locale, addPlaceholder, imported) {
   };
   if (addPlaceholder) {
     for (const sec of content.sections) {
-      createStickyNote(content, sec.sectionId, 'Placeholder');
+      // create placeholder without coordinates
+      createStickyNote(content, sec.sectionId, 'Placeholder', {});
     }
+  } else {
+    distributeMissingPositions(content, canvasDef, defaultStyles);
   }
-  distributeMissingPositions(content, canvasDef, defaultStyles);
   return content;
 }
 
-function renderSVG(canvasDef, content) {
+function renderSVG(canvasDef, localizedData, content) {
   const dom = new JSDOM(`<!DOCTYPE html><svg xmlns="http://www.w3.org/2000/svg"></svg>`);
   const document = dom.window.document;
   const svg = document.querySelector('svg');
   svg.setAttribute('width', defaultStyles.width);
   svg.setAttribute('height', defaultStyles.height);
+  svg.setAttribute('font-family', defaultStyles.fontFamily);
+  svg.setAttribute('font-size', defaultStyles.fontSize);
+
+  const locCanvas =
+    (localizedData[content.locale] && localizedData[content.locale][canvasDef.id]) || {};
 
   const cellWidth = Math.floor(
     (defaultStyles.width - canvasDef.layout.columns * defaultStyles.padding) /
@@ -90,6 +112,15 @@ function renderSVG(canvasDef, content) {
       canvasDef.layout.rows,
   );
 
+  const title = locCanvas.title || canvasDef.id;
+  const titleText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  titleText.setAttribute('x', defaultStyles.headerHeight + 2 * defaultStyles.padding);
+  titleText.setAttribute('y', 2 * defaultStyles.padding + defaultStyles.fontSize);
+  titleText.setAttribute('font-weight', 'bold');
+  titleText.setAttribute('fill', defaultStyles.fontColor);
+  titleText.textContent = title;
+  svg.appendChild(titleText);
+
   for (const secDef of canvasDef.sections) {
     const x = secDef.gridPosition.column * cellWidth + 2 * defaultStyles.padding;
     const y = secDef.gridPosition.row * cellHeight + defaultStyles.headerHeight;
@@ -100,21 +131,40 @@ function renderSVG(canvasDef, content) {
     rect.setAttribute('y', y);
     rect.setAttribute('width', w);
     rect.setAttribute('height', h);
-    rect.setAttribute('fill', '#ffffff');
-    rect.setAttribute('stroke', '#000000');
+    rect.setAttribute('fill', defaultStyles.sectionColor);
+    rect.setAttribute('stroke', defaultStyles.borderColor);
     svg.appendChild(rect);
+
+    const label =
+      locCanvas.sections && locCanvas.sections[secDef.id]
+        ? locCanvas.sections[secDef.id].section
+        : secDef.id;
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', x + defaultStyles.padding);
+    text.setAttribute('y', y + defaultStyles.padding + defaultStyles.fontSize);
+    text.setAttribute('font-weight', 'bold');
+    text.setAttribute('fill', defaultStyles.fontColor);
+    text.textContent = label;
+    svg.appendChild(text);
 
     const section = content.sections.find((s) => s.sectionId === secDef.id);
     if (section) {
       for (const note of section.stickyNotes) {
         const noteRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        noteRect.setAttribute('x', note.position.x);
-        noteRect.setAttribute('y', note.position.y);
+        noteRect.setAttribute('x', note.position.x || 0);
+        noteRect.setAttribute('y', note.position.y || 0);
         noteRect.setAttribute('width', note.size);
         noteRect.setAttribute('height', note.size);
         noteRect.setAttribute('fill', note.color);
-        noteRect.setAttribute('stroke', '#333');
+        noteRect.setAttribute('stroke', defaultStyles.stickyNoteBorderColor);
         svg.appendChild(noteRect);
+
+        const noteText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        noteText.setAttribute('x', (note.position.x || 0) + defaultStyles.padding / 2);
+        noteText.setAttribute('y', (note.position.y || 0) + defaultStyles.fontSize + defaultStyles.padding / 2);
+        noteText.setAttribute('fill', defaultStyles.contentFontColor);
+        noteText.textContent = note.content;
+        svg.appendChild(noteText);
       }
     }
   }
@@ -122,16 +172,17 @@ function renderSVG(canvasDef, content) {
   return svg.outerHTML;
 }
 
-function writePDF(svgString, outPath) {
-  return new Promise((resolve, reject) => {
-    const doc = new PDFDocument({ size: [defaultStyles.width, defaultStyles.height] });
-    SVGtoPDF(doc, svgString, 0, 0);
-    const stream = fs.createWriteStream(outPath);
-    doc.pipe(stream);
-    doc.end();
-    stream.on('finish', resolve);
-    stream.on('error', reject);
-  });
+async function writePDF(svgString, outPath) {
+  if (!pdfLib) {
+    throw new Error('pdf-lib not installed');
+  }
+  const { PDFDocument } = pdfLib;
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([defaultStyles.width, defaultStyles.height]);
+  const svgImage = await pdfDoc.embedSvg(svgString);
+  page.drawImage(svgImage, { x: 0, y: 0, width: defaultStyles.width, height: defaultStyles.height });
+  const pdfBytes = await pdfDoc.save();
+  fs.writeFileSync(outPath, pdfBytes);
 }
 
 async function main() {
@@ -157,7 +208,7 @@ async function main() {
     if (format === 'json') {
       fs.writeFileSync(filename('json'), exportJSON(content));
     } else {
-      const svg = renderSVG(canvasData[id], content);
+      const svg = renderSVG(canvasData[id], localizedData, content);
       fs.writeFileSync(filename('svg'), svg);
       if (format === 'pdf') {
         await writePDF(svg, filename('pdf'));
