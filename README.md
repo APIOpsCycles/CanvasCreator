@@ -86,6 +86,29 @@ Run `npm run minify-css` to compress `styles/canvascreator.css` into
 referenced in `index.html` with a version query
 (`canvascreator.min.css?v=1.0.2`) so browsers fetch the latest build.
 
+## Command Line Export
+
+You can also export canvases outside the browser using Node.js. The helper
+script `scripts/export.js` reads the canvas definitions and generates JSON,
+SVG, or PDF output. Execute it via the convenient npm script:
+
+```sh
+npm run export -- --locale en-US --format svg --all --prefix My
+```
+
+Options:
+
+- `--locale <code>` – language for the exported canvas (default `en-US`)
+- `--format <json|svg|pdf>` – output file type
+- `--prefix <name>` – prefix for generated filenames (default `Canvas`)
+- `--all` – export every canvas from `data/canvasData.json`
+- `--canvas <id>` – export a single canvas by id
+- `--import <file>` – load an existing JSON content file instead of creating
+  placeholders
+
+Files are written to the current directory following the pattern
+`{prefix}_{canvasId}_{locale}.ext`.
+
 ## How to Contribute
 Contributions are welcome, especially localization help, bug fixing, or contributing libraries in other languages or frameworks!
 
