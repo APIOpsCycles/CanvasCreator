@@ -102,15 +102,15 @@ function buildContent(canvasData, canvasId, locale, addPlaceholder, imported) {
   return content;
 }
 
-function wrapText(text) {
+function wrapText(text, maxWidth = defaultStyles.maxLineWidth) {
   const normalized = text.replace(/\n{2,}/g, '\n');
   const words = normalized.split(' ');
   const lines = [];
   let line = '';
   for (const word of words) {
     const test = line + word + ' ';
-    if (test.length * 6 > defaultStyles.maxLineWidth) {
-      lines.push(line.trim());
+    if (test.length * 6 > maxWidth) {
+      if (line) lines.push(line.trim());
       line = word + ' ';
     } else {
       line = test;
@@ -270,7 +270,10 @@ function renderSVG(canvasDef, localizedData, content) {
         noteText.setAttribute('x', (note.position.x || 0) + defaultStyles.padding / 2);
         noteText.setAttribute('y', (note.position.y || 0) + defaultStyles.fontSize + defaultStyles.padding / 2);
         noteText.setAttribute('fill', defaultStyles.contentFontColor);
-        const lines = wrapText(note.content).split('\n');
+        const lines = wrapText(
+          note.content,
+          note.size - defaultStyles.padding
+        ).split('\n');
         lines.forEach((line, idx) => {
           const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
           if (idx > 0) {
@@ -295,7 +298,10 @@ function renderSVG(canvasDef, localizedData, content) {
           y + defaultStyles.padding + defaultStyles.circleRadius + defaultStyles.fontSize
         );
         dText.setAttribute('fill', defaultStyles.contentFontColor);
-        const lines = wrapText(desc).split('\n');
+        const lines = wrapText(
+          desc,
+          w - 2 * defaultStyles.padding
+        ).split('\n');
         lines.forEach((line, idx) => {
           const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
           if (idx > 0) {
