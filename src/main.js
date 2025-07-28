@@ -7,36 +7,6 @@ Original author Marjukka Niinioja, licensed under Apache 2.0
 
  */
 
-/* //default configuration for easily overriding the styles when calling from html. Put this in the html file before calling this script file
-      const defaultStyles = {
-        width: 1000,
-        height: 712,
-        headerHeight: 80,
-        footerHeight: 30,
-        fontSize: 12,
-        fontFamily: "Arial, sans-serif",
-        backgroundColor: "#f5f5ff",
-        borderColor: "#1a3987",
-        fontColor: "#1a3987",
-        contentFontColor: "#333",
-        highlightColor: "#d7e3fe",
-        sectionColor: "#ffffff",
-        padding: 10,
-        cornerRadius: 10,
-        circleRadius: 14,
-        lineSize: 1,
-        shadowColor: "rgba(0, 0, 0, 0.2)",
-        stickyNoteSize: 80,
-        stickyNoteSpacing: 10,
-        stickyNoteCornerRadius: 3,
-        maxLineWidth: 70,
-        stickyNoteColor: "#FFF399",
-        stickyNoteBorderColor: "#333",
-        defaultLocale: "en-US",
-      }
-  
-*/
-
 const {
   sanitizeInput,
   validateInput,
