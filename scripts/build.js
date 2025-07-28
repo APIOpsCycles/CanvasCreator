@@ -51,14 +51,14 @@ const localizedData = JSON.stringify(
   ),
 );
 
-// Replace the embedded data between the two constants
+// Inline the JSON data for the browser bundle
 mainSrc = mainSrc.replace(
-  /const canvasData =[\s\S]*?const localizedData =/,
-  `const canvasData = ${canvasData};\n\n  const localizedData =`,
+  /const canvasData = require\(["']..\/data\/canvasData\.json["']\);/,
+  `const canvasData = ${canvasData};`,
 );
 mainSrc = mainSrc.replace(
-  /const localizedData =[\s\S]*?\n\s*\/\/ No DOMPurify setup/,
-  `const localizedData = ${localizedData};\n\n  // No DOMPurify setup`,
+  /const localizedData = require\(["']..\/data\/localizedData\.json["']\);/,
+  `const localizedData = ${localizedData};`,
 );
 
 const main = stripCommon(mainSrc);
