@@ -43,15 +43,14 @@ This project can be hosted on any web server that allows execution of HTML and J
 ```
 CanvasCreator/
 ├── index.html                 # Main HTML file
-├── dist/                      # Bundled output from `npm run build`
-│   ├── canvasCreator.js
-│   └── canvasCreator.min.js
+├── dist/                      # Bundled output from `npm run build` (not tracked)
+│   ├── canvascreator.cjs
+│   └── canvascreator.esm.js
 ├── src/                       # Modular JavaScript source
 │   ├── helpers.js
 │   ├── main.js
 │   └── index.js
-├── scripts/                   # Build and helper scripts
-│   ├── build.js
+├── scripts/                   # Helper scripts
 │   └── noteManager.js
 ├── styles/                    # Editable CSS sources
 │   └── canvascreator.css
@@ -67,24 +66,38 @@ CanvasCreator/
 
 ## Build
 
-Run `npm run build` to generate `dist/canvasCreator.js` and its minified
-counterpart `dist/canvasCreator.min.js`. The `scripts/build.js` script
-now also reads `data/canvasData.json` and `data/localizedData.json` and
-inlines the latest content into the bundle. It strips the CommonJS
-boilerplate from the source files, wraps them in a small UMD-style factory
-for browser or Node use, and then uses
-[Terser](https://github.com/terser/terser) for minification.
+Run `npm run build` to compile the library using [Rollup](https://rollupjs.org/). The command outputs CommonJS and ES module bundles in `dist/`:
 
-The `dist` directory is committed because `package.json` points to the
-unminified bundle as its `main` entry. The minified bundle is loaded by
-`index.html` using a version query (`dist/canvasCreator.min.js?v=1.0.2`) to
-force browsers to fetch fresh code.
+```
+dist/
+  canvascreator.cjs    # CommonJS
+  canvascreator.esm.js # ESM
+```
 
-Run `npm run minify-css` to compress `styles/canvascreator.css` into
-`canvascreator.min.css` using
-[clean-css](https://github.com/jakubpawlowicz/clean-css). The stylesheet is
-referenced in `index.html` with a version query
-(`canvascreator.min.css?v=1.0.2`) so browsers fetch the latest build.
+Both formats include the same API so your bundler can pick whichever it understands. CSS minification still works with `npm run minify-css`.
+
+To use the library directly in a browser without a bundler, load the ESM file:
+
+```html
+<script type="module" src="dist/canvascreator.esm.js"></script>
+```
+
+## Using in Front-end Projects
+
+Import the functions directly from the package in any bundler-based setup. For example with [Astro](https://astro.build/):
+
+```astro
+---
+import { loadCanvas } from "canvascreator";
+---
+<div id="canvas"></div>
+<script type="module">
+  loadCanvas("en-US", "apiBusinessModelCanvas");
+</script>
+```
+
+Any framework that supports ES modules (React, Vue, etc.) can use the same API.
+
 
 ## Command Line Export
 
@@ -139,10 +152,11 @@ npm test
 The test suite also runs automatically in GitHub Actions for each push and pull request.
 
 ## Versioning & Caching
-Both the JavaScript and CSS files are referenced with version queries
-(`dist/canvasCreator.min.js?v=1.0.2` and `canvascreator.min.css?v=1.0.2`).
-Updating these query strings (or renaming the files) forces browsers to fetch
-the latest build so cached versions don't persist.
+The stylesheet is referenced with a version query
+(`canvascreator.min.css?v=1.0.2`) so browsers load the latest minified CSS.
+If you serve the JavaScript bundles directly in the browser, you can append a
+similar query string to `dist/canvascreator.esm.js` whenever releasing a new
+version to avoid cached copies.
 
 ## License
 This project is licensed under the **Apache 2.0 License**. See the `LICENSE` file for details.
