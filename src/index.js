@@ -1,5 +1,6 @@
 const helpers = require('./helpers');
 const legacy = require('./main');
+const defaultStyles = require('./defaultStyles');
 
 module.exports = {
   createCanvas: legacy.loadCanvas,
@@ -7,4 +8,5 @@ module.exports = {
   sanitizeInput: helpers.sanitizeInput,
   validateInput: helpers.validateInput,
   distributeMissingPositions: helpers.distributeMissingPositions,
+  defaultStyles,
 };
