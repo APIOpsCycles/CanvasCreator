@@ -65,6 +65,19 @@ function parseArgs(argv) {
   return res;
 }
 
+function printUsage() {
+  console.log(`Usage: node scripts/export.js [options]
+
+Options:
+  --locale <code>       language for the exported canvas (default en-US)
+  --format <json|svg|pdf> output file type
+  --prefix <name>       prefix for generated filenames (default Canvas)
+  --all                 export every canvas from data/canvasData.json
+  --canvas <id>         export a single canvas by id
+  --import <file>       load an existing JSON content file instead of placeholders
+  --help                show this help text`);
+}
+
 function buildContent(canvasData, canvasId, locale, addPlaceholder, imported) {
   if (imported) {
     return imported;
@@ -89,13 +102,39 @@ function buildContent(canvasData, canvasId, locale, addPlaceholder, imported) {
 }
 
 function renderSVG(canvasDef, localizedData, content) {
+  const logo = fs.readFileSync(
+    path.join(__dirname, '../img/apiops-cycles-logo2025-blue.svg'),
+    'utf8',
+  );
+
   const dom = new JSDOM(`<!DOCTYPE html><svg xmlns="http://www.w3.org/2000/svg"></svg>`);
   const document = dom.window.document;
   const svg = document.querySelector('svg');
-  svg.setAttribute('width', defaultStyles.width);
+  svg.setAttribute('width', defaultStyles.width + defaultStyles.padding * 2);
   svg.setAttribute('height', defaultStyles.height);
   svg.setAttribute('font-family', defaultStyles.fontFamily);
   svg.setAttribute('font-size', defaultStyles.fontSize);
+  svg.setAttribute('style', `background-color: ${defaultStyles.backgroundColor}`);
+
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+  filter.setAttribute('id', 'shadow');
+  const drop = document.createElementNS('http://www.w3.org/2000/svg', 'feDropShadow');
+  drop.setAttribute('dx', 3);
+  drop.setAttribute('dy', 3);
+  drop.setAttribute('stdDeviation', 2);
+  drop.setAttribute('flood-color', defaultStyles.shadowColor);
+  filter.appendChild(drop);
+  defs.appendChild(filter);
+  svg.appendChild(defs);
+
+  const logoGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  logoGroup.setAttribute(
+    'transform',
+    `translate(${defaultStyles.padding}, ${defaultStyles.padding / 2}) scale(0.1,0.1)`,
+  );
+  logoGroup.innerHTML = logo;
+  svg.appendChild(logoGroup);
 
   const locCanvas =
     (localizedData[content.locale] && localizedData[content.locale][canvasDef.id]) || {};
@@ -120,6 +159,30 @@ function renderSVG(canvasDef, localizedData, content) {
   titleText.setAttribute('fill', defaultStyles.fontColor);
   titleText.textContent = title;
   svg.appendChild(titleText);
+
+  if (locCanvas.purpose) {
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', defaultStyles.headerHeight + 2 * defaultStyles.padding);
+    t.setAttribute('y', defaultStyles.headerHeight - 3 * defaultStyles.padding);
+    t.setAttribute('text-anchor', 'start');
+    t.setAttribute('font-family', defaultStyles.fontFamily);
+    t.setAttribute('font-size', defaultStyles.fontSize + 2);
+    t.setAttribute('fill', defaultStyles.fontColor);
+    t.textContent = locCanvas.purpose;
+    svg.appendChild(t);
+  }
+
+  if (locCanvas.howToUse) {
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', defaultStyles.headerHeight + 2 * defaultStyles.padding);
+    t.setAttribute('y', defaultStyles.headerHeight - defaultStyles.padding);
+    t.setAttribute('text-anchor', 'start');
+    t.setAttribute('font-family', defaultStyles.fontFamily);
+    t.setAttribute('font-size', defaultStyles.fontSize + 2);
+    t.setAttribute('fill', defaultStyles.fontColor);
+    t.textContent = locCanvas.howToUse;
+    svg.appendChild(t);
+  }
 
   for (const secDef of canvasDef.sections) {
     const x = secDef.gridPosition.column * cellWidth + 2 * defaultStyles.padding;
@@ -169,6 +232,18 @@ function renderSVG(canvasDef, localizedData, content) {
     }
   }
 
+  const footer = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  footer.setAttribute('class', 'footer');
+  footer.setAttribute('x', defaultStyles.width / 2);
+  footer.setAttribute('y', defaultStyles.height - defaultStyles.footerHeight);
+  footer.setAttribute('text-anchor', 'middle');
+  footer.setAttribute('font-family', defaultStyles.fontFamily);
+  footer.setAttribute('font-size', defaultStyles.fontSize);
+  footer.setAttribute('fill', defaultStyles.fontColor);
+  footer.innerHTML =
+    `Template by: ${canvasDef.metadata.source} | ${canvasDef.metadata.license} | ${canvasDef.metadata.authors.join(', ')} | <a href='http://${canvasDef.metadata.website}' target='_blank'>${canvasDef.metadata.website}</a>`;
+  svg.appendChild(footer);
+
   return svg.outerHTML;
 }
 
@@ -187,6 +262,17 @@ async function writePDF(svgString, outPath) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
+  if (args.help) {
+    printUsage();
+    return;
+  }
+  const known = ['locale', 'format', 'prefix', 'all', 'canvas', 'import', 'help'];
+  for (const k of Object.keys(args)) {
+    if (!known.includes(k)) {
+      printUsage();
+      return;
+    }
+  }
   const locale = args.locale || 'en-US';
   const format = args.format || 'json';
   const prefix = args.prefix || 'Canvas';
@@ -194,6 +280,10 @@ async function main() {
   const localizedData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/localizedData.json'), 'utf8'));
 
   const canvasIds = args.all ? Object.keys(canvasData) : ([]).concat(args.canvas || []);
+  if (canvasIds.length === 0) {
+    printUsage();
+    return;
+  }
   const imports = {};
   if (args.import) {
     const files = Array.isArray(args.import) ? args.import : [args.import];
