@@ -28,12 +28,20 @@ function stripCommon(code) {
       /\s*const\s+\{[^}]+\}\s*=\s*require\(['"]\.\/helpers['"]\);?\r?\n/s,
       '',
     )
+    .replace(
+      /\s*const\s+defaultStyles\s*=\s*require\(['"]\.\/defaultStyles['"]\);?\r?\n/s,
+      '',
+    )
     .replace(/module\.exports\s*=\s*\{[^}]*\};?\r?\n?/gs, '')
+    .replace(/module\.exports\s*=\s*defaultStyles;?\r?\n?/s, '')
     .trim();
 }
 
 const helpers = stripCommon(
   fs.readFileSync(path.join(__dirname, '../src/helpers.js'), 'utf8'),
+);
+const defaultStylesSrc = stripCommon(
+  fs.readFileSync(path.join(__dirname, '../src/defaultStyles.js'), 'utf8'),
 );
 
 // Load main source and inject latest JSON data
@@ -63,7 +71,7 @@ mainSrc = mainSrc.replace(
 
 const main = stripCommon(mainSrc);
 
-let bundle = `(function(global){\n${helpers}\n\n${main}\n\n  const exportsObj = {\n    createCanvas: loadCanvas,\n    loadCanvas,\n    sanitizeInput,\n    validateInput,\n    distributeMissingPositions\n  };\n  if (typeof module !== 'undefined' && module.exports) {\n    module.exports = exportsObj;\n  }\n  global.CanvasCreator = exportsObj;\n})(typeof window !== 'undefined' ? window : this);`;
+let bundle = `(function(global){\n${defaultStylesSrc}\n\n${helpers}\n\n${main}\n\n  const exportsObj = {\n    createCanvas: loadCanvas,\n    loadCanvas,\n    sanitizeInput,\n    validateInput,\n    distributeMissingPositions,\n    defaultStyles\n  };\n  if (typeof module !== 'undefined' && module.exports) {\n    module.exports = exportsObj;\n  }\n  global.CanvasCreator = exportsObj;\n})(typeof window !== 'undefined' ? window : this);`;
 
 const outDir = path.join(__dirname, '../dist');
 fs.mkdirSync(outDir, { recursive: true });

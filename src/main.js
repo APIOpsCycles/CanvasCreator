@@ -42,6 +42,7 @@ const {
   validateInput,
   distributeMissingPositions,
 } = require('./helpers');
+const defaultStyles = require('./defaultStyles');
 
 //load canvas layouts and localizations from json data
 const canvasData = require("../data/canvasData.json");

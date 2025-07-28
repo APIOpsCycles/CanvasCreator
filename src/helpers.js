@@ -1,3 +1,5 @@
+const defaultStyles = require('./defaultStyles');
+
 function sanitizeInput(text) {
   // Remove script tags entirely
   let sanitized = text.replace(
