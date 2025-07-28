@@ -9,7 +9,8 @@
     "export": "node scripts/export.js"
   },
   "dependencies": {
-    "pdf-lib": "^1.17.1"
+    "pdfkit": "^0.13.0",
+    "svg-to-pdfkit": "^0.1.8"
   },
   "devDependencies": {
     "jest": "^29.7.0",

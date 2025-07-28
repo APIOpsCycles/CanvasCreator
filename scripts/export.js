@@ -5,11 +5,12 @@ if (typeof TextEncoder === "undefined") {
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require("jsdom");
-let pdfLib;
+let PDFDocument, SVGtoPDF;
 try {
-  pdfLib = require("pdf-lib");
+  PDFDocument = require("pdfkit");
+  SVGtoPDF = require("svg-to-pdfkit");
 } catch (e) {
-  pdfLib = null;
+  PDFDocument = null;
 }
 const { createStickyNote, exportJSON } = require('./noteManager');
 const { distributeMissingPositions } = require('../src/helpers');
@@ -101,6 +102,24 @@ function buildContent(canvasData, canvasId, locale, addPlaceholder, imported) {
   return content;
 }
 
+function wrapText(text) {
+  const normalized = text.replace(/\n{2,}/g, '\n');
+  const words = normalized.split(' ');
+  const lines = [];
+  let line = '';
+  for (const word of words) {
+    const test = line + word + ' ';
+    if (test.length * 6 > defaultStyles.maxLineWidth) {
+      lines.push(line.trim());
+      line = word + ' ';
+    } else {
+      line = test;
+    }
+  }
+  if (line) lines.push(line.trim());
+  return lines.join('\n');
+}
+
 function renderSVG(canvasDef, localizedData, content) {
   const logo = fs.readFileSync(
     path.join(__dirname, '../img/apiops-cycles-logo2025-blue.svg'),
@@ -189,6 +208,21 @@ function renderSVG(canvasDef, localizedData, content) {
     const y = secDef.gridPosition.row * cellHeight + defaultStyles.headerHeight;
     const w = secDef.gridPosition.colSpan * cellWidth;
     const h = secDef.gridPosition.rowSpan * cellHeight;
+
+    if (secDef.highlight) {
+      const hi = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      hi.setAttribute('x', x);
+      hi.setAttribute('y', y);
+      hi.setAttribute('width', w);
+      hi.setAttribute('height', h);
+      hi.setAttribute('fill', defaultStyles.highlightColor);
+      hi.setAttribute('stroke', defaultStyles.borderColor);
+      hi.setAttribute('rx', defaultStyles.cornerRadius);
+      hi.setAttribute('ry', defaultStyles.cornerRadius);
+      hi.setAttribute('stroke-width', 2 * defaultStyles.lineSize);
+      svg.appendChild(hi);
+    }
+
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     rect.setAttribute('x', x);
     rect.setAttribute('y', y);
@@ -196,15 +230,34 @@ function renderSVG(canvasDef, localizedData, content) {
     rect.setAttribute('height', h);
     rect.setAttribute('fill', defaultStyles.sectionColor);
     rect.setAttribute('stroke', defaultStyles.borderColor);
+    rect.setAttribute('rx', defaultStyles.cornerRadius);
+    rect.setAttribute('ry', defaultStyles.cornerRadius);
     svg.appendChild(rect);
 
     const label =
       locCanvas.sections && locCanvas.sections[secDef.id]
         ? locCanvas.sections[secDef.id].section
         : secDef.id;
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', x + defaultStyles.padding);
+    circle.setAttribute('cy', y + defaultStyles.padding);
+    circle.setAttribute('r', defaultStyles.circleRadius);
+    circle.setAttribute('fill', defaultStyles.borderColor);
+    svg.appendChild(circle);
+
+    const numText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    numText.setAttribute('x', x + defaultStyles.padding);
+    numText.setAttribute('y', y + defaultStyles.padding + 5);
+    numText.setAttribute('text-anchor', 'middle');
+    numText.setAttribute('font-family', defaultStyles.fontFamily);
+    numText.setAttribute('font-size', defaultStyles.fontSize);
+    numText.setAttribute('fill', defaultStyles.highlightColor);
+    numText.textContent = secDef.fillOrder;
+    svg.appendChild(numText);
+
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    text.setAttribute('x', x + defaultStyles.padding);
-    text.setAttribute('y', y + defaultStyles.padding + defaultStyles.fontSize);
+    text.setAttribute('x', x + defaultStyles.padding + defaultStyles.circleRadius);
+    text.setAttribute('y', y + defaultStyles.padding + defaultStyles.circleRadius);
     text.setAttribute('font-weight', 'bold');
     text.setAttribute('fill', defaultStyles.fontColor);
     text.textContent = label;
@@ -220,13 +273,24 @@ function renderSVG(canvasDef, localizedData, content) {
         noteRect.setAttribute('height', note.size);
         noteRect.setAttribute('fill', note.color);
         noteRect.setAttribute('stroke', defaultStyles.stickyNoteBorderColor);
+        noteRect.setAttribute('rx', defaultStyles.stickyNoteCornerRadius);
+        noteRect.setAttribute('ry', defaultStyles.stickyNoteCornerRadius);
         svg.appendChild(noteRect);
 
         const noteText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         noteText.setAttribute('x', (note.position.x || 0) + defaultStyles.padding / 2);
         noteText.setAttribute('y', (note.position.y || 0) + defaultStyles.fontSize + defaultStyles.padding / 2);
         noteText.setAttribute('fill', defaultStyles.contentFontColor);
-        noteText.textContent = note.content;
+        const lines = wrapText(note.content).split('\n');
+        lines.forEach((line, idx) => {
+          const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+          if (idx > 0) {
+            tspan.setAttribute('x', (note.position.x || 0) + defaultStyles.padding / 2);
+            tspan.setAttribute('dy', defaultStyles.fontSize + 2);
+          }
+          tspan.textContent = line;
+          noteText.appendChild(tspan);
+        });
         svg.appendChild(noteText);
       }
     }
@@ -247,17 +311,20 @@ function renderSVG(canvasDef, localizedData, content) {
   return svg.outerHTML;
 }
 
-async function writePDF(svgString, outPath) {
-  if (!pdfLib) {
-    throw new Error('pdf-lib not installed');
-  }
-  const { PDFDocument } = pdfLib;
-  const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage([defaultStyles.width, defaultStyles.height]);
-  const svgImage = await pdfDoc.embedSvg(svgString);
-  page.drawImage(svgImage, { x: 0, y: 0, width: defaultStyles.width, height: defaultStyles.height });
-  const pdfBytes = await pdfDoc.save();
-  fs.writeFileSync(outPath, pdfBytes);
+function writePDF(svgString, outPath) {
+  return new Promise((resolve, reject) => {
+    if (!PDFDocument) {
+      reject(new Error('pdfkit not installed'));
+      return;
+    }
+    const doc = new PDFDocument({ size: [defaultStyles.width, defaultStyles.height] });
+    SVGtoPDF(doc, svgString, 0, 0);
+    const stream = fs.createWriteStream(outPath);
+    doc.pipe(stream);
+    doc.end();
+    stream.on('finish', resolve);
+    stream.on('error', reject);
+  });
 }
 
 async function main() {
