@@ -1,10 +1,11 @@
 const helpers = require('./helpers');
-const legacy = require('./main');
+const canvasCreator = require('./main');
 const defaultStyles = require('./defaultStyles');
 
 module.exports = {
-  createCanvas: legacy.loadCanvas,
-  loadCanvas: legacy.loadCanvas,
+  // expose core canvas creation utilities
+  createCanvas: canvasCreator.loadCanvas,
+  loadCanvas: canvasCreator.loadCanvas,
   sanitizeInput: helpers.sanitizeInput,
   validateInput: helpers.validateInput,
   distributeMissingPositions: helpers.distributeMissingPositions,
