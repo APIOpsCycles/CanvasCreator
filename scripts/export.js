@@ -297,7 +297,7 @@ function renderSVG(canvasDef, localizedData, content) {
           'y',
           y + defaultStyles.padding + defaultStyles.circleRadius + defaultStyles.fontSize
         );
-        dText.setAttribute('fill', defaultStyles.contentFontColor);
+        dText.setAttribute('fill', defaultStyles.fontColor);
         const lines = wrapText(
           desc,
           w - 2 * defaultStyles.padding

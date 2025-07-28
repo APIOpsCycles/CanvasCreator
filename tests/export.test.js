@@ -29,7 +29,9 @@ describe('export helpers', () => {
     const content = buildContent(canvasData, 'apiBusinessModelCanvas', 'en-US', false);
     const svg = renderSVG(canvasData['apiBusinessModelCanvas'], localizedData, content);
     expect(svg).toContain('#d7e3fe');
-    expect(svg).toContain(localizedData['en-US']['apiBusinessModelCanvas'].sections.keyPartners.description.split(' ')[0]);
+    const descWord = localizedData['en-US']['apiBusinessModelCanvas'].sections.keyPartners.description.split(' ')[0];
+    expect(svg).toContain(descWord);
+    expect(svg).toContain(`fill="#1a3987"`);
     expect(svg.includes('Placeholder')).toBe(false);
   });
 });
