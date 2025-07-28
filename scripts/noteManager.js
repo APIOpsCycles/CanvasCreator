@@ -23,12 +23,13 @@ function exportJSON(contentData) {
     metadata: contentData.metadata,
     sections: contentData.sections.map(section => ({
       sectionId: section.sectionId,
-      stickyNotes: section.stickyNotes.map(n => ({
-        content: n.content,
-        position: n.position,
-        size: n.size,
-        color: n.color,
-      }))
+      stickyNotes: section.stickyNotes.map(n => {
+        const note = { content: n.content, size: n.size, color: n.color };
+        if (n.position && typeof n.position.x === 'number' && typeof n.position.y === 'number') {
+          note.position = n.position;
+        }
+        return note;
+      })
     }))
   };
   return JSON.stringify(exportData, null, 2);
