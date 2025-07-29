@@ -87,6 +87,10 @@ To use the library directly in a browser without a bundler, load the minified ES
 <script type="module" src="dist/canvascreator.esm.min.js"></script>
 ```
 
+During the build, `scripts/updateVersion.js` replaces the `v=<%= version %>`
+placeholders in `index.html` with the actual package version so browsers always
+load the latest CSS and JavaScript.
+
 ## Using in Front-end Projects
 
 Import the functions directly from the package in any bundler-based setup. For example with [Astro](https://astro.build/):

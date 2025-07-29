@@ -4,7 +4,7 @@
   "main": "dist/canvascreator.cjs",
   "scripts": {
     "test": "jest",
-    "build": "rollup -c && npm run minify-css",
+    "build": "rollup -c && npm run minify-css && node scripts/updateVersion.js",
     "prepare": "npm run build",
     "minify-css": "cleancss -o canvascreator.min.css styles/canvascreator.css",
     "export": "node scripts/export.js"
