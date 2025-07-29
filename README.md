@@ -76,6 +76,8 @@ dist/
 
 Both formats include the same API so your bundler can pick whichever it understands. CSS minification still works with `npm run minify-css`.
 
+The build also runs automatically when installing from git or publishing the package thanks to the `prepare` script in `package.json`.
+
 To use the library directly in a browser without a bundler, load the ESM file:
 
 ```html

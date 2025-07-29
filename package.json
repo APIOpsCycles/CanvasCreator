@@ -5,6 +5,7 @@
   "scripts": {
     "test": "jest",
     "build": "rollup -c",
+    "prepare": "npm run build",
     "minify-css": "cleancss -o canvascreator.min.css styles/canvascreator.css",
     "export": "node scripts/export.js"
   },
@@ -21,5 +22,7 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-json": "^6.0.0"
   },
-  "module": "dist/canvascreator.esm.js"
+  "module": "dist/canvascreator.esm.js",
+  "author": "Marjukka Niinioja (www.osaango.com)",
+  "license": "Apache-2.0"
 }
