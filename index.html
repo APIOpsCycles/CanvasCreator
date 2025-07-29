@@ -3,7 +3,7 @@
   <head>
     <title>APIOps Cycles - Canvas Creator</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <link rel="stylesheet" href="/canvascreator.min.css?v=1.0.4">
+    <link rel="stylesheet" href="/canvascreator.min.css?v=<%= version %>">
     <link
       rel="icon"
       type="image/png"
@@ -123,6 +123,6 @@
       }
     </script>
     <!-- load the ESM bundle -->
-    <script type="module" src="dist/canvascreator.esm.js"></script>
+    <script type="module" src="dist/canvascreator.esm.min.js?v=<%= version %>"></script>
   </body>
 </html>

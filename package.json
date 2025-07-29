@@ -4,7 +4,7 @@
   "main": "dist/canvascreator.cjs",
   "scripts": {
     "test": "jest",
-    "build": "rollup -c",
+    "build": "rollup -c && npm run minify-css",
     "prepare": "npm run build",
     "minify-css": "cleancss -o canvascreator.min.css styles/canvascreator.css",
     "export": "node scripts/export.js"
@@ -20,7 +20,8 @@
     "rollup": "^3.29.0",
     "@rollup/plugin-commonjs": "^25.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
-    "@rollup/plugin-json": "^6.0.0"
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-terser": "^0.4.3"
   },
   "module": "dist/canvascreator.esm.js",
   "author": "Marjukka Niinioja (www.osaango.com)",
