@@ -24,5 +24,8 @@
   },
   "module": "dist/canvascreator.esm.js",
   "author": "Marjukka Niinioja (www.osaango.com)",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "files": [
+    "dist"
+  ]
 }
