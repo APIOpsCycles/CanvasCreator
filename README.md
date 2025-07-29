@@ -83,11 +83,17 @@ Both formats include the same API so your bundler can pick whichever it understa
 
 The build also runs automatically when installing from git or publishing the package thanks to the `prepare` script in `package.json`.
 
-To use the library directly in a browser without a bundler, load the minified ESM file:
+To use the library directly in a browser without a bundler, import the minified
+ESM file using a relative path:
 
 ```html
-<script type="module" src="dist/canvascreator.esm.min.js"></script>
+<script type="module">
+  import { loadCanvas } from "./dist/canvascreator.esm.min.js";
+  loadCanvas("en-US", "apiBusinessModelCanvas");
+</script>
 ```
+
+**Note**: If those elements aren't present the library now inserts a minimal UI with locale and canvas selectors plus import/export buttons. You can still provide your own markup and just call `loadCanvas(locale, canvasId)` if you want to handle the UI yourself.
 
 During the build, `scripts/updateVersion.js` copies `index.html` and the
 necessary images into the `dist` folder. It also replaces the

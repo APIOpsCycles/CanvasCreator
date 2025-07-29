@@ -18,6 +18,58 @@ const defaultStyles = require('./defaultStyles');
 const canvasData = require("../data/canvasData.json");
 const localizedData = require("../data/localizedData.json");
 
+  // Ensure required UI elements exist, creating them when missing
+  function ensureUIExists() {
+    if (!document.getElementById("toolContainer")) {
+      const container = document.createElement("div");
+      container.id = "toolContainer";
+      container.innerHTML = `
+        <div id="localeSelector">
+          <label for="locale">Select Locale:</label>
+          <select id="locale"></select>
+        </div>
+        <div id="canvasSelector" style="display:none">
+          <label for="canvas">Select Canvas:</label>
+          <select id="canvas"></select>
+        </div>
+        <div id="canvasToolGroup">
+          <button id="metadataButton" class="canvas-tools">Edit Metadata</button>
+          <button id="importButton" class="canvas-tools">Import JSON</button>
+          <button id="exportButton" class="canvas-tools">Export JSON</button>
+          <button id="exportSVGButton" class="canvas-tools">Export SVGs</button>
+          <div id="colorPalette">
+            <button class="colorSwatch" style="background-color:#c0eb6a" data-color="#C0EB6A"></button>
+            <button class="colorSwatch" style="background-color:#dfddc5" data-color="#DFDDC5"></button>
+            <button class="colorSwatch" style="background-color:#ffafaf" data-color="#FFAFAF"></button>
+            <button class="colorSwatch" style="background-color:#7dc9e7" data-color="#7DC9E7"></button>
+            <button class="colorSwatch" style="background-color:#fff399" data-color="#FFF399"></button>
+          </div>
+        </div>
+        <div id="metadataForm" style="display:none">
+          <h2>Content Metadata</h2>
+          <label for="source">Source:</label>
+          <input type="text" id="source" name="source" /><br /><br />
+          <label for="license">License:</label>
+          <input type="text" id="license" name="license" /><br /><br />
+          <label for="authors">Authors:</label>
+          <input type="text" id="authors" name="authors" /><br /><br />
+          <label for="website">Website:</label>
+          <input type="text" id="website" name="website" /><br /><br />
+          <button id="saveMetadata">Save Metadata</button>
+        </div>`;
+      document.body.prepend(container);
+    }
+
+    if (!document.getElementById("canvasCreator")) {
+      const creator = document.createElement("div");
+      creator.id = "canvasCreator";
+      document.body.appendChild(creator);
+    }
+  }
+
+  // Create UI if missing
+  ensureUIExists();
+
   // No DOMPurify setup; sanitization is handled in helpers
 
   // Sticky note variables
