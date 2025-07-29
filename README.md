@@ -45,7 +45,8 @@ CanvasCreator/
 ├── index.html                 # Main HTML file
 ├── dist/                      # Bundled output from `npm run build` (not tracked)
 │   ├── canvascreator.cjs
-│   └── canvascreator.esm.js
+│   ├── canvascreator.esm.js
+│   └── canvascreator.esm.min.js
 ├── src/                       # Modular JavaScript source
 │   ├── helpers.js
 │   ├── main.js
@@ -66,22 +67,24 @@ CanvasCreator/
 
 ## Build
 
-Run `npm run build` to compile the library using [Rollup](https://rollupjs.org/). The command outputs CommonJS and ES module bundles in `dist/`:
+Run `npm run build` to compile the library using [Rollup](https://rollupjs.org/). The command now also minifies the output using the `@rollup/plugin-terser` plugin. It produces CommonJS, ESM and a minified ESM bundle in `dist/` along with the minified CSS:
 
 ```
 dist/
-  canvascreator.cjs    # CommonJS
-  canvascreator.esm.js # ESM
+  canvascreator.cjs       # CommonJS
+  canvascreator.esm.js    # ESM
+  canvascreator.esm.min.js # Minified ESM
+canvascreator.min.css
 ```
 
 Both formats include the same API so your bundler can pick whichever it understands. CSS minification still works with `npm run minify-css`.
 
 The build also runs automatically when installing from git or publishing the package thanks to the `prepare` script in `package.json`.
 
-To use the library directly in a browser without a bundler, load the ESM file:
+To use the library directly in a browser without a bundler, load the minified ESM file:
 
 ```html
-<script type="module" src="dist/canvascreator.esm.js"></script>
+<script type="module" src="dist/canvascreator.esm.min.js"></script>
 ```
 
 ## Using in Front-end Projects
@@ -155,10 +158,10 @@ The test suite also runs automatically in GitHub Actions for each push and pull 
 
 ## Versioning & Caching
 The stylesheet is referenced with a version query
-(`canvascreator.min.css?v=1.0.2`) so browsers load the latest minified CSS.
-If you serve the JavaScript bundles directly in the browser, you can append a
-similar query string to `dist/canvascreator.esm.js` whenever releasing a new
-version to avoid cached copies.
+(`canvascreator.min.css?v=<version>`) so browsers load the latest minified CSS.
+When serving the JavaScript bundles directly in the browser, use
+`dist/canvascreator.esm.min.js?v=<version>` so you can bump the query string to
+invalidate cached copies on release.
 
 ## License
 This project is licensed under the **Apache 2.0 License**. See the `LICENSE` file for details.
