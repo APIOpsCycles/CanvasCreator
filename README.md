@@ -87,9 +87,9 @@ To use the library directly in a browser without a bundler, load the minified ES
 <script type="module" src="dist/canvascreator.esm.min.js"></script>
 ```
 
-During the build, `scripts/updateVersion.js` replaces the `v=<%= version %>`
-placeholders in `index.html` with the actual package version so browsers always
-load the latest CSS and JavaScript.
+During the build, `scripts/updateVersion.js` copies `index.html` into
+`dist/index.html` and replaces the `v=<%= version %>` placeholders with the
+current package version so browsers always load the latest CSS and JavaScript.
 
 ## Using in Front-end Projects
 
