@@ -137,8 +137,8 @@ Options:
 - `--import <file>` – load an existing JSON content file instead of creating
   placeholders
 
-Files are written to the current directory following the pattern
-`{prefix}_{canvasId}_{locale}.ext`.
+Files are written to an `export/` subdirectory following the pattern
+`export/{prefix}_{canvasId}_{locale}.ext`.
 
 ## How to Contribute
 Contributions are welcome, especially localization help, bug fixing, or contributing libraries in other languages or frameworks!

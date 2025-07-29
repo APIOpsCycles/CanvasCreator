@@ -29,11 +29,13 @@
   "bin": {
     "canvascreator-export": "scripts/export.js"
   },
+  "types": "index.d.ts",
   "files": [
     "dist",
     "scripts",
     "src",
     "data",
-    "img"
+    "img",
+    "index.d.ts"
   ]
 }
