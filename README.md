@@ -67,17 +67,19 @@ CanvasCreator/
 
 ## Build
 
-Run `npm run build` to compile the library using [Rollup](https://rollupjs.org/). The command now also minifies the output using the `@rollup/plugin-terser` plugin. It produces CommonJS, ESM and a minified ESM bundle in `dist/` along with the minified CSS:
+Run `npm run build` to compile the library using [Rollup](https://rollupjs.org/). The command also minifies the JavaScript using the `@rollup/plugin-terser` plugin and the CSS using [`clean-css`](https://github.com/jakubpawlowicz/clean-css). It produces CommonJS, ESM and a minified ESM bundle in `dist/` together with the minified CSS and assets:
 
 ```
 dist/
-  canvascreator.cjs       # CommonJS
-  canvascreator.esm.js    # ESM
+  canvascreator.cjs        # CommonJS
+  canvascreator.esm.js     # ESM
   canvascreator.esm.min.js # Minified ESM
-canvascreator.min.css
+  canvascreator.min.css    # Minified CSS
+  img/                     # Images used by index.html
+  index.html               # Generated demo page
 ```
 
-Both formats include the same API so your bundler can pick whichever it understands. CSS minification still works with `npm run minify-css`.
+Both formats include the same API so your bundler can pick whichever it understands. CSS minification is handled by the `minify-css` script which uses `clean-css`.
 
 The build also runs automatically when installing from git or publishing the package thanks to the `prepare` script in `package.json`.
 
@@ -87,9 +89,10 @@ To use the library directly in a browser without a bundler, load the minified ES
 <script type="module" src="dist/canvascreator.esm.min.js"></script>
 ```
 
-During the build, `scripts/updateVersion.js` copies `index.html` into
-`dist/index.html` and replaces the `v=<%= version %>` placeholders with the
-current package version so browsers always load the latest CSS and JavaScript.
+During the build, `scripts/updateVersion.js` copies `index.html` and the
+necessary images into the `dist` folder. It also replaces the
+`v=<%= version %>` placeholders so browsers always load the latest CSS and
+JavaScript files.
 
 ## Using in Front-end Projects
 
