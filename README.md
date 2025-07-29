@@ -115,7 +115,13 @@ Any framework that supports ES modules (React, Vue, etc.) can use the same API.
 
 You can also export canvases outside the browser using Node.js. The helper
 script `scripts/export.js` reads the canvas definitions and generates JSON,
-SVG, or PDF output. Execute it via the convenient npm script:
+SVG, or PDF output. Install the package and run the bundled CLI:
+
+```sh
+npx canvascreator-export --locale en-US --format svg --all --prefix My
+```
+
+If you've cloned this repository you can alternatively run:
 
 ```sh
 npm run export -- --locale en-US --format svg --all --prefix My
