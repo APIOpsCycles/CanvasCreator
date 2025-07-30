@@ -20,3 +20,4 @@ module.exports = {
   distributeMissingPositions: exports.distributeMissingPositions,
   defaultStyles: exports.defaultStyles,
 };
+exports.default = module.exports;

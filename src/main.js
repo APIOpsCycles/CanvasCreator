@@ -14,6 +14,9 @@ const {
 } = require('./helpers');
 const defaultStyles = require('./defaultStyles');
 
+// Base path for images and CSS, updated by initCanvasCreator
+let assetBase = '';
+
 //load canvas layouts and localizations from json data
 const canvasData = require("../data/canvasData.json");
 const localizedData = require("../data/localizedData.json");
@@ -86,7 +89,10 @@ function initCanvasCreator({
   canvasSelectorElement,
   canvasCreatorElement,
   toolsSelector = '.canvas-tools',
+  assetBase: assetBaseParam = '',
 } = {}) {
+  // Expose assetBase to other functions
+  assetBase = assetBaseParam;
   const localeSel =
     localeElement || document.getElementById('locale')
   const canvasSel =
@@ -405,7 +411,7 @@ fileInput.addEventListener("change", function () {
         .attr("height", defaultStyles.height)
         .style("background-color", defaultStyles.backgroundColor)
   
-      const logoUrl = "/img/apiops-cycles-logo2025-blue.svg"
+      const logoUrl = `${assetBase}/img/apiops-cycles-logo2025-blue.svg`
   
       fetchAPIOpsLogo(
         logoUrl,
