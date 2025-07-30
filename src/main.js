@@ -25,6 +25,9 @@ const localizedData = require("../data/localizedData.json");
   let selectedNote = null
   // Track the currently selected canvas ID
   let canvasId = null
+  // Maintain selected locale and canvas for confirmation logic
+  let currentLocale = null
+  let currentCanvas = null
   // Track if current canvas has unsaved changes
   let unsavedChanges = false
   
@@ -57,6 +60,12 @@ function populateCanvasSelector(
 ) {
   if (!canvasSelector) return
   canvasSelector.innerHTML = '' // Clear previous options
+
+  // Add placeholder option so no canvas is auto-selected
+  const selectOption = document.createElement('option')
+  selectOption.value = ''
+  selectOption.text = 'Select Canvas'
+  canvasSelector.add(selectOption)
 
   // Get available canvas IDs from localizedData for the selected locale
   const canvasIds = Object.keys(localizedData[locale])
@@ -93,18 +102,39 @@ function initCanvasCreator({
   localeSel.addEventListener(
     'change',
     (event) => {
-      const selectedLocale = event.target.value
+      const newLocale = event.target.value
+
+      if (contentData && contentData.sections) {
+        const hasStickyNotes = contentData.sections.some(
+          (section) => section.stickyNotes.length > 0,
+        )
+        if (hasStickyNotes) {
+          if (
+            !confirm(
+              'Are you sure you want to remove sticky notes and change canvas?',
+            )
+          ) {
+            localeSel.value = currentLocale || ''
+            return
+          }
+          contentData.sections.forEach((section) => {
+            section.stickyNotes = []
+          })
+        }
+      }
 
       if (canvasSelectorContainer) {
         canvasSelectorContainer.style.display = 'block'
       }
 
-      populateCanvasSelector(selectedLocale, canvasSel)
+      populateCanvasSelector(newLocale, canvasSel)
+      canvasSel.value = ''
 
-      const selectedCanvas = canvasSel.value
-      if (selectedCanvas && canvasCreator) {
-        canvasCreator.style.display = 'flex'
+      if (canvasCreator) {
+        canvasCreator.style.display = 'none'
       }
+
+      currentLocale = newLocale
     },
   )
 
@@ -123,9 +153,33 @@ function initCanvasCreator({
   canvasSel.addEventListener(
     'change',
     (event) => {
-      const selectedLocale = localeSel.value
-      const selectedCanvas = event.target.value
-      loadCanvas(selectedLocale, selectedCanvas)
+      const newCanvas = event.target.value
+      if (!newCanvas) return
+
+      if (contentData && contentData.sections) {
+        const hasStickyNotes = contentData.sections.some(
+          (section) => section.stickyNotes.length > 0,
+        )
+        if (hasStickyNotes) {
+          if (
+            !confirm(
+              'Are you sure you want to remove sticky notes and change canvas?',
+            )
+          ) {
+            canvasSel.value = currentCanvas || ''
+            return
+          }
+          contentData.sections.forEach((section) => {
+            section.stickyNotes = []
+          })
+        }
+      }
+
+      loadCanvas(localeSel.value, newCanvas)
+      if (canvasCreator) {
+        canvasCreator.style.display = 'flex'
+      }
+      currentCanvas = newCanvas
     },
   )
 
@@ -153,6 +207,8 @@ function initCanvasCreator({
           const selectedLocale = localeSel.value
           const selectedCanvas = canvasSel.value
           loadCanvas(selectedLocale, selectedCanvas)
+          currentLocale = selectedLocale
+          currentCanvas = selectedCanvas
           return false
         } else {
           event.target.blur()
@@ -218,9 +274,11 @@ fileInput.addEventListener("change", function () {
       populateCanvasSelector(locale)
       document.getElementById("canvasSelector").style.display = "block"
       document.getElementById("canvasCreator").style.display = "flex"
-      
+
       // Render canvas
       loadCanvas(locale, canvasId, true)
+      currentLocale = locale
+      currentCanvas = canvasId
       
       // Mark as dirty
       unsavedChanges = true
@@ -246,6 +304,8 @@ fileInput.addEventListener("change", function () {
 
   
   function loadCanvas(locale, canvasId, preserveContentData = false) {
+    currentLocale = locale
+    currentCanvas = canvasId
     // Access canvasData directly
     canvasDataForId = canvasData[canvasId]
   
