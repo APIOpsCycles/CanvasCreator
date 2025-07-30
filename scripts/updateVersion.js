@@ -15,6 +15,7 @@ contents = contents.replace(/<%=\s*version\s*%>/g, version);
 contents = contents
   .replace(/href="\/canvascreator.min.css\?v=[^"]+"/, `href="canvascreator.min.css?v=${version}"`)
   .replace(/src="dist\/canvascreator.esm.min.js\?v=[^"]+"/, `src="canvascreator.esm.min.js?v=${version}"`)
+  .replace(/(["'])\.\/dist\/canvascreator\.esm\.min\.js/g, `$1canvascreator.esm.min.js`)
   .replace(/src="\/img\//g, 'src="img/')
   .replace(/href="\/img\//g, 'href="img/');
 
