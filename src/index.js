@@ -4,6 +4,7 @@ const defaultStyles = require('./defaultStyles');
 
 exports.createCanvas = canvasCreator.loadCanvas;
 exports.loadCanvas = canvasCreator.loadCanvas;
+exports.initCanvasCreator = canvasCreator.initCanvasCreator;
 exports.sanitizeInput = helpers.sanitizeInput;
 exports.validateInput = helpers.validateInput;
 exports.distributeMissingPositions = helpers.distributeMissingPositions;
@@ -13,6 +14,7 @@ exports.defaultStyles = defaultStyles;
 module.exports = {
   createCanvas: exports.createCanvas,
   loadCanvas: exports.loadCanvas,
+  initCanvasCreator: exports.initCanvasCreator,
   sanitizeInput: exports.sanitizeInput,
   validateInput: exports.validateInput,
   distributeMissingPositions: exports.distributeMissingPositions,
