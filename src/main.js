@@ -23,6 +23,10 @@ const localizedData = require("../data/localizedData.json");
   // Sticky note variables
   let currentColor = defaultStyles.stickyNoteColor
   let selectedNote = null
+  // Track the currently selected canvas ID
+  let canvasId = null
+  // Track if current canvas has unsaved changes
+  let unsavedChanges = false
   
 
   
