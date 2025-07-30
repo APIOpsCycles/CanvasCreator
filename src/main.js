@@ -241,11 +241,11 @@ fileInput.addEventListener("change", function () {
       } catch (error) {}
     }
   
-    let svg = d3.select("svg")
+    let svg = d3.select("#canvasCreator svg")
   
     //main
     const renderCanvas = (canvasData, contentData, localizedData) => {
-      d3.select("svg").remove()
+      d3.select("#canvasCreator svg").remove()
   
       const cellWidth = Math.floor(
         (defaultStyles.width -
