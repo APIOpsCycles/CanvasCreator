@@ -124,8 +124,8 @@
     </script>
     <!-- load the ESM bundle -->
     <script type="module">
-      import { initCanvasCreator } from './dist/canvascreator.esm.min.js?v=<%= version %>';
-      initCanvasCreator();
+      import CanvasCreator from './dist/canvascreator.esm.min.js?v=<%= version %>';
+      CanvasCreator.initCanvasCreator();
     </script>
   </body>
 </html>
