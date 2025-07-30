@@ -106,7 +106,6 @@ function initCanvasCreator({
         canvasCreator.style.display = 'flex'
       }
     },
-    { once: true },
   )
 
   // add touch events to tool section
@@ -128,7 +127,6 @@ function initCanvasCreator({
       const selectedCanvas = event.target.value
       loadCanvas(selectedLocale, selectedCanvas)
     },
-    { once: true },
   )
 
   // Initialize the locale selector
