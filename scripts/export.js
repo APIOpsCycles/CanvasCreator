@@ -60,7 +60,7 @@ function buildContent(canvasData, canvasId, locale, addPlaceholder, imported) {
   }
   const canvasDef = canvasData[canvasId];
   const content = {
-    templateId: canvasId,
+    canvasId: canvasId,
     locale,
     stickyNoteSize: defaultStyles.stickyNoteSize,
     metadata: { source: '', license: '', authors: [], website: '' },
@@ -351,7 +351,7 @@ async function main() {
     const files = Array.isArray(args.import) ? args.import : [args.import];
     for (const file of files) {
       const obj = JSON.parse(fs.readFileSync(file, 'utf8'));
-      imports[obj.templateId] = obj;
+      imports[obj.canvasId] = obj;
     }
   }
   for (const id of canvasIds) {

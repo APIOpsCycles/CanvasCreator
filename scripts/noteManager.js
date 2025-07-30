@@ -18,7 +18,7 @@ function editStickyNote(note, newContent) {
 
 function exportJSON(contentData) {
   const exportData = {
-    templateId: contentData.templateId,
+    canvasId: contentData.canvasId,
     locale: contentData.locale,
     metadata: contentData.metadata,
     sections: contentData.sections.map(section => ({

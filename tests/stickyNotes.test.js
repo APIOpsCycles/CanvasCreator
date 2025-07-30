@@ -5,7 +5,7 @@ describe('sticky note operations', () => {
 
   beforeEach(() => {
     contentData = {
-      templateId: 'apiBusinessModelCanvas',
+      canvasId: 'apiBusinessModelCanvas',
       locale: 'en-US',
       metadata: { source: 'test', license: 'MIT', authors: ['a'], website: 'example.com' },
       stickyNoteSize: 80,

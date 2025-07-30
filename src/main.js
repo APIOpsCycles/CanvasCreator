@@ -23,6 +23,8 @@ const localizedData = require("../data/localizedData.json");
   // Sticky note variables
   let currentColor = defaultStyles.stickyNoteColor
   let selectedNote = null
+  let canvasId = null
+  let unsavedChanges = false
   
 
   
@@ -122,7 +124,7 @@ fileInput.addEventListener("change", function () {
       const importedData = JSON.parse(event.target.result)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
       if (
-        !importedData.templateId ||
+        !importedData.canvasId ||
         !importedData.metadata ||
         !importedData.sections
       ) {
@@ -131,7 +133,7 @@ fileInput.addEventListener("change", function () {
       }
   
       // Save the imported values
-      canvasId = importedData.templateId
+      canvasId = importedData.canvasId
       contentData = importedData
       canvasDataForId = canvasData[canvasId]
 
@@ -198,7 +200,7 @@ fileInput.addEventListener("change", function () {
     // Only reset contentData if NOT importing
     if (!preserveContentData) {
       contentData = {
-        templateId: canvasId,
+        canvasId: canvasId,
         locale: locale,
         metadata: {
           source: "",
@@ -259,13 +261,13 @@ fileInput.addEventListener("change", function () {
   
       const locale = contentData.locale || defaultStyles.defaultLocale // Default to en-US if not provided
       // Use canvasId to access the correct localized data
-      const canvasId = contentData.templateId
+      const canvasId = contentData.canvasId
       const localizedCanvasData = localizedData[locale][canvasId]
   
       // Check if contentData is empty
       if (Object.keys(contentData).length === 0) {
         // Create a new contentData structure based on canvasData
-        contentData.templateId = canvasData.id
+        contentData.canvasId = canvasData.id
         contentData.locale = locale // Or any default locale you prefer
         contentData.metadata = {
           source: "",
@@ -580,7 +582,7 @@ fileInput.addEventListener("change", function () {
       const exportJSONButton = document.getElementById("exportButton")
       exportJSONButton.onclick = () => {
         const exportData = {
-          templateId: contentData.templateId,
+          canvasId: contentData.canvasId,
           locale: contentData.locale,
           metadata: {
             ...contentData.metadata,
@@ -601,7 +603,7 @@ fileInput.addEventListener("change", function () {
         const link = document.createElement("a");
         link.href =
           "data:application/json;charset=utf-8," + encodeURIComponent(jsonString);
-        const filename = `${contentData.metadata.source || "Canvas"}_${contentData.templateId}_${contentData.locale}.json`;
+        const filename = `${contentData.metadata.source || "Canvas"}_${contentData.canvasId}_${contentData.locale}.json`;
         link.download = filename;
         document.body.appendChild(link);
         link.click();
@@ -630,7 +632,7 @@ fileInput.addEventListener("change", function () {
         });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        const filename = `${contentData.metadata.source || "Canvas"}_${contentData.templateId}_${contentData.locale}.svg`;
+        const filename = `${contentData.metadata.source || "Canvas"}_${contentData.canvasId}_${contentData.locale}.svg`;
         link.download = filename;
         document.body.appendChild(link);
         link.click();
@@ -781,8 +783,8 @@ fileInput.addEventListener("change", function () {
       }
   
       contentData.sections.forEach((contentSection) => {
-        // Find the corresponding section in canvasData using sectionId and templateId
-        const canvasId = contentData.templateId // Get the canvas ID from contentData
+        // Find the corresponding section in canvasData using sectionId and canvasId
+        const canvasId = contentData.canvasId // Get the canvas ID from contentData
         const canvasSection = canvasData[canvasId].sections.find(
           (section) => section.id === contentSection.sectionId,
         )
