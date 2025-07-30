@@ -38,6 +38,17 @@ declare module "canvascreator" {
     preserveContentData?: boolean
   ): void;
 
+  export interface InitOptions {
+    localeElement?: HTMLElement | null;
+    canvasElement?: HTMLElement | null;
+    canvasSelectorElement?: HTMLElement | null;
+    canvasCreatorElement?: HTMLElement | null;
+    toolsSelector?: string;
+    assetBase?: string;
+  }
+
+  export function initCanvasCreator(options?: InitOptions): void;
+
   export function sanitizeInput(text: string): string;
   export function validateInput(text: string): string;
   export function distributeMissingPositions(
@@ -51,6 +62,7 @@ declare module "canvascreator" {
   const _default: {
     createCanvas: typeof createCanvas;
     loadCanvas: typeof loadCanvas;
+    initCanvasCreator: typeof initCanvasCreator;
     sanitizeInput: typeof sanitizeInput;
     validateInput: typeof validateInput;
     distributeMissingPositions: typeof distributeMissingPositions;

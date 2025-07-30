@@ -96,17 +96,20 @@ JavaScript files.
 
 ## Using in Front-end Projects
 
-Import the functions directly from the package in any bundler-based setup. For example with [Astro](https://astro.build/):
+Import the functions directly from the package in any bundler-based setup. For example with [Astro](https://astro.build/). Make sure [D3.js](https://d3js.org/) is loaded separately and copy `canvascreator.min.css` and the `img` directory from the package to your public folder.
 
 ```astro
 ---
-import { loadCanvas } from "canvascreator";
+import CanvasCreator from "canvascreator";
 ---
-<div id="canvas"></div>
+<div id="canvasCreator"></div>
 <script type="module">
-  loadCanvas("en-US", "apiBusinessModelCanvas");
+  CanvasCreator.initCanvasCreator({ assetBase: "/" });
+  CanvasCreator.loadCanvas("en-US", "apiBusinessModelCanvas");
 </script>
 ```
+
+The optional `assetBase` setting tells the library where to load `img` and CSS files from. It defaults to an empty string which points to the site root.
 
 Any framework that supports ES modules (React, Vue, etc.) can use the same API.
 

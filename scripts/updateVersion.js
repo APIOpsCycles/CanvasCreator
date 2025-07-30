@@ -3,21 +3,16 @@ const path = require('path');
 
 const pkg = require('../package.json');
 const version = pkg.version;
+const assetBase = process.env.ASSET_BASE || '.';
 
 // Read the source template index.html
 const src = path.join(__dirname, '..', 'index.html');
 let contents = fs.readFileSync(src, 'utf8');
 
 // Replace EJS-style placeholders with actual version number
-contents = contents.replace(/<%=\s*version\s*%>/g, version);
-
-// Adjust asset paths for the dist folder
 contents = contents
-  .replace(/href="\/canvascreator.min.css\?v=[^"]+"/, `href="canvascreator.min.css?v=${version}"`)
-  .replace(/src="dist\/canvascreator.esm.min.js\?v=[^"]+"/, `src="./canvascreator.esm.min.js?v=${version}"`)
-  .replace(/(["'])\.\/dist\/canvascreator\.esm\.min\.js/g, `$1./canvascreator.esm.min.js`)
-  .replace(/src="\/img\//g, 'src="img/')
-  .replace(/href="\/img\//g, 'href="img/');
+  .replace(/<%=\s*version\s*%>/g, version)
+  .replace(/<%=\s*assetBase\s*%>/g, assetBase);
 
 // Write the processed file into dist so the original stays untouched
 const outDir = path.join(__dirname, '..', 'dist');

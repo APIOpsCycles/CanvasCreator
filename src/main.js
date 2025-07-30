@@ -86,6 +86,7 @@ function initCanvasCreator({
   canvasSelectorElement,
   canvasCreatorElement,
   toolsSelector = '.canvas-tools',
+  assetBase = '',
 } = {}) {
   const localeSel =
     localeElement || document.getElementById('locale')
@@ -405,7 +406,7 @@ fileInput.addEventListener("change", function () {
         .attr("height", defaultStyles.height)
         .style("background-color", defaultStyles.backgroundColor)
   
-      const logoUrl = "/img/apiops-cycles-logo2025-blue.svg"
+      const logoUrl = `${assetBase}/img/apiops-cycles-logo2025-blue.svg`
   
       fetchAPIOpsLogo(
         logoUrl,

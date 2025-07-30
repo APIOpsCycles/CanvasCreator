@@ -3,18 +3,18 @@
   <head>
     <title>APIOps Cycles - Canvas Creator</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <link rel="stylesheet" href="/canvascreator.min.css?v=<%= version %>">
+    <link rel="stylesheet" href="<%= assetBase %>/canvascreator.min.css?v=<%= version %>">
     <link
       rel="icon"
       type="image/png"
-      href="/img/apiops-cycles-logo-2025-32.png"
+      href="<%= assetBase %>/img/apiops-cycles-logo-2025-32.png"
     />
   </head>
   <body>
     <span style="font-size: 30px; cursor: pointer" onclick="openNav()">&#9776;</span>
     <div id="toolContainer">
       <img
-        src="/img/apiops-cycles-logo2025-blue.svg"
+        src="<%= assetBase %>/img/apiops-cycles-logo2025-blue.svg"
         width="100px"
         height="100px"
       />
@@ -124,8 +124,8 @@
     </script>
     <!-- load the ESM bundle -->
     <script type="module">
-      import CanvasCreator from './dist/canvascreator.esm.min.js?v=<%= version %>';
-      CanvasCreator.initCanvasCreator();
+      import CanvasCreator from '<%= assetBase %>/dist/canvascreator.esm.min.js?v=<%= version %>';
+      CanvasCreator.initCanvasCreator({ assetBase: '<%= assetBase %>' });
     </script>
   </body>
 </html>
