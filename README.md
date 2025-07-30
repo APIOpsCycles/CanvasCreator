@@ -86,7 +86,7 @@ The build also runs automatically when installing from git or publishing the pac
 To use the library directly in a browser without a bundler, load the minified ESM file:
 
 ```html
-<script type="module" src="dist/canvascreator.esm.min.js"></script>
+<script type="module" src="canvascreator.esm.min.js"></script>
 ```
 
 During the build, `scripts/updateVersion.js` copies `index.html` and the
@@ -176,7 +176,7 @@ The test suite also runs automatically in GitHub Actions for each push and pull 
 The stylesheet is referenced with a version query
 (`canvascreator.min.css?v=<version>`) so browsers load the latest minified CSS.
 When serving the JavaScript bundles directly in the browser, use
-`dist/canvascreator.esm.min.js?v=<version>` so you can bump the query string to
+`canvascreator.esm.min.js?v=<version>` so you can bump the query string to
 invalidate cached copies on release.
 
 ## License
