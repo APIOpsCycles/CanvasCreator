@@ -30,68 +30,89 @@ const localizedData = require("../data/localizedData.json");
   
 
   
-  // Function to populate the locale selector
-  function populateLocaleSelector() {
-    const localeSelector = document.getElementById("locale")
-    const locales = Object.keys(localizedData)
+// Function to populate the locale selector
+function populateLocaleSelector(localeSelector = document.getElementById('locale')) {
+  if (!localeSelector) return
+  const locales = Object.keys(localizedData)
+
+  // Add the "Select Locale" option first
+  const selectOption = document.createElement('option')
+  selectOption.value = ''
+  selectOption.text = 'Select Locale'
+  localeSelector.add(selectOption)
+
+  // Add locales only once
+  locales.forEach((locale) => {
+    const option = document.createElement('option')
+    option.value = locale
+    option.text = locale
+    localeSelector.add(option)
+  })
+}
   
-    // Add the "Select Locale" option first
-    const selectOption = document.createElement("option")
-    selectOption.value = ""
-    selectOption.text = "Select Locale"
-    localeSelector.add(selectOption)
+// Function to populate the canvas selector based on the selected locale
+function populateCanvasSelector(
+  locale,
+  canvasSelector = document.getElementById('canvas'),
+) {
+  if (!canvasSelector) return
+  canvasSelector.innerHTML = '' // Clear previous options
+
+  // Get available canvas IDs from localizedData for the selected locale
+  const canvasIds = Object.keys(localizedData[locale])
+
+  canvasIds.forEach((canvasId) => {
+    const option = document.createElement('option')
+    option.value = canvasId
+    // Access the localized title correctly
+    option.text = localizedData[locale][canvasId].title
+    canvasSelector.add(option)
+  })
+}
   
-    // Add locales only once
-    locales.forEach((locale) => {
-      const option = document.createElement("option")
-      option.value = locale
-      option.text = locale
-      localeSelector.add(option)
-    })
-  }
-  
-  // Function to populate the canvas selector based on the selected locale
-  function populateCanvasSelector(locale) {
-    const canvasSelector = document.getElementById("canvas")
-    canvasSelector.innerHTML = "" // Clear previous options
-  
-    // Get available canvas IDs from localizedData for the selected locale
-    const canvasIds = Object.keys(localizedData[locale])
-  
-    canvasIds.forEach((canvasId) => {
-      const option = document.createElement("option")
-      option.value = canvasId
-      // Access the localized title correctly
-      option.text = localizedData[locale][canvasId].title
-      canvasSelector.add(option)
-    })
-  }
-  
+// Initialization function to attach DOM event listeners
+function initCanvasCreator({
+  localeElement,
+  canvasElement,
+  canvasSelectorElement,
+  canvasCreatorElement,
+  toolsSelector = '.canvas-tools',
+} = {}) {
+  const localeSel =
+    localeElement || document.getElementById('locale')
+  const canvasSel =
+    canvasElement || document.getElementById('canvas')
+  const canvasSelectorContainer =
+    canvasSelectorElement || document.getElementById('canvasSelector')
+  const canvasCreator =
+    canvasCreatorElement || document.getElementById('canvasCreator')
+
+  if (!localeSel || !canvasSel) return
+
   // Event listeners for locale and canvas selection
-  document.getElementById("locale").addEventListener(
-    "change",
+  localeSel.addEventListener(
+    'change',
     (event) => {
       const selectedLocale = event.target.value
-  
-      // Show the canvas selector after a locale is selected
-      document.getElementById("canvasSelector").style.display = "block"
-  
-      populateCanvasSelector(selectedLocale)
-  
-      // Trigger canvas loading if a canvas is already selected
-      const selectedCanvas = document.getElementById("canvas").value
-      if (selectedCanvas) {
-        //loadCanvas(selectedLocale, selectedCanvas);
-        document.getElementById("canvasCreator").style.display = "flex"
+
+      if (canvasSelectorContainer) {
+        canvasSelectorContainer.style.display = 'block'
+      }
+
+      populateCanvasSelector(selectedLocale, canvasSel)
+
+      const selectedCanvas = canvasSel.value
+      if (selectedCanvas && canvasCreator) {
+        canvasCreator.style.display = 'flex'
       }
     },
     { once: true },
   )
-  
-  //add touch events to tool section.
-  document.querySelectorAll(".canvas-tools").forEach((button) => {
+
+  // add touch events to tool section
+  document.querySelectorAll(toolsSelector).forEach((button) => {
     button.addEventListener(
-      "touchstart",
+      'touchstart',
       function (event) {
         event.preventDefault()
         this.click()
@@ -99,16 +120,52 @@ const localizedData = require("../data/localizedData.json");
       { passive: false },
     )
   })
-  
-  document.getElementById("canvas").addEventListener(
-    "change",
+
+  canvasSel.addEventListener(
+    'change',
     (event) => {
-      const selectedLocale = document.getElementById("locale").value
+      const selectedLocale = localeSel.value
       const selectedCanvas = event.target.value
       loadCanvas(selectedLocale, selectedCanvas)
     },
     { once: true },
   )
+
+  // Initialize the locale selector
+  populateLocaleSelector(localeSel)
+
+  // Before unload warning
+  window.addEventListener('beforeunload', checkForUnsavedChanges)
+
+  // Focus handling for selectors
+  function handleSelectorFocus(event) {
+    if (contentData && contentData.sections) {
+      const hasStickyNotes = contentData.sections.some(
+        (section) => section.stickyNotes.length > 0,
+      )
+      if (hasStickyNotes) {
+        if (
+          confirm(
+            'Are you sure you want to remove sticky notes and change canvas?',
+          )
+        ) {
+          contentData.sections.forEach((section) => {
+            section.stickyNotes = []
+          })
+          const selectedLocale = localeSel.value
+          const selectedCanvas = canvasSel.value
+          loadCanvas(selectedLocale, selectedCanvas)
+          return false
+        } else {
+          event.target.blur()
+        }
+      }
+    }
+  }
+
+  localeSel.addEventListener('focus', handleSelectorFocus)
+  canvasSel.addEventListener('focus', handleSelectorFocus)
+}
   
 // Create file input once globally
 const fileInput = document.createElement("input")
@@ -1015,14 +1072,14 @@ fileInput.addEventListener("change", function () {
   }
   
   let hasStickyNotes = false
-  
+
   // Function to check for unsaved changes and show confirmation dialog
   function checkForUnsavedChanges(event) {
     if (contentData && contentData.sections) {
       hasStickyNotes = contentData.sections.some(
         (section) => section.stickyNotes.length > 0,
       )
-  
+
       if (hasStickyNotes) {
         const message =
           "You have unsaved changes. Are you sure you want to leave this page?"
@@ -1032,69 +1089,5 @@ fileInput.addEventListener("change", function () {
       }
     }
   }
-  
-  // Add beforeunload event listener
-  window.addEventListener("beforeunload", checkForUnsavedChanges)
-  
-  // Event listeners for locale and canvas selection
-  document.getElementById("locale").addEventListener("change", (event) => {
-    const selectedLocale = event.target.value
-  
-    // Show the canvas selector after a locale is selected
-    document.getElementById("canvasSelector").style.display = "block"
-  
-    populateCanvasSelector(selectedLocale)
-  
-    // Trigger canvas loading if a canvas is already selected
-    const selectedCanvas = document.getElementById("canvas").value
-    if (selectedCanvas) {
-      loadCanvas(selectedLocale, selectedCanvas)
-    }
-  })
-  
-  document.getElementById("canvas").addEventListener("change", (event) => {
-    const selectedLocale = document.getElementById("locale").value
-    const selectedCanvas = event.target.value
-    loadCanvas(selectedLocale, selectedCanvas)
-  })
-  
-  // Initialize the locale selector
-  populateLocaleSelector()
-  
-  // Add event listeners to locale and canvas selectors
-  const localeSelector = document.getElementById("locale")
-  const canvasSelector = document.getElementById("canvas")
-  
-  // Function to handle focus event on selectors
-  function handleSelectorFocus(event) {
-    // Check if contentData and its sections are defined
-    if (contentData && contentData.sections) {
-      hasStickyNotes = contentData.sections.some(
-        (section) => section.stickyNotes.length > 0,
-      )
-      if (hasStickyNotes) {
-        if (
-          confirm(
-            "Are you sure you want to remove sticky notes and change canvas?",
-          )
-        ) {
-          // Reset sticky notes and reload canvas
-  
-          contentData.sections.forEach((section) => {
-            section.stickyNotes = []
-          })
-          const selectedLocale = localeSelector.value
-          const selectedCanvas = canvasSelector.value
-          loadCanvas(selectedLocale, selectedCanvas)
-          return false // Cancel the focus event
-        } else {
-          // Cancel the focus event
-          event.target.blur()
-        }
-      }
-    }
-  }
-  
-  localeSelector.addEventListener("focus", handleSelectorFocus)
-  canvasSelector.addEventListener("focus", handleSelectorFocus)
-module.exports = { loadCanvas }
+
+module.exports = { loadCanvas, initCanvasCreator }

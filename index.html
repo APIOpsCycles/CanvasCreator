@@ -123,6 +123,9 @@
       }
     </script>
     <!-- load the ESM bundle -->
-    <script type="module" src="dist/canvascreator.esm.min.js?v=<%= version %>"></script>
+    <script type="module">
+      import { initCanvasCreator } from './dist/canvascreator.esm.min.js?v=<%= version %>';
+      initCanvasCreator();
+    </script>
   </body>
 </html>
