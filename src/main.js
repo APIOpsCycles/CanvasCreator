@@ -975,7 +975,7 @@ fileInput.addEventListener("change", function () {
             .attr("width", defaultStyles.stickyNoteSize)
             .attr("height", defaultStyles.stickyNoteSize)
             .attr("fill", (d) => d.color || defaultStyles.stickyNoteColor)
-            .attr("stroke", defaultStyles.stickyNoteBorderColor)
+            .attr("stroke", (d) => d.color || defaultStyles.stickyNoteBorderColor)
             .attr("rx", 3)
             .attr("ry", 3)
   
