@@ -53,3 +53,4 @@ These changes collectively improve localization support, example usage, and over
 
 - **PR #15 – PNG export and larger title font**
   Added PNG export to the command-line and UI. Image titles now use a slightly larger font size for readability.
+  Optional canvas dependency bumped to v3 for compatibility with Jest.

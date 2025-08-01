@@ -140,7 +140,7 @@ Options:
 - `--import <file>` – load an existing JSON content file instead of creating
   placeholders
 
-PNG output requires the optional `canvas` package. Install it with `npm install canvas`.
+PNG output requires the optional `canvas` package (v3). Install it with `npm install canvas@^3`.
 
 Files are written to an `export/` subdirectory following the pattern
 `export/{prefix}_{canvasId}_{locale}.ext`.
