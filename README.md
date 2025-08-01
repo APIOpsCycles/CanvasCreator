@@ -1,13 +1,13 @@
 # APIOps Cycles Canvas Creator
 
 
-![example API Business Model Canvas filled with the CanvasCreator](examples/Canvas_apiBusinessModelCanvas_en-US.svg)
+![example API Business Model Canvas filled with the CanvasCreator](examples/Canvas_apiBusinessModelCanvas_en.svg)
 
-See the same canvas exported from CanvasCreator as [SVG vector image](examples/Canvas_apiBusinessModelCanvas_en-US.svg) or [structured JSON](examples/Canvas_apiBusinessModelCanvas_en-US.json) that you can save to version control or your computer and upload again, to continue editing or share with your colleagues, customers or fellow students.
+See the same canvas exported from CanvasCreator as [SVG vector image](examples/Canvas_apiBusinessModelCanvas_en.svg) or [structured JSON](examples/Canvas_apiBusinessModelCanvas_en.json) that you can save to version control or your computer and upload again, to continue editing or share with your colleagues, customers or fellow students.
 
-Example of localized version in German (de-DE) - join the translation effort by creating a pull request. See more info below.
+Example of localized version in German (de) - join the translation effort by creating a pull request. See more info below.
 
-![example of German canvas](examples/Canvas_apiBusinessModelCanvas_de-DE.svg)
+![example of German canvas](examples/Canvas_apiBusinessModelCanvas_de.svg)
 
 ## Overview
 The **APIOps Cycles Canvas Creator** is a web-based tool designed to create and manage various API-related canvases, such as API Business Model Canvas, API Value Proposition Canvas, and others. The tool allows users to:
@@ -105,7 +105,7 @@ import CanvasCreator from "canvascreator";
 <div id="canvasCreator"></div>
 <script type="module">
   CanvasCreator.initCanvasCreator({ assetBase: "/" });
-  CanvasCreator.loadCanvas("en-US", "apiBusinessModelCanvas");
+  CanvasCreator.loadCanvas("en", "apiBusinessModelCanvas");
 </script>
 ```
 
@@ -121,18 +121,18 @@ script `scripts/export.js` reads the canvas definitions and generates JSON,
 SVG, or PDF output. Install the package and run the bundled CLI:
 
 ```sh
-npx canvascreator-export --locale en-US --format svg --all --prefix My
+npx canvascreator-export --locale en --format svg --all --prefix My
 ```
 
 If you've cloned this repository you can alternatively run:
 
 ```sh
-npm run export -- --locale en-US --format svg --all --prefix My
+npm run export -- --locale en --format svg --all --prefix My
 ```
 
 Options:
 
-- `--locale <code>` – language for the exported canvas (default `en-US`)
+- `--locale <code>` – language for the exported canvas (default `en`)
 - `--format <json|svg|pdf|png>` – output file type
 - `--prefix <name>` – prefix for generated filenames (default `Canvas`)
 - `--all` – export every canvas from `data/canvasData.json`
