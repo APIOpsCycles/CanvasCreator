@@ -425,7 +425,7 @@ fileInput.addEventListener("change", function () {
       svg
         .append("text")
         .attr("x", defaultStyles.headerHeight + 2 * defaultStyles.padding)
-        .attr("y", 2 * defaultStyles.padding)
+        .attr("y", 2 * defaultStyles.padding + defaultStyles.fontSize)
         .attr("text-anchor", "start")
         .attr("font-family", defaultStyles.fontFamily)
         .attr("font-size", defaultStyles.fontSize + 4 + "px")

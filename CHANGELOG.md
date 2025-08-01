@@ -50,3 +50,6 @@ The repository history shows twelve merged pull requests, which introduce locali
   don't cache outdated code.
 
 These changes collectively improve localization support, example usage, and overall stability when importing or exporting canvases.
+
+- **PR #15 – PNG export and larger title font**
+  Added PNG export to the command-line and UI. Image titles now use a slightly larger font size for readability.
