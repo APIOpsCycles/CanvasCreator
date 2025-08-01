@@ -6,12 +6,17 @@ if (typeof TextEncoder === "undefined") {
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require("jsdom");
-let PDFDocument, SVGtoPDF;
+let PDFDocument, SVGtoPDF, Canvas;
 try {
   PDFDocument = require("pdfkit");
   SVGtoPDF = require("svg-to-pdfkit");
 } catch (e) {
   PDFDocument = null;
+}
+try {
+  Canvas = require('canvas');
+} catch (e) {
+  Canvas = null;
 }
 const { createStickyNote, exportJSON } = require('./noteManager');
 const { distributeMissingPositions } = require('../src/helpers');
@@ -46,7 +51,7 @@ function printUsage() {
 
 Options:
   --locale <code>       language for the exported canvas (default en-US)
-  --format <json|svg|pdf> output file type
+  --format <json|svg|pdf|png> output file type
   --prefix <name>       prefix for generated filenames (default Canvas)
   --all                 export every canvas from data/canvasData.json
   --canvas <id>         export a single canvas by id
@@ -149,6 +154,7 @@ function renderSVG(canvasDef, localizedData, content) {
   const titleText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
   titleText.setAttribute('x', defaultStyles.headerHeight + 2 * defaultStyles.padding);
   titleText.setAttribute('y', 2 * defaultStyles.padding + defaultStyles.fontSize);
+  titleText.setAttribute('font-size', defaultStyles.fontSize + 4);
   titleText.setAttribute('font-weight', 'bold');
   titleText.setAttribute('fill', defaultStyles.fontColor);
   titleText.textContent = title;
@@ -322,6 +328,31 @@ function writePDF(svgString, outPath) {
   });
 }
 
+function writePNG(svgString, outPath) {
+  return new Promise((resolve, reject) => {
+    if (!Canvas) {
+      reject(new Error('canvas module not installed'));
+      return;
+    }
+    const { createCanvas, loadImage } = Canvas;
+    const canvas = createCanvas(
+      defaultStyles.width + defaultStyles.padding * 2,
+      defaultStyles.height
+    );
+    loadImage('data:image/svg+xml;base64,' + Buffer.from(svgString).toString('base64'))
+      .then((img) => {
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const out = fs.createWriteStream(outPath);
+        const stream = canvas.createPNGStream();
+        stream.pipe(out);
+        out.on('finish', resolve);
+        out.on('error', reject);
+      })
+      .catch(reject);
+  });
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help) {
@@ -375,6 +406,8 @@ async function main() {
       fs.writeFileSync(filename('svg'), svg);
       if (format === 'pdf') {
         await writePDF(svg, filename('pdf'));
+      } else if (format === 'png') {
+        await writePNG(svg, filename('png'));
       }
     }
     if (localizedData[locale] && localizedData[locale][id]) {
@@ -390,4 +423,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { buildContent, buildFileName, renderSVG };
+module.exports = { buildContent, buildFileName, renderSVG, writePNG };
