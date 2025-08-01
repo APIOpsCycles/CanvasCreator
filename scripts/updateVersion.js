@@ -28,6 +28,15 @@ const cssSrc = path.join(__dirname, '..', 'canvascreator.min.css');
 const cssDest = path.join(outDir, 'canvascreator.min.css');
 fs.copyFileSync(cssSrc, cssDest);
 
+// Copy additional demo CSS
+const demoCssSrc = path.join(__dirname, '..', 'styles', 'demo.css');
+const stylesDestDir = path.join(outDir, 'styles');
+if (!fs.existsSync(stylesDestDir)) {
+  fs.mkdirSync(stylesDestDir, { recursive: true });
+}
+const demoCssDest = path.join(stylesDestDir, 'demo.css');
+fs.copyFileSync(demoCssSrc, demoCssDest);
+
 // Copy images used by the HTML
 const imgDir = path.join(__dirname, '..', 'img');
 const imgDestDir = path.join(outDir, 'img');
