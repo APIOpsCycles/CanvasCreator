@@ -18,10 +18,10 @@ const defaultStyles = {
   shadowColor: "rgba(0, 0, 0, 0.2)",
   stickyNoteSize: 80,
   stickyNoteSpacing: 10,
-  stickyNoteCornerRadius: 3,
+  stickyNoteCornerRadius: 1,
   maxLineWidth: 70,
   stickyNoteColor: "#fff399",
-  stickyNoteBorderColor: "#000",
+  stickyNoteBorderColor: "#fff399",
   defaultLocale: "en",
 };
 

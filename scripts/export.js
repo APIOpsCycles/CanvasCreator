@@ -242,7 +242,7 @@ function renderSVG(canvasDef, localizedData, content) {
         noteRect.setAttribute('width', note.size);
         noteRect.setAttribute('height', note.size);
         noteRect.setAttribute('fill', note.color);
-        noteRect.setAttribute('stroke', defaultStyles.stickyNoteBorderColor);
+        noteRect.setAttribute('stroke', note.color || defaultStyles.stickyNoteBorderColor);
         noteRect.setAttribute('rx', defaultStyles.stickyNoteCornerRadius);
         noteRect.setAttribute('ry', defaultStyles.stickyNoteCornerRadius);
         svg.appendChild(noteRect);
