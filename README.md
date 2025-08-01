@@ -15,7 +15,7 @@ The **APIOps Cycles Canvas Creator** is a web-based tool designed to create and 
 - Select a canvas type and language. 
 - Add and manage sticky notes.
 - Customize metadata.
-- Export canvases as JSON or SVG.
+- Export canvases as JSON, SVG or PNG.
 - Work entirely in the browser with no server dependencies or saving data elsewhere.
 
 For similar, but more integrated commercial tool, you can refer to one of our partners QriarLabs. Also for consulting or training services on how to use the canvases check our partner page for more information: [APIOps Partners](https://www.apiopscycles.com/partners)
@@ -30,7 +30,7 @@ For similar, but more integrated commercial tool, you can refer to one of our pa
 - **Mobile and touch support**: While the canvas it self does not scale for usability, the touch events for mobile devices and responsive styles have been implemented. Turn small devices in landscape position.  
 - **Metadata Editing**: Allows customization of metadata (source, license, authors, website). Metadata will show at the footer of the canvas. **Do not edit the template metadata unless you are contributing to the canvas structure**. The canvases are licensed under CC-BY-SA 4.0, so share a like and mention original authors if you create any derivatives.
 - **Export & Import**: Save and load canvases using JSON files. Allows saving data in version control or file server, or using it for other purposes. 
-- **SVG Export**: Generate vector images for presentations and documentation (in slides, collaboration tools, print or web).
+ - **SVG & PNG Export**: Generate vector or raster images for presentations and documentation (in slides, collaboration tools, print or web).
 
 ## Installation & Usage
 
@@ -133,7 +133,7 @@ npm run export -- --locale en-US --format svg --all --prefix My
 Options:
 
 - `--locale <code>` – language for the exported canvas (default `en-US`)
-- `--format <json|svg|pdf>` – output file type
+- `--format <json|svg|pdf|png>` – output file type
 - `--prefix <name>` – prefix for generated filenames (default `Canvas`)
 - `--all` – export every canvas from `data/canvasData.json`
 - `--canvas <id>` – export a single canvas by id

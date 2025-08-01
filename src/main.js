@@ -755,12 +755,37 @@ fileInput.addEventListener("change", function () {
         });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        const filename = `${contentData.metadata.source || "Canvas"}_${contentData.templateId}_${contentData.locale}.svg`;
-        link.download = filename;
+        const filename = `${contentData.metadata.source || "Canvas"}_${contentData.templateId}_${contentData.locale}`;
+        link.download = filename + ".svg";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       };
+
+      const exportPNGButton = document.getElementById("exportPNGButton")
+      exportPNGButton.onclick = () => {
+        const svgNode = svg.node()
+        const serializer = new XMLSerializer()
+        const svgString = serializer.serializeToString(svgNode)
+        const img = new Image()
+        img.onload = () => {
+          const canvasEl = document.createElement('canvas')
+          canvasEl.width = defaultStyles.width + defaultStyles.padding * 2
+          canvasEl.height = defaultStyles.height
+          const ctx = canvasEl.getContext('2d')
+          ctx.drawImage(img, 0, 0)
+          const pngUrl = canvasEl.toDataURL('image/png')
+          const link = document.createElement('a')
+          link.href = pngUrl
+          const filename = `${contentData.metadata.source || 'Canvas'}_${contentData.templateId}_${contentData.locale}.png`
+          link.download = filename
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+        }
+        const svg64 = btoa(unescape(encodeURIComponent(svgString)))
+        img.src = 'data:image/svg+xml;base64,' + svg64
+      }
       
   
       // Color selection
