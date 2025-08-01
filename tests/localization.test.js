@@ -9,13 +9,13 @@ function loadLocalizedData(locale) {
 
 describe('localization and import/export', () => {
   test('switch locale updates data', () => {
-    const content = { locale: 'en-US' };
-    switchLocale(content, 'de-DE');
-    expect(content.locale).toBe('de-DE');
+    const content = { locale: 'en' };
+    switchLocale(content, 'de');
+    expect(content.locale).toBe('de');
   });
 
-  test('localized data exists for en-US', () => {
-    const data = loadLocalizedData('en-US');
+  test('localized data exists for en', () => {
+    const data = loadLocalizedData('en');
     expect(data).toBeDefined();
     expect(data.apiBusinessModelCanvas.title).toBeDefined();
   });

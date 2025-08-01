@@ -22,7 +22,7 @@ const defaultStyles = {
   maxLineWidth: 70,
   stickyNoteColor: "#fff399",
   stickyNoteBorderColor: "#000",
-  defaultLocale: "en-US",
+  defaultLocale: "en",
 };
 
 module.exports = defaultStyles;

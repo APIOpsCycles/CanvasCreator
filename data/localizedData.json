@@ -1,5 +1,5 @@
 {
-  "de-DE": {
+  "de": {
     "apiBusinessModelCanvas": {
       "title": "API Business Model Canvas",
       "purpose": "Wie praktikabel und wiederverwendbar wird diese API sein? Haben wir einen Business Case aus Kosten-Nutzen-Sicht?",
@@ -386,7 +386,7 @@
       }
     }
   },
-  "en-US": {
+  "en": {
     "apiBusinessModelCanvas": {
       "title": "API Business Model Canvas",
       "purpose": "How feasible and reusable will this API be? Do we have a business case from a cost - benefit point of view?",
@@ -773,7 +773,7 @@
       }
     }
   },
-  "fi-FI": {
+  "fi": {
     "apiBusinessModelCanvas": {
       "title": "API Business Model Canvas",
       "purpose": "Kuinka toteuttamiskelpoinen ja uudelleenkäytettävä API on? Onko meillä liiketoimintaperuste kustannus-hyötynäkökulmasta?",
@@ -1160,7 +1160,7 @@
       }
     }
   },
-  "fr-FR": {
+  "fr": {
     "apiBusinessModelCanvas": {
       "title": "API Business Model Canvas",
       "purpose": "Dans quelle mesure cette API sera-t-elle viable et réutilisable ? Avons-nous un cas commercial du point de vue coût-bénéfice ?",
@@ -1547,7 +1547,7 @@
       }
     }
   },
-  "pt-BR": {
+  "pt": {
     "apiBusinessModelCanvas": {
       "title": "API Business Model Canvas",
       "purpose": "Qual será a viabilidade e a reutilização desta API? Temos um caso de negócios do ponto de vista de custo-benefício?",

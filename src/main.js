@@ -32,8 +32,16 @@ const localizedData = require("../data/localizedData.json");
   let currentLocale = null
   let currentCanvas = null
   // Track if current canvas has unsaved changes
-  let unsavedChanges = false
-  
+let unsavedChanges = false
+
+
+function getLocaleKey(locale) {
+  if (!locale) return defaultStyles.defaultLocale
+  if (localizedData[locale]) return locale
+  const base = locale.split('-')[0]
+  return localizedData[base] ? base : locale
+}
+
 
   
 // Function to populate the locale selector
@@ -71,13 +79,14 @@ function populateCanvasSelector(
   canvasSelector.add(selectOption)
 
   // Get available canvas IDs from localizedData for the selected locale
-  const canvasIds = Object.keys(localizedData[locale])
+  const locKey = getLocaleKey(locale)
+  const canvasIds = localizedData[locKey] ? Object.keys(localizedData[locKey]) : []
 
   canvasIds.forEach((canvasId) => {
     const option = document.createElement('option')
     option.value = canvasId
     // Access the localized title correctly
-    option.text = localizedData[locale][canvasId].title
+    option.text = localizedData[locKey][canvasId].title
     canvasSelector.add(option)
   })
 }
@@ -275,7 +284,7 @@ fileInput.addEventListener("change", function () {
         canvasSelector.onchange = canvasChangeHandler
       }, 0)
       
-      const locale = importedData.locale || "en-US"
+      const locale = getLocaleKey(importedData.locale || defaultStyles.defaultLocale)
       document.getElementById("locale").value = locale
       populateCanvasSelector(locale)
       document.getElementById("canvasSelector").style.display = "block"
@@ -310,7 +319,8 @@ fileInput.addEventListener("change", function () {
 
   
   function loadCanvas(locale, canvasId, preserveContentData = false) {
-    currentLocale = locale
+    const locKey = getLocaleKey(locale)
+    currentLocale = locKey
     currentCanvas = canvasId
     // Access canvasData directly
     canvasDataForId = canvasData[canvasId]
@@ -324,7 +334,7 @@ fileInput.addEventListener("change", function () {
     if (!preserveContentData) {
       contentData = {
         templateId: canvasId,
-        locale: locale,
+        locale: locKey,
         metadata: {
           source: "",
           license: "",
@@ -382,10 +392,10 @@ fileInput.addEventListener("change", function () {
           canvasData.layout.rows,
       )
   
-      const locale = contentData.locale || defaultStyles.defaultLocale // Default to en-US if not provided
+      const locale = getLocaleKey(contentData.locale || defaultStyles.defaultLocale)
       // Use canvasId to access the correct localized data
       const canvasId = contentData.templateId
-      const localizedCanvasData = localizedData[locale][canvasId]
+      const localizedCanvasData = localizedData[locale] ? localizedData[locale][canvasId] : null
   
       // Check if contentData is empty
       if (Object.keys(contentData).length === 0) {

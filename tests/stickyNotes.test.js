@@ -6,7 +6,7 @@ describe('sticky note operations', () => {
   beforeEach(() => {
     contentData = {
       templateId: 'apiBusinessModelCanvas',
-      locale: 'en-US',
+      locale: 'en',
       metadata: { source: 'test', license: 'MIT', authors: ['a'], website: 'example.com' },
       stickyNoteSize: 80,
       sections: [
@@ -32,6 +32,6 @@ describe('sticky note operations', () => {
     const json = exportJSON(contentData);
     const imported = importJSON(json);
     expect(imported.sections[0].stickyNotes[0].content).toBe('exported');
-    expect(imported.locale).toBe('en-US');
+    expect(imported.locale).toBe('en');
   });
 });

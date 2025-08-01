@@ -50,7 +50,7 @@ function printUsage() {
   console.log(`Usage: node scripts/export.js [options]
 
 Options:
-  --locale <code>       language for the exported canvas (default en-US)
+  --locale <code>       language for the exported canvas (default en)
   --format <json|svg|pdf|png> output file type
   --prefix <name>       prefix for generated filenames (default Canvas)
   --all                 export every canvas from data/canvasData.json
@@ -366,7 +366,7 @@ async function main() {
       return;
     }
   }
-  const locale = args.locale || 'en-US';
+  const locale = args.locale || 'en';
   const format = args.format || 'json';
   const prefix = args.prefix || 'Canvas';
   const canvasData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/canvasData.json'), 'utf8'));
