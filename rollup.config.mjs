@@ -5,7 +5,7 @@ import terser from '@rollup/plugin-terser';
 
 export default {
   input: 'src/index.js',
-  external: (id) => id.startsWith('./apiops-cycles-method-data/'),
+  external: (id) => id === 'apiops-cycles-method-data' || id.startsWith('apiops-cycles-method-data/'),
   output: [
     {
       file: 'dist/canvascreator.cjs',

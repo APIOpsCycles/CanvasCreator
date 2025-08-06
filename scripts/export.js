@@ -369,8 +369,7 @@ async function main() {
   const locale = args.locale || 'en';
   const format = args.format || 'json';
   const prefix = args.prefix || 'Canvas';
-  const canvasData = require('apiops-cycles-method-data/canvasData.json');
-  const localizedData = require('apiops-cycles-method-data/localizedData.json');
+  const { canvasData, localizedData } = require('apiops-cycles-method-data');
 
   const canvasIds = args.all ? Object.keys(canvasData) : ([]).concat(args.canvas || []);
   if (canvasIds.length === 0) {

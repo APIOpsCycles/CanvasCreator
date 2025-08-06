@@ -1,7 +1,6 @@
 const { buildContent, buildFileName, renderSVG, writePNG } = require('../scripts/export.js');
 const { exportJSON } = require('../scripts/noteManager.js');
-const canvasData = require('apiops-cycles-method-data/canvasData.json');
-const localizedData = require('apiops-cycles-method-data/localizedData.json');
+const { canvasData, localizedData } = require('apiops-cycles-method-data');
 
 describe('export helpers', () => {
   test('buildFileName applies prefix', () => {

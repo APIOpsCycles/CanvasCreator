@@ -1,6 +1,6 @@
 const { switchLocale } = require('../scripts/noteManager.js');
 
-const localizedData = require('apiops-cycles-method-data/localizedData.json');
+const { localizedData } = require('apiops-cycles-method-data');
 
 function loadLocalizedData(locale) {
   return localizedData[locale];
