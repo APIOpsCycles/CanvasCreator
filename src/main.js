@@ -17,9 +17,8 @@ const defaultStyles = require('./defaultStyles');
 // Base path for images and CSS, updated by initCanvasCreator
 let assetBase = '';
 
-//load canvas layouts and localizations from json data
-const canvasData = require("../data/canvasData.json");
-const localizedData = require("../data/localizedData.json");
+// Load canvas layouts and localizations from the data package
+const { canvasData, localizedData } = require('apiops-cycles-method-data');
 
   // No DOMPurify setup; sanitization is handled in helpers
 

@@ -22,10 +22,7 @@ For similar, but more integrated commercial tool, you can refer to one of our pa
 
 ## Features
 - **Supports Multiple Canvases**: API Business Model, Value Proposition, Business Impact, Capacity, Customer Journey, Domain, Event, Interaction, Locations, and REST Canvases. Supports all canvases that are available at [the APIOps Cycles method website ](https://www.apiopscycles.com/) > Resources.
-- **Localization Support**: JSON-based language switching (currently supports English, German, Finnish and French). To help with localization, contribute to the
-     ```
-     data/localizedData.json
-     ```
+- **Localization Support**: JSON-based language switching (currently supports English, German, Finnish and French). To help with localization, contribute to the [`apiops-cycles-method-data`](https://www.npmjs.com/package/apiops-cycles-method-data) package.
 - **Sticky Notes**: Users can create, edit, move, and delete sticky notes dynamically.
 - **Mobile and touch support**: While the canvas it self does not scale for usability, the touch events for mobile devices and responsive styles have been implemented. Turn small devices in landscape position.  
 - **Metadata Editing**: Allows customization of metadata (source, license, authors, website). Metadata will show at the footer of the canvas. **Do not edit the template metadata unless you are contributing to the canvas structure**. The canvases are licensed under CC-BY-SA 4.0, so share a like and mention original authors if you create any derivatives.
@@ -56,9 +53,6 @@ CanvasCreator/
 ├── styles/                    # Editable CSS sources
 │   └── canvascreator.css
 ├── canvascreator.min.css      # Minified CSS version
-├── data/                      # Canvas layouts and localization strings
-│   ├── canvasData.json
-│   └── localizedData.json
 ├── examples/                  # Sample canvases
 ├── tests/                     # Jest unit tests
 ├── img/                       # Images
@@ -135,7 +129,7 @@ Options:
 - `--locale <code>` – language for the exported canvas (default `en`)
 - `--format <json|svg|pdf|png>` – output file type
 - `--prefix <name>` – prefix for generated filenames (default `Canvas`)
-- `--all` – export every canvas from `data/canvasData.json`
+- `--all` – export every canvas from the `apiops-cycles-method-data` package
 - `--canvas <id>` – export a single canvas by id
 - `--import <file>` – load an existing JSON content file instead of creating
   placeholders

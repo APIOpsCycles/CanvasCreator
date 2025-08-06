@@ -1,10 +1,9 @@
 const { switchLocale } = require('../scripts/noteManager.js');
 
-const fs = require('fs');
+const { localizedData } = require('apiops-cycles-method-data');
 
 function loadLocalizedData(locale) {
-  const json = JSON.parse(fs.readFileSync('data/localizedData.json', 'utf8'));
-  return json[locale];
+  return localizedData[locale];
 }
 
 describe('localization and import/export', () => {
