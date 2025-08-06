@@ -42,4 +42,7 @@
     "img",
     "index.d.ts"
   ]
-}
+  },
+  "engines": {
+    "node": ">=22"
+  }
