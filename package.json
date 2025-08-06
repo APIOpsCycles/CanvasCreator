@@ -12,8 +12,7 @@
   "dependencies": {
     "pdfkit": "^0.17.1",
     "svg-to-pdfkit": "^0.1.8",
-    "jsdom": "^26.1.0",
-    "apiops-cycles-method-data": "^3.0.1"
+    "jsdom": "^26.1.0"
   },
   "optionalDependencies": {
     "canvas": "^3.1.2"
@@ -28,6 +27,9 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-terser": "^0.4.4"
   },
+  "engines":{
+    "node": ">=22"
+  },
   "module": "dist/canvascreator.esm.js",
   "author": "Marjukka Niinioja (www.osaango.com)",
   "license": "Apache-2.0",
@@ -39,10 +41,8 @@
     "dist",
     "scripts",
     "src",
+    "data",
     "img",
     "index.d.ts"
   ]
-  },
-  "engines": {
-    "node": ">=22"
-  }
+}
