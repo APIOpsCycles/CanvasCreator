@@ -5,6 +5,7 @@ import terser from '@rollup/plugin-terser';
 
 export default {
   input: 'src/index.js',
+  external: (id) => id.startsWith('./apiops-cycles-method-data/'),
   output: [
     {
       file: 'dist/canvascreator.cjs',
@@ -19,6 +20,6 @@ export default {
       file: 'dist/canvascreator.esm.min.js',
       format: 'esm'
     }
-  ],
+    ],
   plugins: [nodeResolve(), commonjs(), json(), terser()]
 };

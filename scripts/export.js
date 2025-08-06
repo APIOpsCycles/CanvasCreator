@@ -53,7 +53,7 @@ Options:
   --locale <code>       language for the exported canvas (default en)
   --format <json|svg|pdf|png> output file type
   --prefix <name>       prefix for generated filenames (default Canvas)
-  --all                 export every canvas from data/canvasData.json
+  --all                 export every canvas from apiops-cycles-method-data
   --canvas <id>         export a single canvas by id
   --import <file>       load an existing JSON content file instead of placeholders
   --help                show this help text`);
@@ -369,8 +369,8 @@ async function main() {
   const locale = args.locale || 'en';
   const format = args.format || 'json';
   const prefix = args.prefix || 'Canvas';
-  const canvasData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/canvasData.json'), 'utf8'));
-  const localizedData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/localizedData.json'), 'utf8'));
+  const canvasData = require('apiops-cycles-method-data/canvasData.json');
+  const localizedData = require('apiops-cycles-method-data/localizedData.json');
 
   const canvasIds = args.all ? Object.keys(canvasData) : ([]).concat(args.canvas || []);
   if (canvasIds.length === 0) {
