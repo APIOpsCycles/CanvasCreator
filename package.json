@@ -12,7 +12,8 @@
   "dependencies": {
     "pdfkit": "^0.17.1",
     "svg-to-pdfkit": "^0.1.8",
-    "jsdom": "^26.1.0"
+    "jsdom": "^26.1.0",
+    "apiops-cycles-method-data": "^3.0.1"
   },
   "optionalDependencies": {
     "canvas": "^3.1.2"
@@ -38,7 +39,6 @@
     "dist",
     "scripts",
     "src",
-    "data",
     "img",
     "index.d.ts"
   ]
