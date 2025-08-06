@@ -67,6 +67,8 @@ declare module "canvascreator" {
     validateInput: typeof validateInput;
     distributeMissingPositions: typeof distributeMissingPositions;
     defaultStyles: DefaultStyles;
+    ApiOpsCyclesMethodDataCanvasData: typeof import("/apiops-cycles-method-data/canvasData.json");
+    ApiOpsCyclesMethodDataLocalizedData: typeof import("/apiops-cycles-method-data/localizedData.json");
   };
   export default _default;
 }

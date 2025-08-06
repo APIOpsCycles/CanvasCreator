@@ -10,24 +10,25 @@
     "export": "node scripts/export.js"
   },
   "dependencies": {
+    "apiops-cycles-method-data": "^3.0.1",
+    "jsdom": "^26.1.0",
     "pdfkit": "^0.17.1",
-    "svg-to-pdfkit": "^0.1.8",
-    "jsdom": "^26.1.0"
+    "svg-to-pdfkit": "^0.1.8"
   },
   "optionalDependencies": {
     "canvas": "^3.1.2"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "clean-css-cli": "^5.6.3",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
-    "clean-css-cli": "^5.6.3",
-    "rollup": "^4.46.1",
-    "@rollup/plugin-commonjs": "^28.0.6",
-    "@rollup/plugin-node-resolve": "^16.0.1",
-    "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-terser": "^0.4.4"
+    "rollup": "^4.46.1"
   },
-  "engines":{
+  "engines": {
     "node": ">=22"
   },
   "module": "dist/canvascreator.esm.js",
@@ -41,7 +42,6 @@
     "dist",
     "scripts",
     "src",
-    "data",
     "img",
     "index.d.ts"
   ]
