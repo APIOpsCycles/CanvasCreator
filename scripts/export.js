@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+console.log(process.argv);
 if (typeof TextEncoder === "undefined") {
   global.TextEncoder = require("util").TextEncoder;
   global.TextDecoder = require("util").TextDecoder;
@@ -370,7 +371,9 @@ async function main() {
   const locale = args.locale || 'en';
   const format = args.format || 'json';
   const prefix = args.prefix || 'Canvas';
-  const outDir = path.join(process.cwd(), args.outdir || 'export');
+  const outDir = path.isAbsolute(args.outdir)
+    ? args.outdir
+    : path.join(process.cwd(), args.outdir || 'export');
   const canvasData = require('apiops-cycles-method-data/canvasData.json');
   const localizedData = require('apiops-cycles-method-data/localizedData.json');
 
