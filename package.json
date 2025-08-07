@@ -1,6 +1,6 @@
 {
   "name": "canvascreator",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "main": "dist/canvascreator.cjs",
   "scripts": {
     "test": "jest",
