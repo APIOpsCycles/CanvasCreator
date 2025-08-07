@@ -56,6 +56,7 @@ Options:
   --all                 export every canvas from apiops-cycles-method-data
   --canvas <id>         export a single canvas by id
   --import <file>       load an existing JSON content file instead of placeholders
+  --outdir <folder>     output directory for exported files (default export)
   --help                show this help text`);
 }
 
@@ -359,7 +360,7 @@ async function main() {
     printUsage();
     return;
   }
-  const known = ['locale', 'format', 'prefix', 'all', 'canvas', 'import', 'help'];
+  const known = ['locale', 'format', 'prefix', 'all', 'canvas', 'import', 'outdir', 'help'];
   for (const k of Object.keys(args)) {
     if (!known.includes(k)) {
       printUsage();
@@ -369,7 +370,9 @@ async function main() {
   const locale = args.locale || 'en';
   const format = args.format || 'json';
   const prefix = args.prefix || 'Canvas';
-  const { canvasData, localizedData } = require('apiops-cycles-method-data');
+  const outDir = path.join(process.cwd(), args.outdir || 'export');
+  const canvasData = require('apiops-cycles-method-data/canvasData.json');
+  const localizedData = require('apiops-cycles-method-data/localizedData.json');
 
   const canvasIds = args.all ? Object.keys(canvasData) : ([]).concat(args.canvas || []);
   if (canvasIds.length === 0) {
@@ -384,6 +387,9 @@ async function main() {
       imports[obj.templateId] = obj;
     }
   }
+  if (!fs.existsSync(outDir)) {
+    fs.mkdirSync(outDir, { recursive: true });
+  }
   for (const id of canvasIds) {
     const addPlaceholder = format === 'json' && !imports[id];
     const content = buildContent(
@@ -393,10 +399,6 @@ async function main() {
       addPlaceholder,
       imports[id]
     );
-    const outDir = path.join(process.cwd(), 'export');
-    if (!fs.existsSync(outDir)) {
-      fs.mkdirSync(outDir, { recursive: true });
-    }
     const filename = (ext) => path.join(outDir, buildFileName(prefix, id, locale, ext));
     if (format === 'json') {
       fs.writeFileSync(filename('json'), exportJSON(content));
