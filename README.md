@@ -132,8 +132,9 @@ Options:
 - `--prefix <name>` – prefix for generated filenames (default `Canvas`)
 - `--all` – export every canvas from the `apiops-cycles-method-data` package
 - `--canvas <id>` – export a single canvas by id
-- `--import <file>` – load an existing JSON content file instead of creating
-  placeholders
+- `--import <file>` – load an existing JSON content file instead of creating placeholders
+- `--outdir <folder>     output directory for exported files (default export)`
+- `--help`
 
 PNG output requires the optional `canvas` package (v3). Install it with `npm install canvas@^3`.
 

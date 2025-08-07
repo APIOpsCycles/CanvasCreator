@@ -9,8 +9,6 @@ exports.sanitizeInput = helpers.sanitizeInput;
 exports.validateInput = helpers.validateInput;
 exports.distributeMissingPositions = helpers.distributeMissingPositions;
 exports.defaultStyles = defaultStyles;
-exports.ApiOpsCyclesMethodDataCanvasData = require('apiops-cycles-method-data/canvasData.json');
-exports.ApiOpsCyclesMethodDataLocalizedData = require('apiops-cycles-method-data/localizedData.json');
 
 // default export for CommonJS consumers
 module.exports = {
@@ -21,7 +19,5 @@ module.exports = {
   validateInput: exports.validateInput,
   distributeMissingPositions: exports.distributeMissingPositions,
   defaultStyles: exports.defaultStyles,
-  ApiOpsCyclesMethodDataCanvasData: exports.ApiOpsCyclesMethodDataCanvasData,
-  ApiOpsCyclesMethodDataLocalizedData: exports.ApiOpsCyclesMethodDataLocalizedData
 };
 exports.default = module.exports;

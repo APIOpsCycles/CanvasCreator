@@ -18,8 +18,8 @@ const defaultStyles = require('./defaultStyles');
 let assetBase = '';
 
 // Load canvas layouts and localizations from the data package
-const canvasData = require("apiops-cycles-method-data/canvasData.json");
-const localizedData = require("apiops-cycles-method-data/localizedData.json");
+const canvasData = require('../node_modules/apiops-cycles-method-data/src/data/canvas/canvasData.json');
+const localizedData = require('../node_modules/apiops-cycles-method-data/src/data/canvas/localizedData.json');
 
   // No DOMPurify setup; sanitization is handled in helpers
 
