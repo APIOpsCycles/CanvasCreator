@@ -46,6 +46,31 @@ describe('URL parameter handling', () => {
     )
   })
 
+  test('locale parameter is case-insensitive and supports region variants', () => {
+    document.body.innerHTML = `
+      <select id="locale"></select>
+      <div id="canvasSelector" style="display:none"><select id="canvas"></select></div>
+      <div id="canvasCreator" style="display:none"></div>
+      <button id="metadataButton"></button>
+      <button id="saveMetadata"></button>
+      <button id="exportButton"></button>
+      <button id="exportSVGButton"></button>
+      <button id="exportPNGButton"></button>
+      <button id="importButton"></button>
+    `
+    window.history.pushState(
+      {},
+      '',
+      '?locale=FI-fi&canvas=apiBusinessModelCanvas',
+    )
+    const { initCanvasCreator } = require('../src/main.js')
+    initCanvasCreator()
+    expect(document.getElementById('locale').value).toBe('fi')
+    expect(document.getElementById('canvas').value).toBe(
+      'apiBusinessModelCanvas',
+    )
+  })
+
   test('malicious parameters are sanitized', () => {
     document.body.innerHTML = `
       <select id="locale"></select>

@@ -37,9 +37,10 @@ let unsavedChanges = false
 
 function getLocaleKey(locale) {
   if (!locale) return defaultStyles.defaultLocale
-  if (localizedData[locale]) return locale
-  const base = locale.split('-')[0]
-  return localizedData[base] ? base : locale
+  const lower = locale.toLowerCase()
+  if (localizedData[lower]) return lower
+  const base = lower.split('-')[0]
+  return localizedData[base] ? base : lower
 }
 
 
