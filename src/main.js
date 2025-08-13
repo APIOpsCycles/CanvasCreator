@@ -37,9 +37,10 @@ let unsavedChanges = false
 
 function getLocaleKey(locale) {
   if (!locale) return defaultStyles.defaultLocale
-  if (localizedData[locale]) return locale
-  const base = locale.split('-')[0]
-  return localizedData[base] ? base : locale
+  const lower = locale.toLowerCase()
+  if (localizedData[lower]) return lower
+  const base = lower.split('-')[0]
+  return localizedData[base] ? base : lower
 }
 
 
@@ -200,6 +201,36 @@ function initCanvasCreator({
 
   // Initialize the locale selector
   populateLocaleSelector(localeSel)
+
+  // Parse locale and canvas from URL parameters securely
+  const params = new URLSearchParams(window.location.search)
+  let urlLocale = params.get('locale') || ''
+  let urlCanvas = params.get('canvas') || ''
+  urlLocale = validateInput(sanitizeInput(urlLocale))
+  urlCanvas = validateInput(sanitizeInput(urlCanvas))
+
+  if (urlLocale && localizedData[getLocaleKey(urlLocale)]) {
+    const normalizedLocale = getLocaleKey(urlLocale)
+    localeSel.value = normalizedLocale
+    populateCanvasSelector(normalizedLocale, canvasSel)
+    if (canvasSelectorContainer) {
+      canvasSelectorContainer.style.display = 'block'
+    }
+
+    if (
+      urlCanvas &&
+      localizedData[normalizedLocale] &&
+      localizedData[normalizedLocale][urlCanvas]
+    ) {
+      canvasSel.value = urlCanvas
+      loadCanvas(normalizedLocale, urlCanvas)
+      if (canvasCreator) {
+        canvasCreator.style.display = 'flex'
+      }
+      currentLocale = normalizedLocale
+      currentCanvas = urlCanvas
+    }
+  }
 
   // Before unload warning
   window.addEventListener('beforeunload', checkForUnsavedChanges)
