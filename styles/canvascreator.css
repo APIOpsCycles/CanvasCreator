@@ -1,19 +1,61 @@
 /* Source CSS. Run `npm run minify-css` to regenerate canvascreator.min.css */
+:root {
+  --cc-font-family-base: "Arial", sans-serif;
+
+  --cc-font-size-heading-sm: 1rem;
+  --cc-font-size-body: 1rem;
+  --cc-font-size-body-sm: 0.9rem;
+  --cc-font-size-heading-md: 1.5rem;
+
+  --cc-text-primary: #1a3987;
+  --cc-text-secondary: #333;
+  --cc-text-muted: #969696;
+  --cc-text-on-brand: #fff;
+
+  --cc-border-primary: #1a3987;
+  --cc-border-accent: #263982;
+  --cc-border-subtle: #ccc;
+
+  --cc-surface-page: rgb(248, 250, 252, 0.9);
+  --cc-surface-page-accent: rgb(215, 234, 255, 0.9);
+  --cc-surface-1: #fff;
+  --cc-surface-overlay: rgb(255, 255, 255, 0.9);
+
+  --cc-primary: #1a3987;
+  --cc-primary-hover: #005bb5;
+  --cc-accent: #d7e3fe;
+
+  --cc-shadow-soft: 0 4px 10px rgba(0, 0, 0, 0.1);
+  --cc-shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --cc-shadow-dropdown: 0 8px 16px rgba(0, 0, 0, 0.2);
+
+  --cc-radius-sm: 5px;
+  --cc-radius-md: 8px;
+  --cc-radius-lg: 10px;
+  --cc-radius-pill: 50px;
+  --cc-radius-round: 50%;
+
+  --cc-space-xs: 2px;
+  --cc-space-sm: 5px;
+  --cc-space-md: 10px;
+  --cc-space-lg: 12px;
+  --cc-space-xl: 20px;
+}
+
 /* General Styles */
 body {
-  font-family: "Arial", sans-serif;
-  background: linear-gradient(135deg, rgb(248, 250, 252, 0.9), rgb(215, 234, 255, 0.9));
-  /*background:rgb(248, 250, 252, 0.9);*/
+  font-family: var(--cc-font-family-base);
+  background: linear-gradient(135deg, var(--cc-surface-page), var(--cc-surface-page-accent));
   min-height: 100vh;
-  color: #333;
+  color: var(--cc-text-secondary);
   margin: 0;
-  padding: 20px;
+  padding: var(--cc-space-xl);
 }
 
 #canvasContainer {
   width: 350px;
   margin: 0 auto;
-  padding: 0px;
+  padding: 0;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -23,47 +65,47 @@ body {
 }
 
 h1 {
-  color: #1a3987;
-  font-size: 1rem;
-  margin-bottom: 10px;
+  color: var(--cc-text-primary);
+  font-size: var(--cc-font-size-heading-sm);
+  margin-bottom: var(--cc-space-md);
 }
 
 p,
 ul {
-  font-size: 1rem;
+  font-size: var(--cc-font-size-body);
   max-width: 800px;
-  margin: 0 auto 10px auto;
+  margin: 0 auto var(--cc-space-md) auto;
   text-align: left;
 }
 
 ul {
   list-style-type: disc;
-  padding-left: 20px;
+  padding-left: var(--cc-space-xl);
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
-  padding: 10px;
-  gap: 10px;
+  margin-bottom: var(--cc-space-xl);
+  padding: var(--cc-space-md);
+  gap: var(--cc-space-md);
 }
 
 .header a {
   text-decoration: none;
-  color: #969696;
+  color: var(--cc-text-muted);
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: var(--cc-font-size-body-sm);
 }
 
 /* Help Icon Styling */
 .help-icon {
-  color: #1a3987;
-  padding: 0px 20px;
-  border-radius: 50%;
+  color: var(--cc-text-primary);
+  padding: 0 var(--cc-space-xl);
+  border-radius: var(--cc-radius-round);
   text-align: center;
-  font-size: 1.5rem;
+  font-size: var(--cc-font-size-heading-md);
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
@@ -78,13 +120,13 @@ ul {
   top: 70px;
   left: 50%;
   width: 250px;
-  background: rgb(255, 255, 255, 0.9);
-  color: #333;
-  padding: 12px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  background: var(--cc-surface-overlay);
+  color: var(--cc-text-secondary);
+  padding: var(--cc-space-lg);
+  border-radius: var(--cc-radius-md);
+  box-shadow: var(--cc-shadow-medium);
   text-align: left;
-  font-size: 0.9rem;
+  font-size: var(--cc-font-size-body-sm);
   line-height: 1.4;
 }
 
@@ -99,11 +141,11 @@ ul {
 
 /* Tool Container */
 #toolContainer {
-  background: white;
-  padding: 5px 10px;
+  background: var(--cc-surface-1);
+  padding: var(--cc-space-sm) var(--cc-space-md);
   max-width: 100%;
-  border-radius: 50px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: var(--cc-radius-pill);
+  box-shadow: var(--cc-shadow-soft);
   text-align: center;
   position: relative;
   display: flex;
@@ -112,9 +154,9 @@ ul {
 
 #ToolsTitle {
   background-color: transparent;
-  color: #1a3987;
-  padding: 0px 10px;
-  font-size: 1.5rem;
+  color: var(--cc-text-primary);
+  padding: 0 var(--cc-space-md);
+  font-size: var(--cc-font-size-heading-md);
   font-weight: bold;
   border: none;
   cursor: pointer;
@@ -143,13 +185,13 @@ svg {
 
 /* Container */
 #canvasCreator {
-  background: white;
-  padding: 10px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: var(--cc-surface-1);
+  padding: var(--cc-space-md);
+  border-radius: var(--cc-radius-lg);
+  box-shadow: var(--cc-shadow-medium);
   width: 1020px;
   height: 750px;
-  margin-top: 20px;
+  margin-top: var(--cc-space-xl);
   margin: auto;
   position: relative;
   display: flex;
@@ -160,43 +202,47 @@ svg {
 #localeSelector,
 #canvasSelector {
   display: flex;
-  margin: 2px 0;
+  margin: var(--cc-space-xs) 0;
 }
 
-#localeSelector>select {
-  padding: 2px;
-  border: 1px solid #263982;
-  border-radius: 5px;
+#localeSelector > select {
+  padding: var(--cc-space-xs);
+  border: 1px solid var(--cc-border-accent);
+  border-radius: var(--cc-radius-sm);
   height: 1.5rem;
   width: 80px;
   cursor: pointer;
+  color: var(--cc-text-secondary);
+  background: var(--cc-surface-1);
 }
 
-#canvasSelector>select {
-  padding: 2px;
-  border: 1px solid #263982;
-  border-radius: 5px;
+#canvasSelector > select {
+  padding: var(--cc-space-xs);
+  border: 1px solid var(--cc-border-accent);
+  border-radius: var(--cc-radius-sm);
   height: 1.5rem;
   width: 160px;
   cursor: pointer;
+  color: var(--cc-text-secondary);
+  background: var(--cc-surface-1);
 }
 
 /* Buttons */
 .canvas-tools {
-  background: rgb(255, 255, 255, 0.9);
+  background: var(--cc-surface-overlay);
   display: none;
   position: absolute;
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--cc-shadow-dropdown);
   z-index: 20;
-  border-radius: 8px;
+  border-radius: var(--cc-radius-md);
 }
 
 .canvas-tools button {
   background: transparent;
-  color: #263982;
+  color: var(--cc-border-accent);
   border: none;
-  padding: 12px;
+  padding: var(--cc-space-lg);
   text-decoration: none;
   display: block;
   cursor: pointer;
@@ -213,10 +259,10 @@ svg {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: var(--cc-surface-1);
+  padding: var(--cc-space-xl);
+  border-radius: var(--cc-radius-lg);
+  box-shadow: var(--cc-shadow-medium);
   z-index: 10;
   width: 300px;
 }
@@ -224,33 +270,33 @@ svg {
 #metadataForm input {
   width: 100%;
   padding: 8px;
-  margin: 5px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  margin: var(--cc-space-sm) 0;
+  border: 1px solid var(--cc-border-subtle);
+  border-radius: var(--cc-radius-sm);
 }
 
 #metadataForm button {
   width: 100%;
-  padding: 10px;
-  background: #1a3987;
-  color: white;
+  padding: var(--cc-space-md);
+  background: var(--cc-primary);
+  color: var(--cc-text-on-brand);
   border: none;
-  border-radius: 5px;
+  border-radius: var(--cc-radius-sm);
   cursor: pointer;
 }
 
 #metadataForm button:hover {
-  background: #005bb5;
+  background: var(--cc-primary-hover);
 }
 
 /* Color Palette */
 #colorPalette {
   position: relative;
-  background-color: white;
+  background-color: var(--cc-surface-1);
   display: flex;
   flex-direction: row;
-  border-radius: 50px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: var(--cc-radius-pill);
+  box-shadow: var(--cc-shadow-soft);
   justify-content: center;
   z-index: 10;
 }
@@ -258,9 +304,9 @@ svg {
 .colorSwatch {
   width: 30px;
   height: 30px;
-  margin: 5px;
-  border-radius: 50%;
-  border: 2px solid #1a3987;
+  margin: var(--cc-space-sm);
+  border-radius: var(--cc-radius-round);
+  border: 2px solid var(--cc-border-primary);
   cursor: pointer;
   transition: transform 0.2s;
   display: block;

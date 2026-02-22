@@ -5,7 +5,7 @@ const defaultStyles = {
   footerHeight: 30,
   fontSize: 12,
   fontFamily: "Arial, sans-serif",
-  backgroundColor: "#f5f5ff",
+  backgroundColor: "#f8fafc",
   borderColor: "#1a3987",
   fontColor: "#1a3987",
   contentFontColor: "#333",
