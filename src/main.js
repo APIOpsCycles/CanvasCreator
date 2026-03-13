@@ -171,10 +171,22 @@ function initCanvasCreator({
 
     proxyButton.addEventListener('click', () => {
       const targetId = proxyButton.dataset.actionTarget
-      const targetButton = document.getElementById(targetId)
-      if (targetButton) {
-        targetButton.click()
+      const focusTargetId = proxyButton.dataset.focusTarget
+
+      if (targetId) {
+        const targetButton = document.getElementById(targetId)
+        if (targetButton) {
+          targetButton.click()
+        }
       }
+
+      if (focusTargetId) {
+        const focusTarget = document.getElementById(focusTargetId)
+        if (focusTarget) {
+          focusTarget.focus()
+        }
+      }
+
       closePanel(mobileActionsToggle, mobileActionsPanel)
     })
 
