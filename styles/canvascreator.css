@@ -229,12 +229,11 @@ ul {
   background-color: transparent;
   color: var(--cc-text-primary);
   padding: 0 var(--cc-space-md);
-  font-size: var(--cc-font-size-body);
+  font-size: var(--cc-font-size-heading-md);
   font-weight: bold;
-  border: 1px solid var(--cc-border-accent);
-  border-radius: var(--cc-radius-sm);
+  border: none;
   cursor: pointer;
-  min-height: 2rem;
+  line-height: 1;
 }
 
 #canvasToolGroup,
