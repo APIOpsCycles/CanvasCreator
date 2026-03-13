@@ -206,6 +206,14 @@ function initCanvasCreator({
       if (!insideMobileActions) closePanel(mobileActionsToggle, mobileActionsPanel)
     })
 
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return
+      closePanel(toolsMenuButton, toolsMenu)
+      closePanel(helpToggle, helpTooltip)
+      closePanel(mobilePrimaryToggle, mobilePrimaryPanel)
+      closePanel(mobileActionsToggle, mobileActionsPanel)
+    })
+
     document.body.dataset.canvasCreatorNavAttached = 'true'
   }
 

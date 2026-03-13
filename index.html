@@ -28,29 +28,31 @@
         </a>
       </div>
 
-      <nav class="desktop-nav" aria-label="Primary links">
+      <nav class="desktop-nav" aria-label="Primary navigation links">
         <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href="https://www.apiopscycles.com/partners" target="_blank" rel="noopener noreferrer">Partners</a>
         <a href="https://www.osaango.com/contact-us" target="_blank" rel="noopener noreferrer">Contact</a>
       </nav>
 
-      <nav class="mobile-nav" aria-label="Mobile navigation controls">
+      <nav class="mobile-nav" aria-label="Compact mobile controls">
         <button id="mobilePrimaryToggle" class="nav-compact-button" type="button" aria-expanded="false" aria-controls="mobilePrimaryPanel">Menu</button>
-        <button id="mobileActionsToggle" class="nav-compact-button" type="button" aria-expanded="false" aria-controls="mobileActionsPanel">Actions</button>
+        <button id="mobileActionsToggle" class="nav-compact-button" type="button" aria-expanded="false" aria-controls="mobileActionsPanel">More</button>
       </nav>
 
-      <div id="mobilePrimaryPanel" class="mobile-more-panel" hidden>
-        <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://www.apiopscycles.com/partners" target="_blank" rel="noopener noreferrer">Partners</a>
-        <a href="https://www.osaango.com/contact-us" target="_blank" rel="noopener noreferrer">Contact</a>
-      </div>
+      <div class="mobile-panels" aria-label="Mobile expandable panels">
+        <div id="mobilePrimaryPanel" class="mobile-more-panel" hidden>
+          <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://www.apiopscycles.com/partners" target="_blank" rel="noopener noreferrer">Partners</a>
+          <a href="https://www.osaango.com/contact-us" target="_blank" rel="noopener noreferrer">Contact</a>
+        </div>
 
-      <div id="mobileActionsPanel" class="mobile-more-panel" hidden>
-        <button type="button" class="mobile-action-proxy" data-action-target="metadataButton">Edit Metadata</button>
-        <button type="button" class="mobile-action-proxy" data-action-target="importButton">Import JSON</button>
-        <button type="button" class="mobile-action-proxy" data-action-target="exportButton">Export JSON</button>
-        <button type="button" class="mobile-action-proxy" data-action-target="exportSVGButton">Export SVGs</button>
-        <button type="button" class="mobile-action-proxy" data-action-target="exportPNGButton">Export PNG</button>
+        <div id="mobileActionsPanel" class="mobile-more-panel" hidden>
+          <button type="button" class="mobile-action-proxy" data-action-target="metadataButton">Edit Metadata</button>
+          <button type="button" class="mobile-action-proxy" data-action-target="importButton">Import JSON</button>
+          <button type="button" class="mobile-action-proxy" data-action-target="exportButton">Export JSON</button>
+          <button type="button" class="mobile-action-proxy" data-action-target="exportSVGButton">Export SVGs</button>
+          <button type="button" class="mobile-action-proxy" data-action-target="exportPNGButton">Export PNG</button>
+        </div>
       </div>
     </header>
 
