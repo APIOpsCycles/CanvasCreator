@@ -118,10 +118,8 @@ function initCanvasCreator({
   const toolsMenu = document.getElementById('canvasToolsMenu')
   const helpToggle = document.getElementById('helpToggle')
   const helpTooltip = document.getElementById('helpTooltip')
-  const mobilePrimaryToggle = document.getElementById('mobilePrimaryToggle')
-  const mobileActionsToggle = document.getElementById('mobileActionsToggle')
-  const mobilePrimaryPanel = document.getElementById('mobilePrimaryPanel')
-  const mobileActionsPanel = document.getElementById('mobileActionsPanel')
+  const headerMoreToggle = document.getElementById('headerMoreToggle')
+  const headerMorePanel = document.getElementById('headerMorePanel')
 
   function togglePanel(button, panel) {
     if (!button || !panel) return
@@ -150,48 +148,12 @@ function initCanvasCreator({
     helpToggle.dataset.listenerAttached = 'true'
   }
 
-  if (mobilePrimaryToggle && mobilePrimaryPanel && !mobilePrimaryToggle.dataset.listenerAttached) {
-    mobilePrimaryToggle.addEventListener('click', () => {
-      togglePanel(mobilePrimaryToggle, mobilePrimaryPanel)
-      closePanel(mobileActionsToggle, mobileActionsPanel)
+  if (headerMoreToggle && headerMorePanel && !headerMoreToggle.dataset.listenerAttached) {
+    headerMoreToggle.addEventListener('click', () => {
+      togglePanel(headerMoreToggle, headerMorePanel)
     })
-    mobilePrimaryToggle.dataset.listenerAttached = 'true'
+    headerMoreToggle.dataset.listenerAttached = 'true'
   }
-
-  if (mobileActionsToggle && mobileActionsPanel && !mobileActionsToggle.dataset.listenerAttached) {
-    mobileActionsToggle.addEventListener('click', () => {
-      togglePanel(mobileActionsToggle, mobileActionsPanel)
-      closePanel(mobilePrimaryToggle, mobilePrimaryPanel)
-    })
-    mobileActionsToggle.dataset.listenerAttached = 'true'
-  }
-
-  document.querySelectorAll('.mobile-action-proxy').forEach((proxyButton) => {
-    if (proxyButton.dataset.listenerAttached) return
-
-    proxyButton.addEventListener('click', () => {
-      const targetId = proxyButton.dataset.actionTarget
-      const focusTargetId = proxyButton.dataset.focusTarget
-
-      if (targetId) {
-        const targetButton = document.getElementById(targetId)
-        if (targetButton) {
-          targetButton.click()
-        }
-      }
-
-      if (focusTargetId) {
-        const focusTarget = document.getElementById(focusTargetId)
-        if (focusTarget) {
-          focusTarget.focus()
-        }
-      }
-
-      closePanel(mobileActionsToggle, mobileActionsPanel)
-    })
-
-    proxyButton.dataset.listenerAttached = 'true'
-  })
 
   if (!document.body.dataset.canvasCreatorNavAttached) {
     document.addEventListener('click', (event) => {
@@ -203,27 +165,21 @@ function initCanvasCreator({
         helpToggle && helpTooltip
           ? helpToggle.contains(event.target) || helpTooltip.contains(event.target)
           : false
-      const insideMobilePrimary =
-        mobilePrimaryToggle && mobilePrimaryPanel
-          ? mobilePrimaryToggle.contains(event.target) || mobilePrimaryPanel.contains(event.target)
-          : false
-      const insideMobileActions =
-        mobileActionsToggle && mobileActionsPanel
-          ? mobileActionsToggle.contains(event.target) || mobileActionsPanel.contains(event.target)
+      const insideHeaderMore =
+        headerMoreToggle && headerMorePanel
+          ? headerMoreToggle.contains(event.target) || headerMorePanel.contains(event.target)
           : false
 
       if (!insideActionMenu) closePanel(toolsMenuButton, toolsMenu)
       if (!insideHelpMenu) closePanel(helpToggle, helpTooltip)
-      if (!insideMobilePrimary) closePanel(mobilePrimaryToggle, mobilePrimaryPanel)
-      if (!insideMobileActions) closePanel(mobileActionsToggle, mobileActionsPanel)
+      if (!insideHeaderMore) closePanel(headerMoreToggle, headerMorePanel)
     })
 
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape') return
       closePanel(toolsMenuButton, toolsMenu)
       closePanel(helpToggle, helpTooltip)
-      closePanel(mobilePrimaryToggle, mobilePrimaryPanel)
-      closePanel(mobileActionsToggle, mobileActionsPanel)
+      closePanel(headerMoreToggle, headerMorePanel)
     })
 
     document.body.dataset.canvasCreatorNavAttached = 'true'

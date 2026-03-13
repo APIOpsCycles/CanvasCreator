@@ -28,39 +28,22 @@
         </a>
       </div>
 
-      <nav class="desktop-nav" aria-label="Primary navigation links">
-        <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://www.apiopscycles.com/partners" target="_blank" rel="noopener noreferrer">Partners</a>
-        <a href="https://www.osaango.com/contact-us" target="_blank" rel="noopener noreferrer">Contact</a>
-      </nav>
-
-      <nav class="mobile-nav" aria-label="Compact mobile controls">
-        <button id="mobilePrimaryToggle" class="nav-compact-button nav-icon-button" type="button" aria-expanded="false" aria-controls="mobilePrimaryPanel">
-          <span aria-hidden="true">☰</span>
-          <span class="sr-only">Menu</span>
+      <div class="header-actions">
+        <button
+          id="headerMoreToggle"
+          class="nav-icon-button header-more-toggle"
+          type="button"
+          aria-label="More links"
+          aria-expanded="false"
+          aria-controls="headerMorePanel"
+        >
+          ⋮
         </button>
-        <button id="mobileActionsToggle" class="nav-compact-button nav-icon-button" type="button" aria-expanded="false" aria-controls="mobileActionsPanel">
-          <span aria-hidden="true">⋮</span>
-          <span class="sr-only">More actions</span>
-        </button>
-      </nav>
-
-      <div class="mobile-panels" aria-label="Mobile expandable panels">
-        <div id="mobilePrimaryPanel" class="mobile-more-panel" hidden>
+        <nav id="headerMorePanel" class="header-more-panel" aria-label="External links" hidden>
           <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub</a>
           <a href="https://www.apiopscycles.com/partners" target="_blank" rel="noopener noreferrer">Partners</a>
           <a href="https://www.osaango.com/contact-us" target="_blank" rel="noopener noreferrer">Contact</a>
-        </div>
-
-        <div id="mobileActionsPanel" class="mobile-more-panel" hidden>
-          <button type="button" class="mobile-action-proxy" data-action-target="importButton">Import JSON</button>
-          <button type="button" class="mobile-action-proxy" data-focus-target="locale">Select Language</button>
-          <button type="button" class="mobile-action-proxy" data-focus-target="canvas">Select Canvas</button>
-          <button type="button" class="mobile-action-proxy" data-action-target="exportButton">Export JSON</button>
-          <button type="button" class="mobile-action-proxy" data-action-target="exportSVGButton">Export SVGs</button>
-          <button type="button" class="mobile-action-proxy" data-action-target="exportPNGButton">Export PNG</button>
-          <button type="button" class="mobile-action-proxy" data-action-target="metadataButton">Edit Metadata</button>
-        </div>
+        </nav>
       </div>
     </header>
 
@@ -68,26 +51,28 @@
     <p>Now available also as CLI and pluggable code library, install as node module <code>npm install canvascreator</code></p>
 
     <div id="toolContainer">
-      <button id="importButton" class="primary-action-button" type="button">Import JSON</button>
+      <button id="importButton" class="primary-action-button" type="button">Start by Importing...</button>
 
-      <div id="localeSelector">
-        <label for="locale"></label>
-        <select id="locale"></select>
+      <div class="selector-group" aria-label="Canvas selectors">
+        <div id="localeSelector" class="selector-item">
+          <label for="locale">Language</label>
+          <select id="locale"></select>
+        </div>
+
+        <div id="canvasSelector" class="selector-item">
+          <label for="canvas">Canvas Type</label>
+          <select id="canvas"></select>
+        </div>
       </div>
 
-      <div id="canvasSelector">
-        <label for="canvas"></label>
-        <select id="canvas"></select>
-      </div>
-
-      <nav class="desktop-actions" aria-label="Desktop canvas actions">
+      <nav class="desktop-actions" aria-label="Canvas actions">
         <div id="canvasToolGroup" class="action-menu">
-          <button id="ToolsTitle" type="button" aria-label="More canvas actions" aria-expanded="false" aria-controls="canvasToolsMenu">⋮</button>
+          <button id="ToolsTitle" type="button" aria-label="Canvas actions" aria-expanded="false" aria-controls="canvasToolsMenu">⋮</button>
           <div class="canvas-tools" id="canvasToolsMenu" hidden>
+            <button id="metadataButton" class="canvas-tools-item" type="button">Edit Metadata</button>
             <button id="exportButton" class="canvas-tools-item" type="button">Export JSON</button>
             <button id="exportSVGButton" class="canvas-tools-item" type="button">Export SVGs</button>
             <button id="exportPNGButton" class="canvas-tools-item" type="button">Export PNG</button>
-            <button id="metadataButton" class="canvas-tools-item" type="button">Edit Metadata</button>
           </div>
         </div>
       </nav>
