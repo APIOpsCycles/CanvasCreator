@@ -3,11 +3,12 @@
   <head>
     <title>APIOps Cycles - Canvas Creator</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <link rel="stylesheet" href="<%= assetBase %>/canvascreator.min.css?v=<%= version %>">
+    <link id="canvasCreatorStylesheet" rel="stylesheet" href="./canvascreator.min.css">
     <link
+      id="canvasCreatorFavicon"
       rel="icon"
       type="image/png"
-      href="<%= assetBase %>/img/apiops-cycles-logo-2025-32.png"
+      href="./img/apiops-cycles-logo-2025-32.png"
     />
   </head>
 <body>
@@ -16,8 +17,9 @@
       <div class="brand-area">
         <a class="brand-link" href="https://www.apiopscycles.com/resources/customer-journey-canvas/" target="_blank" rel="noopener noreferrer">
           <img
+            id="canvasCreatorBrandLogo"
             class="brand-logo"
-            src="<%= assetBase %>/img/apiops-cycles-logo-2025-32.png"
+            src="./img/apiops-cycles-logo-2025-32.png"
             alt="APIOps Cycles logo"
             width="32"
             height="32"
@@ -126,8 +128,50 @@
   </div>
     <!-- load the ESM bundle -->
     <script type="module">
-      import CanvasCreator from '<%= assetBase %>/canvascreator.esm.min.js?v=<%= version %>';
-      CanvasCreator.initCanvasCreator({ assetBase: '<%= assetBase %>' });
+      const configuredAssetBase = '<%= assetBase %>';
+      const configuredVersion = '<%= version %>';
+      const hasTemplateTokens =
+        configuredAssetBase.includes('<%=') || configuredVersion.includes('<%=');
+      const resolvedAssetBase = hasTemplateTokens
+        ? '.'
+        : configuredAssetBase || '.';
+      const versionSuffix = hasTemplateTokens ? '' : `?v=${configuredVersion}`;
+
+      const stylesheet = document.getElementById('canvasCreatorStylesheet');
+      const favicon = document.getElementById('canvasCreatorFavicon');
+      const brandLogo = document.getElementById('canvasCreatorBrandLogo');
+
+      if (stylesheet) {
+        stylesheet.href = `${resolvedAssetBase}/canvascreator.min.css${versionSuffix}`;
+      }
+
+      if (favicon) {
+        favicon.href = `${resolvedAssetBase}/img/apiops-cycles-logo-2025-32.png`;
+      }
+
+      if (brandLogo) {
+        brandLogo.src = `${resolvedAssetBase}/img/apiops-cycles-logo-2025-32.png`;
+      }
+
+      const moduleCandidates = [
+        `${resolvedAssetBase}/canvascreator.esm.min.js${versionSuffix}`,
+        './dist/canvascreator.esm.min.js',
+      ];
+
+      let CanvasCreator;
+
+      for (const modulePath of moduleCandidates) {
+        try {
+          ({ default: CanvasCreator } = await import(modulePath));
+          break;
+        } catch (_error) {
+          // Try the next module candidate.
+        }
+      }
+
+      if (CanvasCreator) {
+        CanvasCreator.initCanvasCreator({ assetBase: resolvedAssetBase });
+      }
     </script>
   </body>
 </html>
