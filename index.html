@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
   <head>
+    <meta charset="utf-8" />
     <title>APIOps Cycles - Canvas Creator</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <link id="canvasCreatorStylesheet" rel="stylesheet" href="./canvascreator.min.css">
@@ -37,7 +38,8 @@
           aria-expanded="false"
           aria-controls="headerMorePanel"
         >
-          ⋮
+          <span aria-hidden="true">&vellip;</span>
+          <span class="sr-only">More links</span>
         </button>
         <nav id="headerMorePanel" class="header-more-panel" aria-label="External links" hidden>
           <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub</a>
@@ -51,7 +53,7 @@
     <p>Now available also as CLI and pluggable code library, install as node module <code>npm install canvascreator</code></p>
 
     <div id="toolContainer">
-      <button id="importButton" class="primary-action-button" type="button">Start by Importing...</button>
+      <button id="importButton" class="primary-action-button" type="button"><span aria-hidden="true">↪</span> Start by Importing...</button>
 
       <div class="selector-group" aria-label="Canvas selectors">
         <div id="localeSelector" class="selector-item">
@@ -67,7 +69,7 @@
 
       <nav class="desktop-actions" aria-label="Canvas actions">
         <div id="canvasToolGroup" class="action-menu">
-          <button id="ToolsTitle" type="button" aria-label="Canvas actions" aria-expanded="false" aria-controls="canvasToolsMenu">⋮</button>
+          <button id="ToolsTitle" type="button" aria-label="Canvas actions" aria-expanded="false" aria-controls="canvasToolsMenu"><span aria-hidden="true">&vellip;</span><span class="sr-only">Canvas actions</span></button>
           <div class="canvas-tools" id="canvasToolsMenu" hidden>
             <button id="metadataButton" class="canvas-tools-item" type="button">Edit Metadata</button>
             <button id="exportButton" class="canvas-tools-item" type="button">Export JSON</button>
