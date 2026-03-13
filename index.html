@@ -12,13 +12,46 @@
   </head>
 <body>
   <div id="canvasContainer">
-    <div class="header">
-      <a href="https://www.apiopscycles.com/resources/customer-journey-canvas/" target="_blank">APIOps Cycles</a>
-      <a href="https://github.com/APIOpsCycles/CanvasCreator.git">
-        GitHub</a>
-      <a href="https://www.apiopscycles.com/partners" target="_blank">Partners</a>
-      <a href="https://www.osaango.com/contact-us" target="_blank">Contact</a>
-    </div>
+    <header class="top-nav" aria-label="Canvas Creator navigation">
+      <div class="brand-area">
+        <a class="brand-link" href="https://www.apiopscycles.com/resources/customer-journey-canvas/" target="_blank" rel="noopener noreferrer">
+          <img
+            class="brand-logo"
+            src="<%= assetBase %>/img/apiops-cycles-logo-2025-32.png"
+            alt="APIOps Cycles logo"
+            width="32"
+            height="32"
+          />
+          <span>APIOps Cycles</span>
+        </a>
+      </div>
+
+      <nav class="desktop-nav" aria-label="Primary links">
+        <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://www.apiopscycles.com/partners" target="_blank" rel="noopener noreferrer">Partners</a>
+        <a href="https://www.osaango.com/contact-us" target="_blank" rel="noopener noreferrer">Contact</a>
+      </nav>
+
+      <nav class="mobile-nav" aria-label="Mobile navigation controls">
+        <button id="mobilePrimaryToggle" class="nav-compact-button" type="button" aria-expanded="false" aria-controls="mobilePrimaryPanel">Menu</button>
+        <button id="mobileActionsToggle" class="nav-compact-button" type="button" aria-expanded="false" aria-controls="mobileActionsPanel">Actions</button>
+      </nav>
+
+      <div id="mobilePrimaryPanel" class="mobile-more-panel" hidden>
+        <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://www.apiopscycles.com/partners" target="_blank" rel="noopener noreferrer">Partners</a>
+        <a href="https://www.osaango.com/contact-us" target="_blank" rel="noopener noreferrer">Contact</a>
+      </div>
+
+      <div id="mobileActionsPanel" class="mobile-more-panel" hidden>
+        <button type="button" class="mobile-action-proxy" data-action-target="metadataButton">Edit Metadata</button>
+        <button type="button" class="mobile-action-proxy" data-action-target="importButton">Import JSON</button>
+        <button type="button" class="mobile-action-proxy" data-action-target="exportButton">Export JSON</button>
+        <button type="button" class="mobile-action-proxy" data-action-target="exportSVGButton">Export SVGs</button>
+        <button type="button" class="mobile-action-proxy" data-action-target="exportPNGButton">Export PNG</button>
+      </div>
+    </header>
+
     <h1>APIOps Cycles Canvas Creator</h1>
     <p>Now available also as CLI and pluggable code library, install as node module <code>npm install canvascreator</code></p>
     <div>
@@ -32,10 +65,10 @@
           <label for="canvas"></label>
           <select id="canvas"></select>
         </div>
-        <!-- Help Icon and Tooltip -->
+
         <div class="help-container">
-          <div class="help-icon">?</div>
-          <div class="help-tooltip">
+          <button class="help-icon" id="helpToggle" type="button" aria-expanded="false" aria-controls="helpTooltip">?</button>
+          <div class="help-tooltip" id="helpTooltip" role="dialog" aria-label="Canvas help" hidden>
             <strong>Canvas Help</strong>
             <ul>
               <li><b>Open:</b> Select locale & canvas.</li>
@@ -46,21 +79,23 @@
               <li><b>Edit later:</b> Export as JSON (on your computer).</li>
               <li><b>Use elsewhere:</b> Export as SVG or PNG for slides/web.</li>
               <li><b>CLI:</b> <code>npm i canvascreator</code></li>
-              <li><b>Localize:</b> Make a pull request or issue in the <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank">
-        GitHub repo</a></li>
+              <li><b>Localize:</b> Make a pull request or issue in the <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub repo</a></li>
             </ul>
           </div>
         </div>
-        <div id="canvasToolGroup">
-          <button id="ToolsTitle">&vellip;</button>
-          <div class="canvas-tools">
-            <button id="metadataButton" class="canvas-tools-item">Edit Metadata</button>
-            <button class="canvas-tools-item" id="importButton">Import JSON</button>
-            <button id="exportButton" class="canvas-tools-item">Export JSON</button>
-            <button id="exportSVGButton" class="canvas-tools-item">Export SVGs</button>
-            <button id="exportPNGButton" class="canvas-tools-item">Export PNG</button>
+
+        <nav class="desktop-actions" aria-label="Desktop canvas actions">
+          <div id="canvasToolGroup" class="action-menu">
+            <button id="ToolsTitle" type="button" aria-expanded="false" aria-controls="canvasToolsMenu">Canvas Actions</button>
+            <div class="canvas-tools" id="canvasToolsMenu" hidden>
+              <button id="metadataButton" class="canvas-tools-item" type="button">Edit Metadata</button>
+              <button class="canvas-tools-item" id="importButton" type="button">Import JSON</button>
+              <button id="exportButton" class="canvas-tools-item" type="button">Export JSON</button>
+              <button id="exportSVGButton" class="canvas-tools-item" type="button">Export SVGs</button>
+              <button id="exportPNGButton" class="canvas-tools-item" type="button">Export PNG</button>
+            </div>
           </div>
-        </div>
+        </nav>
       </div>
 
       <div>

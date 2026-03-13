@@ -114,6 +114,101 @@ function initCanvasCreator({
 
   if (!localeSel || !canvasSel) return
 
+  const toolsMenuButton = document.getElementById('ToolsTitle')
+  const toolsMenu = document.getElementById('canvasToolsMenu')
+  const helpToggle = document.getElementById('helpToggle')
+  const helpTooltip = document.getElementById('helpTooltip')
+  const mobilePrimaryToggle = document.getElementById('mobilePrimaryToggle')
+  const mobileActionsToggle = document.getElementById('mobileActionsToggle')
+  const mobilePrimaryPanel = document.getElementById('mobilePrimaryPanel')
+  const mobileActionsPanel = document.getElementById('mobileActionsPanel')
+
+  function togglePanel(button, panel) {
+    if (!button || !panel) return
+    const shouldOpen = panel.hidden
+    panel.hidden = !shouldOpen
+    button.setAttribute('aria-expanded', String(shouldOpen))
+  }
+
+  function closePanel(button, panel) {
+    if (!button || !panel) return
+    panel.hidden = true
+    button.setAttribute('aria-expanded', 'false')
+  }
+
+  if (toolsMenuButton && toolsMenu && !toolsMenuButton.dataset.listenerAttached) {
+    toolsMenuButton.addEventListener('click', () => {
+      togglePanel(toolsMenuButton, toolsMenu)
+    })
+    toolsMenuButton.dataset.listenerAttached = 'true'
+  }
+
+  if (helpToggle && helpTooltip && !helpToggle.dataset.listenerAttached) {
+    helpToggle.addEventListener('click', () => {
+      togglePanel(helpToggle, helpTooltip)
+    })
+    helpToggle.dataset.listenerAttached = 'true'
+  }
+
+  if (mobilePrimaryToggle && mobilePrimaryPanel && !mobilePrimaryToggle.dataset.listenerAttached) {
+    mobilePrimaryToggle.addEventListener('click', () => {
+      togglePanel(mobilePrimaryToggle, mobilePrimaryPanel)
+      closePanel(mobileActionsToggle, mobileActionsPanel)
+    })
+    mobilePrimaryToggle.dataset.listenerAttached = 'true'
+  }
+
+  if (mobileActionsToggle && mobileActionsPanel && !mobileActionsToggle.dataset.listenerAttached) {
+    mobileActionsToggle.addEventListener('click', () => {
+      togglePanel(mobileActionsToggle, mobileActionsPanel)
+      closePanel(mobilePrimaryToggle, mobilePrimaryPanel)
+    })
+    mobileActionsToggle.dataset.listenerAttached = 'true'
+  }
+
+  document.querySelectorAll('.mobile-action-proxy').forEach((proxyButton) => {
+    if (proxyButton.dataset.listenerAttached) return
+
+    proxyButton.addEventListener('click', () => {
+      const targetId = proxyButton.dataset.actionTarget
+      const targetButton = document.getElementById(targetId)
+      if (targetButton) {
+        targetButton.click()
+      }
+      closePanel(mobileActionsToggle, mobileActionsPanel)
+    })
+
+    proxyButton.dataset.listenerAttached = 'true'
+  })
+
+  if (!document.body.dataset.canvasCreatorNavAttached) {
+    document.addEventListener('click', (event) => {
+      const insideActionMenu =
+        toolsMenuButton && toolsMenu
+          ? toolsMenuButton.contains(event.target) || toolsMenu.contains(event.target)
+          : false
+      const insideHelpMenu =
+        helpToggle && helpTooltip
+          ? helpToggle.contains(event.target) || helpTooltip.contains(event.target)
+          : false
+      const insideMobilePrimary =
+        mobilePrimaryToggle && mobilePrimaryPanel
+          ? mobilePrimaryToggle.contains(event.target) || mobilePrimaryPanel.contains(event.target)
+          : false
+      const insideMobileActions =
+        mobileActionsToggle && mobileActionsPanel
+          ? mobileActionsToggle.contains(event.target) || mobileActionsPanel.contains(event.target)
+          : false
+
+      if (!insideActionMenu) closePanel(toolsMenuButton, toolsMenu)
+      if (!insideHelpMenu) closePanel(helpToggle, helpTooltip)
+      if (!insideMobilePrimary) closePanel(mobilePrimaryToggle, mobilePrimaryPanel)
+      if (!insideMobileActions) closePanel(mobileActionsToggle, mobileActionsPanel)
+    })
+
+    document.body.dataset.canvasCreatorNavAttached = 'true'
+  }
+
   // Event listeners for locale and canvas selection
   localeSel.addEventListener(
     'change',
@@ -155,15 +250,17 @@ function initCanvasCreator({
   )
 
   // add touch events to tool section
-  document.querySelectorAll(toolsSelector).forEach((button) => {
-    button.addEventListener(
-      'touchstart',
-      function (event) {
-        event.preventDefault()
-        this.click()
-      },
-      { passive: false },
-    )
+  document.querySelectorAll(toolsSelector).forEach((menu) => {
+    menu.querySelectorAll('button').forEach((button) => {
+      button.addEventListener(
+        'touchstart',
+        function (event) {
+          event.preventDefault()
+          this.click()
+        },
+        { passive: false },
+      )
+    })
   })
 
   canvasSel.addEventListener(
