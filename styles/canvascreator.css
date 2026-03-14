@@ -363,11 +363,40 @@ svg {
   transform: translateX(-50%);
   background-color: var(--cc-surface-overlay);
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  gap: var(--cc-space-xs);
+  padding: var(--cc-space-sm) var(--cc-space-md);
   border-radius: var(--cc-radius-pill);
   box-shadow: var(--cc-shadow-soft);
   justify-content: center;
+  align-items: center;
   z-index: 10;
+}
+
+.themeSelector {
+  display: flex;
+  align-items: center;
+  gap: var(--cc-space-sm);
+}
+
+.themeSelector label {
+  color: var(--cc-text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.themeSelector select {
+  border: 1px solid var(--cc-border-subtle);
+  border-radius: var(--cc-radius-sm);
+  padding: 4px 8px;
+  background: #fff;
+  color: var(--cc-text-primary);
+}
+
+#paletteSwatches {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 .colorSwatch {
@@ -382,6 +411,11 @@ svg {
 
 .colorSwatch:hover {
   transform: scale(1.1);
+}
+
+.colorSwatch.selected {
+  border-color: var(--cc-primary);
+  box-shadow: 0 0 0 2px rgba(31, 142, 241, 0.35);
 }
 
 .header-more-toggle:focus-visible,

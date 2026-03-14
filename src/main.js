@@ -13,6 +13,13 @@ const {
   distributeMissingPositions,
 } = require('./helpers');
 const defaultStyles = require('./defaultStyles');
+const {
+  stickyThemes,
+  getTheme,
+  getThemeNames,
+  getSafeColorForTheme,
+  buildPaletteSwatches,
+} = require('./stickyThemes');
 
 // Base path for images and CSS, updated by initCanvasCreator
 let assetBase = '';
@@ -33,7 +40,37 @@ const localizedData = require('../node_modules/apiops-cycles-method-data/src/dat
   let currentCanvas = null
   // Track if current canvas has unsaved changes
 let unsavedChanges = false
+let selectedTheme = getThemeNames()[0]
 
+function getSessionStorage() {
+  if (typeof window === 'undefined' || !window.sessionStorage) return null
+  return window.sessionStorage
+}
+
+function readSessionValue(key) {
+  const storage = getSessionStorage()
+  return storage ? storage.getItem(key) : null
+}
+
+function writeSessionValue(key, value) {
+  const storage = getSessionStorage()
+  if (!storage) return
+  storage.setItem(key, value)
+}
+
+function syncThemeStateFromSession() {
+  const persistedTheme = readSessionValue('selectedTheme')
+  if (persistedTheme && stickyThemes[persistedTheme]) {
+    selectedTheme = persistedTheme
+  }
+
+  const persistedColor = readSessionValue('selectedColor')
+  if (persistedColor) {
+    currentColor = persistedColor.toUpperCase()
+  }
+
+  currentColor = getSafeColorForTheme(selectedTheme, currentColor)
+}
 
 function getLocaleKey(locale) {
   if (!locale) return defaultStyles.defaultLocale
@@ -113,6 +150,8 @@ function initCanvasCreator({
     canvasCreatorElement || document.getElementById('canvasCreator')
 
   if (!localeSel || !canvasSel) return
+
+  syncThemeStateFromSession()
 
   const toolsMenuButton = document.getElementById('ToolsTitle')
   const toolsMenu = document.getElementById('canvasToolsMenu')
@@ -903,21 +942,74 @@ fileInput.addEventListener("change", function () {
       }
       
   
-      // Color selection
-      const colorSwatches = document.querySelectorAll(".colorSwatch")
-      colorSwatches.forEach((swatch) => {
-        swatch.addEventListener("click", () => {
-          currentColor = swatch.dataset.color // Update currentColor
-          // In the color swatch click handler:
-          if (selectedNote) {
-            selectedNote.color = currentColor
-            updateStickyNotes(contentData) // Pass contentData to updateStickyNotes
-  
-            // Unselect the sticky note after applying the color
-            selectedNote = null
-          }
+      // Theme + color selection
+      const themeSelect = document.getElementById('themeSelect')
+      const paletteSwatches = document.getElementById('paletteSwatches')
+
+      function applyColorSelection(color) {
+        currentColor = color
+        writeSessionValue('selectedColor', currentColor)
+
+        if (selectedNote) {
+          selectedNote.color = currentColor
+          updateStickyNotes(contentData)
+          selectedNote = null
+        }
+      }
+
+      function renderThemeSelector() {
+        if (!themeSelect) return
+        themeSelect.innerHTML = ''
+
+        getThemeNames().forEach((themeName) => {
+          const option = document.createElement('option')
+          const themeConfig = getTheme(themeName)
+          option.value = themeName
+          option.textContent = themeConfig.label || themeName
+          option.selected = themeName === selectedTheme
+          themeSelect.appendChild(option)
         })
-      })
+      }
+
+      function renderPaletteForTheme() {
+        if (!paletteSwatches) return
+        const activeTheme = getTheme(selectedTheme)
+
+        currentColor = getSafeColorForTheme(activeTheme.name, currentColor)
+        writeSessionValue('selectedColor', currentColor)
+
+        paletteSwatches.innerHTML = ''
+        buildPaletteSwatches(activeTheme.name, currentColor).forEach(({ color: swatchColor, isSelected }) => {
+          const swatch = document.createElement('button')
+          swatch.type = 'button'
+          swatch.className = 'colorSwatch'
+          if (isSelected) {
+            swatch.classList.add('selected')
+          }
+          swatch.style.backgroundColor = swatchColor
+          swatch.dataset.color = swatchColor
+          swatch.setAttribute('aria-label', `Select ${swatchColor} sticky note color`)
+          swatch.addEventListener('click', () => {
+            applyColorSelection(swatchColor)
+            renderPaletteForTheme()
+          })
+          paletteSwatches.appendChild(swatch)
+        })
+      }
+
+      renderThemeSelector()
+      renderPaletteForTheme()
+
+      if (themeSelect && !themeSelect.dataset.listenerAttached) {
+        themeSelect.addEventListener('change', (event) => {
+          selectedTheme = event.target.value
+          currentColor = getSafeColorForTheme(selectedTheme, currentColor)
+          writeSessionValue('selectedTheme', selectedTheme)
+          writeSessionValue('selectedColor', currentColor)
+          renderPaletteForTheme()
+        })
+        themeSelect.dataset.listenerAttached = 'true'
+      }
   
       // Show metadata form
       document.getElementById("metadataButton").addEventListener("click", () => {
@@ -1294,4 +1386,9 @@ fileInput.addEventListener("change", function () {
     }
   }
 
-module.exports = { loadCanvas, initCanvasCreator }
+module.exports = {
+  loadCanvas,
+  initCanvasCreator,
+  syncThemeStateFromSession,
+  getSessionStorage,
+}
