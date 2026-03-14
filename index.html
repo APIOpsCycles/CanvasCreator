@@ -9,7 +9,7 @@
       id="canvasCreatorFavicon"
       rel="icon"
       type="image/png"
-      href="./img/apiops-cycles-logo-2025-32.png"
+      href="./img/apiops-cycles-logo-2025-64.png"
     />
   </head>
 <body>
@@ -19,15 +19,30 @@
         <img
           id="canvasCreatorBrandLogo"
           class="brand-logo"
-          src="./img/apiops-cycles-logo-2025-32.png"
+          src="./img/apiops-cycles-logo-2025-64.png"
           alt="APIOps Cycles logo"
-          width="32"
-          height="32"
+          width="64"
+          height="64"
         />
-        <span>APIOps Cycles Canvas Creator - now also available from npm</span>
+        <span>Canvas Creator</span>
       </a>
 
       <div class="header-actions">
+          <a
+          id="githubLink"
+          class="github-link"
+          href="https://github.com/APIOpsCycles/CanvasCreator.git"
+          target="_blank"
+        >
+          <img
+            id="githubLogo"
+            class="github-logo"
+            src="./img/GitHub_Invertocat_Black.svg"
+            alt="Github logo"
+            width="32"
+            height="32"
+          />
+        </a>
         <button
           id="headerMoreToggle"
           class="nav-icon-button header-more-toggle"
@@ -40,17 +55,17 @@
           <span class="sr-only">Menu</span>
         </button>
         <nav id="headerMorePanel" class="header-more-panel" aria-label="External links" hidden>
-          <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub</a>
-          <a href="https://www.apiopscycles.com/partners" target="_blank" rel="noopener noreferrer">Partners</a>
-          <a href="https://www.osaango.com/contact-us" target="_blank" rel="noopener noreferrer">Contact</a>
+          <a href="https://www.apiopscycles.com/getting-started/partners/" target="_blank" rel="noopener noreferrer">Partners</a>
+          <a href="https://tally.so/r/3yQEpp" target="_blank" rel="noopener noreferrer">Contact</a>
         </nav>
       </div>
     </header>
 
     <div id="toolContainer">
-      <button id="importButton" class="primary-action-button" type="button"><span aria-hidden="true">↪</span> Start by Importing...</button>
+      <button id="importButton" class="primary-action-button" type="button"><span aria-hidden="true">↪</span> Import canvas JSON...</button>
 
       <div class="selector-group" aria-label="Canvas selectors">
+        <div>or select...</div>
         <div id="localeSelector" class="selector-item">
           <label for="locale">Language</label>
           <select id="locale"></select>
@@ -64,7 +79,8 @@
 
       <nav class="desktop-actions" aria-label="Canvas actions">
         <div id="canvasToolGroup" class="action-menu">
-          <button id="ToolsTitle" type="button" aria-label="Canvas actions" aria-expanded="false" aria-controls="canvasToolsMenu"><span aria-hidden="true">&vellip;</span><span class="sr-only">Canvas actions</span></button>
+          <span> Export: </span>
+          <button id="ToolsTitle" type="button" aria-label="Canvas actions" aria-expanded="false" aria-controls="canvasToolsMenu"><span aria-hidden="true"> &vellip;</span><span class="sr-only">Canvas actions</span></button>
           <div class="canvas-tools" id="canvasToolsMenu" hidden>
             <button id="metadataButton" class="canvas-tools-item" type="button">Edit Metadata</button>
             <button id="exportButton" class="canvas-tools-item" type="button">Export JSON</button>
@@ -78,8 +94,9 @@
         <button class="help-icon" id="helpToggle" type="button" aria-expanded="false" aria-controls="helpTooltip">?</button>
         <div class="help-tooltip" id="helpTooltip" role="dialog" aria-label="Canvas help" hidden>
           <strong>Canvas Help</strong>
+          <p>Use the APIOps Cycles canvas creator via the web interface or as an npm module or CLI. You can also create your own canvases if you introduce your own JSON schema. You can also use AI to fill in canvases for you, and then import them to the UI or export as SVG / PNG for viewing</p>
           <ul>
-            <li><b>Open:</b> Import JSON or select locale & canvas.</li>
+            <li><b>Open:</b> Import JSON or select locale & canvas. Tip: you can first export an empty canvas</li>
             <li><b>Create:</b> Double-click canvas to create new stickies.</li>
             <li><b>Edit:</b> Double-click sticky note to edit.</li>
             <li><b>Change Color:</b> Click note, pick color.</li>
@@ -143,7 +160,7 @@
     }
 
     if (brandLogo) {
-      brandLogo.src = `${resolvedAssetBase}/img/apiops-cycles-logo-2025-32.png`;
+      brandLogo.src = `${resolvedAssetBase}/img/apiops-cycles-logo-2025-64.png`;
     }
 
     const moduleCandidates = [

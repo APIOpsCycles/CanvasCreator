@@ -52,7 +52,7 @@ body {
 }
 
 #canvasContainer {
-  width: min(98vw, 1320px);
+  width: min(104vw, 1320px);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -78,8 +78,6 @@ body {
   justify-content: space-between;
   padding: var(--cc-space-lg) var(--cc-space-lg);
   background: transparent;
-  border-radius: 16px;
-  box-shadow: var(--cc-shadow-soft);
 }
 
 .brand-area {
@@ -101,6 +99,12 @@ body {
   border-radius: var(--cc-radius-round);
 }
 
+.github-link {
+  color: var(--cc-text-secondary);
+  font-size: 1.5rem;
+  text-decoration: none;
+}
+
 .header-actions {
   position: relative;
 }
@@ -109,7 +113,7 @@ body {
   width: 48px;
   height: 48px;
   border: 1px solid var(--cc-border-accent);
-  border-radius: 16px;
+  border-radius: var(--cc-radius-sm);
   background: var(--cc-primary);
   color: var(--cc-text-on-brand);
   font-size: 1.45rem;
@@ -303,8 +307,8 @@ ul {
   padding: var(--cc-space-md);
   border-radius: 20px;
   box-shadow: var(--cc-shadow-medium);
-  width: min(100%, 1220px);
-  height: 900px;
+  width: min(100%, 1020px);
+  height: 720px;
   margin: auto;
   padding-bottom: 84px;
   position: relative;
@@ -331,7 +335,7 @@ svg {
 }
 
 #metadataForm input {
-  width: 100%;
+  width: 90%;
   padding: 8px;
   margin: var(--cc-space-sm) 0;
   border: 1px solid var(--cc-border-subtle);
@@ -355,7 +359,7 @@ svg {
 #colorPalette {
   position: absolute;
   left: 50%;
-  bottom: 22px;
+  bottom: 0;
   transform: translateX(-50%);
   background-color: var(--cc-surface-overlay);
   display: flex;
@@ -394,7 +398,7 @@ svg {
 
 @media (max-width: 1199px) {
   #canvasCreator {
-    width: 94vw;
+    width: 104vw;
     height: auto;
     min-height: 700px;
   }
