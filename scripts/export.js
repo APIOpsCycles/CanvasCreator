@@ -371,9 +371,8 @@ async function main() {
   const locale = args.locale || 'en';
   const format = args.format || 'json';
   const prefix = args.prefix || 'Canvas';
-  const outDir = path.isAbsolute(args.outdir)
-    ? args.outdir
-    : path.join(process.cwd(), args.outdir || 'export');
+  // `path.resolve` handles both absolute and relative paths, and avoids errors when args.outdir is undefined.
+  const outDir = path.resolve(process.cwd(), args.outdir || 'export');
   const canvasData = require('apiops-cycles-method-data/canvasData.json');
   const localizedData = require('apiops-cycles-method-data/localizedData.json');
 

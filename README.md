@@ -61,7 +61,7 @@ CanvasCreator/
 
 ## Build
 
-Run `npm run build` to compile the library using [Rollup](https://rollupjs.org/). The command also minifies the JavaScript using the `@rollup/plugin-terser` plugin and the CSS using [`clean-css`](https://github.com/jakubpawlowicz/clean-css). It produces CommonJS, ESM and a minified ESM bundle in `dist/` together with the minified CSS and assets:
+Run `npm run build` to compile the library using [Rollup](https://rollupjs.org/). The command minifies JavaScript via `@rollup/plugin-terser` and minifies CSS via [`clean-css`](https://github.com/jakubpawlowicz/clean-css). It produces CommonJS, ESM, and minified ESM bundles in `dist/` plus the minified stylesheet and static assets:
 
 ```
 dist/
@@ -74,15 +74,33 @@ dist/
   apiops-cycles-method-data/ # JSON files from APIOps Cycles main repo
 ```
 
-Both formats include the same API so your bundler can pick whichever it understands. CSS minification is handled by the `minify-css` script which uses `clean-css`.
+Notes:
+
+- `npm run minify-css` writes `./canvascreator.min.css` from `styles/canvascreator.css`.
+- `npm run build` then copies that file into `dist/canvascreator.min.css`.
+- The published npm package includes the `dist/` folder, so package consumers should read CSS from `dist/canvascreator.min.css`.
+
+Both JavaScript formats expose the same API so your toolchain can pick whichever it supports.
 
 The build also runs automatically when installing from git or publishing the package thanks to the `prepare` script in `package.json`.
 
-To use the library directly in a browser without a bundler, load the minified ESM file:
+To use the library directly in a browser without a bundler, include D3 first, then import the ESM bundle and initialize it:
 
 ```html
-<script type="module" src="canvascreator.esm.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<link rel="stylesheet" href="./dist/canvascreator.min.css" />
+
+<div id="canvasCreator"></div>
+
+<script type="module">
+  import CanvasCreator from "./dist/canvascreator.esm.min.js";
+
+  CanvasCreator.initCanvasCreator({ assetBase: "./dist" });
+  CanvasCreator.loadCanvas("en", "apiBusinessModelCanvas");
+</script>
 ```
+
+If you just want a ready-to-run static page, open `dist/index.html` after running `npm run build`.
 
 During the build, `scripts/updateVersion.js` copies `index.html` and the
 necessary images into the `dist` folder. It also replaces the
@@ -91,20 +109,23 @@ JavaScript, image and JSON files.
 
 ## Using in Front-end Projects
 
-Import the functions directly from the package in any bundler-based setup. For example with [Astro](https://astro.build/). Make sure [D3.js](https://d3js.org/) is loaded separately and copy `canvascreator.min.css` and the `img` directory from the package to your public folder.
+In bundler-based projects (Astro, Vite, Webpack, etc.), use the package API and ensure [D3.js](https://d3js.org/) is available globally in the browser before calling `initCanvasCreator`.
+
+Also make sure static assets are served from your app (at minimum `canvascreator.min.css` and `img/*`). When consuming from npm, these live under `node_modules/canvascreator/dist/` (for CSS) and `node_modules/canvascreator/img/` (for images).
 
 ```astro
 ---
 import CanvasCreator from "canvascreator";
 ---
 <div id="canvasCreator"></div>
+<link rel="stylesheet" href="/assets/canvascreator.min.css" />
 <script type="module">
-  CanvasCreator.initCanvasCreator({ assetBase: "/" });
+  CanvasCreator.initCanvasCreator({ assetBase: "/assets" });
   CanvasCreator.loadCanvas("en", "apiBusinessModelCanvas");
 </script>
 ```
 
-The optional `assetBase` setting tells the library where to load `img` and CSS files from. It defaults to an empty string which points to the site root.
+The optional `assetBase` setting tells the library where image assets are loaded from (for example `/assets/img/...`).
 
 Any framework that supports ES modules (React, Vue, etc.) can use the same API.
 
@@ -187,4 +208,4 @@ See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes.
 For any issues, feature requests, or questions, please create an issue in the [GitHub repository](https://github.com/APIOpsCycles/CanvasCreator/issues).
 
 ## Sponsors and partners
-If your organization would like to support the method and gain more skills and visibility, check our partner page for more information: [APIOps Partners](https://www.apiopscycles.com/partners)
+If your organization would like to support the method and gain more skills and visibility, check our partner page for more information: [APIOps Partners](https://www.apiopscycles.com/getting-started/partners/)
