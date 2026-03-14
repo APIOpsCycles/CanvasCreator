@@ -118,10 +118,9 @@ function initCanvasCreator({
   const toolsMenu = document.getElementById('canvasToolsMenu')
   const helpToggle = document.getElementById('helpToggle')
   const helpTooltip = document.getElementById('helpTooltip')
-  const mobilePrimaryToggle = document.getElementById('mobilePrimaryToggle')
-  const mobileActionsToggle = document.getElementById('mobileActionsToggle')
-  const mobilePrimaryPanel = document.getElementById('mobilePrimaryPanel')
-  const mobileActionsPanel = document.getElementById('mobileActionsPanel')
+  const importButton = document.getElementById('importButton')
+  const headerMoreToggle = document.getElementById('headerMoreToggle')
+  const headerMorePanel = document.getElementById('headerMorePanel')
 
   function togglePanel(button, panel) {
     if (!button || !panel) return
@@ -150,36 +149,19 @@ function initCanvasCreator({
     helpToggle.dataset.listenerAttached = 'true'
   }
 
-  if (mobilePrimaryToggle && mobilePrimaryPanel && !mobilePrimaryToggle.dataset.listenerAttached) {
-    mobilePrimaryToggle.addEventListener('click', () => {
-      togglePanel(mobilePrimaryToggle, mobilePrimaryPanel)
-      closePanel(mobileActionsToggle, mobileActionsPanel)
+  if (importButton && !importButton.dataset.listenerAttached) {
+    importButton.addEventListener('click', () => {
+      fileInput.click()
     })
-    mobilePrimaryToggle.dataset.listenerAttached = 'true'
+    importButton.dataset.listenerAttached = 'true'
   }
 
-  if (mobileActionsToggle && mobileActionsPanel && !mobileActionsToggle.dataset.listenerAttached) {
-    mobileActionsToggle.addEventListener('click', () => {
-      togglePanel(mobileActionsToggle, mobileActionsPanel)
-      closePanel(mobilePrimaryToggle, mobilePrimaryPanel)
+  if (headerMoreToggle && headerMorePanel && !headerMoreToggle.dataset.listenerAttached) {
+    headerMoreToggle.addEventListener('click', () => {
+      togglePanel(headerMoreToggle, headerMorePanel)
     })
-    mobileActionsToggle.dataset.listenerAttached = 'true'
+    headerMoreToggle.dataset.listenerAttached = 'true'
   }
-
-  document.querySelectorAll('.mobile-action-proxy').forEach((proxyButton) => {
-    if (proxyButton.dataset.listenerAttached) return
-
-    proxyButton.addEventListener('click', () => {
-      const targetId = proxyButton.dataset.actionTarget
-      const targetButton = document.getElementById(targetId)
-      if (targetButton) {
-        targetButton.click()
-      }
-      closePanel(mobileActionsToggle, mobileActionsPanel)
-    })
-
-    proxyButton.dataset.listenerAttached = 'true'
-  })
 
   if (!document.body.dataset.canvasCreatorNavAttached) {
     document.addEventListener('click', (event) => {
@@ -191,19 +173,21 @@ function initCanvasCreator({
         helpToggle && helpTooltip
           ? helpToggle.contains(event.target) || helpTooltip.contains(event.target)
           : false
-      const insideMobilePrimary =
-        mobilePrimaryToggle && mobilePrimaryPanel
-          ? mobilePrimaryToggle.contains(event.target) || mobilePrimaryPanel.contains(event.target)
-          : false
-      const insideMobileActions =
-        mobileActionsToggle && mobileActionsPanel
-          ? mobileActionsToggle.contains(event.target) || mobileActionsPanel.contains(event.target)
+      const insideHeaderMore =
+        headerMoreToggle && headerMorePanel
+          ? headerMoreToggle.contains(event.target) || headerMorePanel.contains(event.target)
           : false
 
       if (!insideActionMenu) closePanel(toolsMenuButton, toolsMenu)
       if (!insideHelpMenu) closePanel(helpToggle, helpTooltip)
-      if (!insideMobilePrimary) closePanel(mobilePrimaryToggle, mobilePrimaryPanel)
-      if (!insideMobileActions) closePanel(mobileActionsToggle, mobileActionsPanel)
+      if (!insideHeaderMore) closePanel(headerMoreToggle, headerMorePanel)
+    })
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return
+      closePanel(toolsMenuButton, toolsMenu)
+      closePanel(helpToggle, helpTooltip)
+      closePanel(headerMoreToggle, headerMorePanel)
     })
 
     document.body.dataset.canvasCreatorNavAttached = 'true'
@@ -368,6 +352,10 @@ function initCanvasCreator({
 const fileInput = document.createElement("input")
 fileInput.type = "file"
 fileInput.accept = "application/json"
+fileInput.style.display = 'none'
+if (typeof document !== 'undefined' && document.body && !fileInput.isConnected) {
+  document.body.appendChild(fileInput)
+}
 
 // Ensure change handler is attached once
 fileInput.addEventListener("change", function () {
@@ -870,17 +858,6 @@ fileInput.addEventListener("change", function () {
         link.click();
         document.body.removeChild(link);
       };
-  
-      // Import canvas content from JSON
-  
-      if (!importButton.dataset.listenerAttached) {
-        importButton.addEventListener("click", () => {
-          fileInput.click()
-        })
-        importButton.dataset.listenerAttached = "true"
-      }
-      
-      
   
       // Export the canvas content as SVG (attach listener only once)
       const exportSVGButton = document.getElementById("exportSVGButton")

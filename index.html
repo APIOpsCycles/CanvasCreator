@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
   <head>
+    <meta charset="utf-8" />
     <title>APIOps Cycles - Canvas Creator</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <link id="canvasCreatorStylesheet" rel="stylesheet" href="./canvascreator.min.css">
@@ -8,101 +9,124 @@
       id="canvasCreatorFavicon"
       rel="icon"
       type="image/png"
-      href="./img/apiops-cycles-logo-2025-32.png"
+      href="./img/apiops-cycles-logo-2025-64.png"
     />
   </head>
 <body>
   <div id="canvasContainer">
     <header class="top-nav" aria-label="Canvas Creator navigation">
-      <div class="brand-area">
-        <a class="brand-link" href="https://www.apiopscycles.com/resources/customer-journey-canvas/" target="_blank" rel="noopener noreferrer">
+      <a class="brand-link" href="https://www.apiopscycles.com/resources/customer-journey-canvas/" target="_blank" rel="noopener noreferrer">
+        <img
+          id="canvasCreatorBrandLogo"
+          class="brand-logo"
+          src="./img/apiops-cycles-logo-2025-64.png"
+          alt="APIOps Cycles logo"
+          width="64"
+          height="64"
+        />
+        <span>Canvas Creator</span>
+      </a>
+
+      <div class="header-actions">
+          <a
+          id="githubLink"
+          class="github-link"
+          href="https://github.com/APIOpsCycles/CanvasCreator.git"
+          target="_blank"
+        >
           <img
-            id="canvasCreatorBrandLogo"
-            class="brand-logo"
-            src="./img/apiops-cycles-logo-2025-32.png"
-            alt="APIOps Cycles logo"
+            id="githubLogo"
+            class="github-logo"
+            src="./img/GitHub_Invertocat_Black.svg"
+            alt="Github logo"
             width="32"
             height="32"
           />
-          <span>APIOps Cycles</span>
         </a>
-      </div>
-
-      <nav class="desktop-nav" aria-label="Primary links">
-        <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://www.apiopscycles.com/partners" target="_blank" rel="noopener noreferrer">Partners</a>
-        <a href="https://www.osaango.com/contact-us" target="_blank" rel="noopener noreferrer">Contact</a>
-      </nav>
-
-      <nav class="mobile-nav" aria-label="Mobile navigation controls">
-        <button id="mobilePrimaryToggle" class="nav-compact-button" type="button" aria-expanded="false" aria-controls="mobilePrimaryPanel">Menu</button>
-        <button id="mobileActionsToggle" class="nav-compact-button" type="button" aria-expanded="false" aria-controls="mobileActionsPanel">Actions</button>
-      </nav>
-
-      <div id="mobilePrimaryPanel" class="mobile-more-panel" hidden>
-        <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://www.apiopscycles.com/partners" target="_blank" rel="noopener noreferrer">Partners</a>
-        <a href="https://www.osaango.com/contact-us" target="_blank" rel="noopener noreferrer">Contact</a>
-      </div>
-
-      <div id="mobileActionsPanel" class="mobile-more-panel" hidden>
-        <button type="button" class="mobile-action-proxy" data-action-target="metadataButton">Edit Metadata</button>
-        <button type="button" class="mobile-action-proxy" data-action-target="importButton">Import JSON</button>
-        <button type="button" class="mobile-action-proxy" data-action-target="exportButton">Export JSON</button>
-        <button type="button" class="mobile-action-proxy" data-action-target="exportSVGButton">Export SVGs</button>
-        <button type="button" class="mobile-action-proxy" data-action-target="exportPNGButton">Export PNG</button>
+        <button
+          id="headerMoreToggle"
+          class="nav-icon-button header-more-toggle"
+          type="button"
+          aria-label="More links"
+          aria-expanded="false"
+          aria-controls="headerMorePanel"
+        >
+          <span aria-hidden="true">☰</span>
+          <span class="sr-only">Menu</span>
+        </button>
+        <nav id="headerMorePanel" class="header-more-panel" aria-label="External links" hidden>
+          <a href="https://www.apiopscycles.com/getting-started/partners/" target="_blank" rel="noopener noreferrer">Partners</a>
+          <a href="https://tally.so/r/3yQEpp" target="_blank" rel="noopener noreferrer">Contact</a>
+        </nav>
       </div>
     </header>
 
-    <h1>APIOps Cycles Canvas Creator</h1>
-    <p>Now available also as CLI and pluggable code library, install as node module <code>npm install canvascreator</code></p>
-    <div>
-      <div id="toolContainer">
-        <div id="localeSelector">
-          <label for="locale"></label>
+    <div id="toolContainer">
+      <button id="importButton" class="primary-action-button" type="button"><span aria-hidden="true">↪</span> Import canvas JSON...</button>
+
+      <div class="selector-group" aria-label="Canvas selectors">
+        <div>or select...</div>
+        <div id="localeSelector" class="selector-item">
+          <label for="locale">Language</label>
           <select id="locale"></select>
         </div>
 
-        <div id="canvasSelector">
-          <label for="canvas"></label>
+        <div id="canvasSelector" class="selector-item">
+          <label for="canvas">Canvas Type</label>
           <select id="canvas"></select>
         </div>
+      </div>
 
-        <div class="help-container">
-          <button class="help-icon" id="helpToggle" type="button" aria-expanded="false" aria-controls="helpTooltip">?</button>
-          <div class="help-tooltip" id="helpTooltip" role="dialog" aria-label="Canvas help" hidden>
-            <strong>Canvas Help</strong>
-            <ul>
-              <li><b>Open:</b> Select locale & canvas.</li>
-              <li><b>Create:</b> Double-click canvas to create new stickies.</li>
-              <li><b>Edit:</b> Double-click sticky note to edit.</li>
-              <li><b>Change Color:</b> Click note, pick color.</li>
-              <li><b>Remove:</b> Right-click & confirm.</li>
-              <li><b>Edit later:</b> Export as JSON (on your computer).</li>
-              <li><b>Use elsewhere:</b> Export as SVG or PNG for slides/web.</li>
-              <li><b>CLI:</b> <code>npm i canvascreator</code></li>
-              <li><b>Localize:</b> Make a pull request or issue in the <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub repo</a></li>
-            </ul>
+      <nav class="desktop-actions" aria-label="Canvas actions">
+        <div id="canvasToolGroup" class="action-menu">
+          <span> Export: </span>
+          <button id="ToolsTitle" type="button" aria-label="Canvas actions" aria-expanded="false" aria-controls="canvasToolsMenu"><span aria-hidden="true"> &vellip;</span><span class="sr-only">Canvas actions</span></button>
+          <div class="canvas-tools" id="canvasToolsMenu" hidden>
+            <button id="metadataButton" class="canvas-tools-item" type="button">Edit Metadata</button>
+            <button id="exportButton" class="canvas-tools-item" type="button">Export JSON</button>
+            <button id="exportSVGButton" class="canvas-tools-item" type="button">Export SVGs</button>
+            <button id="exportPNGButton" class="canvas-tools-item" type="button">Export PNG</button>
           </div>
         </div>
+      </nav>
 
-        <nav class="desktop-actions" aria-label="Desktop canvas actions">
-          <div id="canvasToolGroup" class="action-menu">
-            <button id="ToolsTitle" type="button" aria-label="Canvas actions" aria-expanded="false" aria-controls="canvasToolsMenu">&vellip;</button>
-            <div class="canvas-tools" id="canvasToolsMenu" hidden>
-              <button id="metadataButton" class="canvas-tools-item" type="button">Edit Metadata</button>
-              <button class="canvas-tools-item" id="importButton" type="button">Import JSON</button>
-              <button id="exportButton" class="canvas-tools-item" type="button">Export JSON</button>
-              <button id="exportSVGButton" class="canvas-tools-item" type="button">Export SVGs</button>
-              <button id="exportPNGButton" class="canvas-tools-item" type="button">Export PNG</button>
-            </div>
-          </div>
-        </nav>
+      <div class="help-container">
+        <button class="help-icon" id="helpToggle" type="button" aria-expanded="false" aria-controls="helpTooltip">?</button>
+        <div class="help-tooltip" id="helpTooltip" role="dialog" aria-label="Canvas help" hidden>
+          <strong>Canvas Help</strong>
+          <p>Use the APIOps Cycles canvas creator via the web interface or as an npm module or CLI. You can also create your own canvases if you introduce your own JSON schema. You can also use AI to fill in canvases for you, and then import them to the UI or export as SVG / PNG for viewing</p>
+          <ul>
+            <li><b>Open:</b> Import JSON or select locale & canvas. Tip: you can first export an empty canvas</li>
+            <li><b>Create:</b> Double-click canvas to create new stickies.</li>
+            <li><b>Edit:</b> Double-click sticky note to edit.</li>
+            <li><b>Change Color:</b> Click note, pick color.</li>
+            <li><b>Remove:</b> Right-click & confirm.</li>
+            <li><b>Edit later:</b> Export as JSON (on your computer).</li>
+            <li><b>Use elsewhere:</b> Export as SVG or PNG for slides/web.</li>
+            <li><b>CLI:</b> <code>npm i canvascreator</code></li>
+            <li><b>Localize:</b> Make a pull request or issue in the <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub repo</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="canvas-workspace">
+      <div id="canvasCreator">
+        <div id="metadataForm" style="display: none">
+          <h2>Content Metadata</h2>
+          <label for="source">Source:</label>
+          <input type="text" id="source" name="source" /><br /><br />
+          <label for="license">License:</label>
+          <input type="text" id="license" name="license" /><br /><br />
+          <label for="authors">Authors:</label>
+          <input type="text" id="authors" name="authors" /><br /><br />
+          <label for="website">Website:</label>
+          <input type="text" id="website" name="website" /><br /><br />
+          <button id="saveMetadata">Save Metadata</button>
+        </div>
       </div>
 
-      <div>
-      </div>
-      <div id="colorPalette">
+      <div id="colorPalette" aria-label="Sticky note colors">
         <button class="colorSwatch" style="background-color: #c0eb6a" data-color="#C0EB6A"></button>
         <button class="colorSwatch" style="background-color: #dfddc5" data-color="#DFDDC5"></button>
         <button class="colorSwatch" style="background-color: #ffafaf" data-color="#FFAFAF"></button>
@@ -111,67 +135,53 @@
       </div>
     </div>
   </div>
-  <div id="canvasCreator">
-    <div id="metadataForm" style="display: none">
-      <h2>Content Metadata</h2>
-      <label for="source">Source:</label>
-      <input type="text" id="source" name="source" /><br /><br />
-      <label for="license">License:</label>
-      <input type="text" id="license" name="license" /><br /><br />
-      <label for="authors">Authors:</label>
-      <input type="text" id="authors" name="authors" /><br /><br />
-      <label for="website">Website:</label>
-      <input type="text" id="website" name="website" /><br /><br />
-      <button id="saveMetadata">Save Metadata</button>
-    </div>
-  </div>
-  </div>
-    <!-- load the ESM bundle -->
-    <script type="module">
-      const configuredAssetBase = '<%= assetBase %>';
-      const configuredVersion = '<%= version %>';
-      const hasTemplateTokens =
-        configuredAssetBase.includes('<%=') || configuredVersion.includes('<%=');
-      const resolvedAssetBase = hasTemplateTokens
-        ? '.'
-        : configuredAssetBase || '.';
-      const versionSuffix = hasTemplateTokens ? '' : `?v=${configuredVersion}`;
 
-      const stylesheet = document.getElementById('canvasCreatorStylesheet');
-      const favicon = document.getElementById('canvasCreatorFavicon');
-      const brandLogo = document.getElementById('canvasCreatorBrandLogo');
+  <!-- load the ESM bundle -->
+  <script type="module">
+    const configuredAssetBase = '<%= assetBase %>';
+    const configuredVersion = '<%= version %>';
+    const hasTemplateTokens =
+      configuredAssetBase.includes('<%=') || configuredVersion.includes('<%=');
+    const resolvedAssetBase = hasTemplateTokens
+      ? '.'
+      : configuredAssetBase || '.';
+    const versionSuffix = hasTemplateTokens ? '' : `?v=${configuredVersion}`;
 
-      if (stylesheet) {
-        stylesheet.href = `${resolvedAssetBase}/canvascreator.min.css${versionSuffix}`;
+    const stylesheet = document.getElementById('canvasCreatorStylesheet');
+    const favicon = document.getElementById('canvasCreatorFavicon');
+    const brandLogo = document.getElementById('canvasCreatorBrandLogo');
+
+    if (stylesheet) {
+      stylesheet.href = `${resolvedAssetBase}/canvascreator.min.css${versionSuffix}`;
+    }
+
+    if (favicon) {
+      favicon.href = `${resolvedAssetBase}/img/apiops-cycles-logo-2025-32.png`;
+    }
+
+    if (brandLogo) {
+      brandLogo.src = `${resolvedAssetBase}/img/apiops-cycles-logo-2025-64.png`;
+    }
+
+    const moduleCandidates = [
+      `${resolvedAssetBase}/canvascreator.esm.min.js${versionSuffix}`,
+      './dist/canvascreator.esm.min.js',
+    ];
+
+    let CanvasCreator;
+
+    for (const modulePath of moduleCandidates) {
+      try {
+        ({ default: CanvasCreator } = await import(modulePath));
+        break;
+      } catch (_error) {
+        // Try the next module candidate.
       }
+    }
 
-      if (favicon) {
-        favicon.href = `${resolvedAssetBase}/img/apiops-cycles-logo-2025-32.png`;
-      }
-
-      if (brandLogo) {
-        brandLogo.src = `${resolvedAssetBase}/img/apiops-cycles-logo-2025-32.png`;
-      }
-
-      const moduleCandidates = [
-        `${resolvedAssetBase}/canvascreator.esm.min.js${versionSuffix}`,
-        './dist/canvascreator.esm.min.js',
-      ];
-
-      let CanvasCreator;
-
-      for (const modulePath of moduleCandidates) {
-        try {
-          ({ default: CanvasCreator } = await import(modulePath));
-          break;
-        } catch (_error) {
-          // Try the next module candidate.
-        }
-      }
-
-      if (CanvasCreator) {
-        CanvasCreator.initCanvasCreator({ assetBase: resolvedAssetBase });
-      }
-    </script>
-  </body>
+    if (CanvasCreator) {
+      CanvasCreator.initCanvasCreator({ assetBase: resolvedAssetBase });
+    }
+  </script>
+</body>
 </html>
