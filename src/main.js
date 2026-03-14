@@ -118,6 +118,7 @@ function initCanvasCreator({
   const toolsMenu = document.getElementById('canvasToolsMenu')
   const helpToggle = document.getElementById('helpToggle')
   const helpTooltip = document.getElementById('helpTooltip')
+  const importButton = document.getElementById('importButton')
   const headerMoreToggle = document.getElementById('headerMoreToggle')
   const headerMorePanel = document.getElementById('headerMorePanel')
 
@@ -146,6 +147,13 @@ function initCanvasCreator({
       togglePanel(helpToggle, helpTooltip)
     })
     helpToggle.dataset.listenerAttached = 'true'
+  }
+
+  if (importButton && !importButton.dataset.listenerAttached) {
+    importButton.addEventListener('click', () => {
+      fileInput.click()
+    })
+    importButton.dataset.listenerAttached = 'true'
   }
 
   if (headerMoreToggle && headerMorePanel && !headerMoreToggle.dataset.listenerAttached) {
@@ -344,6 +352,10 @@ function initCanvasCreator({
 const fileInput = document.createElement("input")
 fileInput.type = "file"
 fileInput.accept = "application/json"
+fileInput.style.display = 'none'
+if (typeof document !== 'undefined' && document.body && !fileInput.isConnected) {
+  document.body.appendChild(fileInput)
+}
 
 // Ensure change handler is attached once
 fileInput.addEventListener("change", function () {
@@ -846,17 +858,6 @@ fileInput.addEventListener("change", function () {
         link.click();
         document.body.removeChild(link);
       };
-  
-      // Import canvas content from JSON
-  
-      if (!importButton.dataset.listenerAttached) {
-        importButton.addEventListener("click", () => {
-          fileInput.click()
-        })
-        importButton.dataset.listenerAttached = "true"
-      }
-      
-      
   
       // Export the canvas content as SVG (attach listener only once)
       const exportSVGButton = document.getElementById("exportSVGButton")

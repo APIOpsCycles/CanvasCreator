@@ -15,19 +15,17 @@
 <body>
   <div id="canvasContainer">
     <header class="top-nav" aria-label="Canvas Creator navigation">
-      <div class="brand-area">
-        <a class="brand-link" href="https://www.apiopscycles.com/resources/customer-journey-canvas/" target="_blank" rel="noopener noreferrer">
-          <img
-            id="canvasCreatorBrandLogo"
-            class="brand-logo"
-            src="./img/apiops-cycles-logo-2025-32.png"
-            alt="APIOps Cycles logo"
-            width="32"
-            height="32"
-          />
-          <span>APIOps Cycles</span>
-        </a>
-      </div>
+      <a class="brand-link" href="https://www.apiopscycles.com/resources/customer-journey-canvas/" target="_blank" rel="noopener noreferrer">
+        <img
+          id="canvasCreatorBrandLogo"
+          class="brand-logo"
+          src="./img/apiops-cycles-logo-2025-32.png"
+          alt="APIOps Cycles logo"
+          width="32"
+          height="32"
+        />
+        <span>APIOps Cycles Canvas Creator - now also available from npm</span>
+      </a>
 
       <div class="header-actions">
         <button
@@ -38,8 +36,8 @@
           aria-expanded="false"
           aria-controls="headerMorePanel"
         >
-          <span aria-hidden="true">&vellip;</span>
-          <span class="sr-only">More links</span>
+          <span aria-hidden="true">☰</span>
+          <span class="sr-only">Menu</span>
         </button>
         <nav id="headerMorePanel" class="header-more-panel" aria-label="External links" hidden>
           <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub</a>
@@ -48,9 +46,6 @@
         </nav>
       </div>
     </header>
-
-    <h1>APIOps Cycles Canvas Creator</h1>
-    <p>Now available also as CLI and pluggable code library, install as node module <code>npm install canvascreator</code></p>
 
     <div id="toolContainer">
       <button id="importButton" class="primary-action-button" type="button"><span aria-hidden="true">↪</span> Start by Importing...</button>

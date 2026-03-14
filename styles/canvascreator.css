@@ -52,7 +52,7 @@ body {
 }
 
 #canvasContainer {
-  width: min(98vw, 1100px);
+  width: min(98vw, 1320px);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -76,9 +76,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--cc-space-sm) var(--cc-space-lg);
-  background: var(--cc-surface-overlay);
-  border-radius: var(--cc-radius-lg);
+  padding: var(--cc-space-lg) var(--cc-space-lg);
+  background: transparent;
+  border-radius: 16px;
   box-shadow: var(--cc-shadow-soft);
 }
 
@@ -94,7 +94,7 @@ body {
   color: var(--cc-text-primary);
   text-decoration: none;
   font-weight: 700;
-  font-size: 1.9rem;
+  font-size: 3.3rem;
 }
 
 .brand-logo {
@@ -106,10 +106,10 @@ body {
 }
 
 .nav-icon-button {
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   border: 1px solid var(--cc-border-accent);
-  border-radius: var(--cc-radius-md);
+  border-radius: 16px;
   background: var(--cc-primary);
   color: var(--cc-text-on-brand);
   font-size: 1.45rem;
@@ -126,7 +126,7 @@ body {
   flex-direction: column;
   gap: var(--cc-space-xs);
   background: var(--cc-surface-overlay);
-  border-radius: var(--cc-radius-md);
+  border-radius: 16px;
   box-shadow: var(--cc-shadow-dropdown);
   padding: var(--cc-space-sm);
   z-index: 30;
@@ -143,34 +143,6 @@ body {
   border-radius: var(--cc-radius-sm);
 }
 
-h1 {
-  color: var(--cc-text-on-brand);
-  font-size: 2rem;
-  margin: var(--cc-space-xl) 0 var(--cc-space-md) 0;
-  width: 100%;
-  text-align: center;
-  background: var(--cc-surface-navy);
-  padding: var(--cc-space-lg) var(--cc-space-md) var(--cc-space-xs) var(--cc-space-md);
-  border-radius: var(--cc-radius-lg) var(--cc-radius-lg) 0 0;
-}
-
-p,
-ul {
-  font-size: var(--cc-font-size-body);
-  margin: 0 auto var(--cc-space-md) auto;
-  text-align: left;
-}
-
-#canvasContainer > p {
-  width: 100%;
-  text-align: center;
-  color: var(--cc-text-on-brand);
-  background: var(--cc-surface-navy);
-  border-radius: 0 0 var(--cc-radius-lg) var(--cc-radius-lg);
-  padding-bottom: var(--cc-space-lg);
-  margin-bottom: var(--cc-space-md);
-}
-
 ul {
   list-style-type: disc;
   padding-left: var(--cc-space-xl);
@@ -179,22 +151,23 @@ ul {
 #toolContainer {
   width: 100%;
   background: var(--cc-surface-overlay);
-  border-radius: var(--cc-radius-lg);
+  border-radius: 20px;
   box-shadow: var(--cc-shadow-soft);
   display: flex;
   align-items: center;
   gap: var(--cc-space-md);
-  padding: var(--cc-space-md) var(--cc-space-lg);
+  padding: var(--cc-space-lg) var(--cc-space-lg);
 }
 
 .primary-action-button {
   border: 1px solid var(--cc-border-accent);
   background: var(--cc-surface-1);
-  color: var(--cc-text-secondary);
-  border-radius: var(--cc-radius-md);
-  padding: 0 var(--cc-space-lg);
-  min-height: 40px;
-  font-weight: 600;
+  color: #1b1f27;
+  border-radius: 14px;
+  padding: 0 18px;
+  min-height: 56px;
+  font-size: 1.1rem;
+  font-weight: 700;
   cursor: pointer;
 }
 
@@ -245,8 +218,8 @@ ul {
 #ToolsTitle {
   background-color: #dce2ee;
   color: var(--cc-text-primary);
-  width: 38px;
-  min-height: 38px;
+  width: 44px;
+  min-height: 44px;
   font-size: var(--cc-font-size-heading-md);
   font-weight: bold;
   border: none;
@@ -263,7 +236,7 @@ ul {
   min-width: 170px;
   box-shadow: var(--cc-shadow-dropdown);
   z-index: 20;
-  border-radius: var(--cc-radius-md);
+  border-radius: 16px;
   padding: var(--cc-space-sm);
 }
 
@@ -288,8 +261,8 @@ ul {
 
 .help-icon {
   color: var(--cc-text-on-brand);
-  width: 38px;
-  min-height: 38px;
+  width: 44px;
+  min-height: 44px;
   border-radius: var(--cc-radius-round);
   text-align: center;
   font-size: 1.6rem;
@@ -308,7 +281,7 @@ ul {
   background: var(--cc-surface-overlay);
   color: var(--cc-text-secondary);
   padding: var(--cc-space-lg);
-  border-radius: var(--cc-radius-md);
+  border-radius: 16px;
   box-shadow: var(--cc-shadow-medium);
   text-align: left;
   font-size: var(--cc-font-size-body-sm);
@@ -322,16 +295,16 @@ ul {
 .canvas-workspace {
   width: 100%;
   position: relative;
-  margin-top: var(--cc-space-lg);
+  margin-top: var(--cc-space-xl);
 }
 
 #canvasCreator {
   background: var(--cc-surface-1);
   padding: var(--cc-space-md);
-  border-radius: var(--cc-radius-lg);
+  border-radius: 20px;
   box-shadow: var(--cc-shadow-medium);
-  width: 1020px;
-  height: 750px;
+  width: min(100%, 1220px);
+  height: 900px;
   margin: auto;
   padding-bottom: 84px;
   position: relative;
@@ -351,7 +324,7 @@ svg {
   transform: translate(-50%, -50%);
   background: var(--cc-surface-1);
   padding: var(--cc-space-xl);
-  border-radius: var(--cc-radius-lg);
+  border-radius: 20px;
   box-shadow: var(--cc-shadow-medium);
   z-index: 10;
   width: 300px;
@@ -382,7 +355,7 @@ svg {
 #colorPalette {
   position: absolute;
   left: 50%;
-  bottom: var(--cc-space-md);
+  bottom: 22px;
   transform: translateX(-50%);
   background-color: var(--cc-surface-overlay);
   display: flex;
@@ -442,7 +415,7 @@ svg {
   }
 
   .brand-link {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
   }
 
   #toolContainer {
