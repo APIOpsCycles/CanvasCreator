@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-console.log(process.argv);
 if (typeof TextEncoder === "undefined") {
   global.TextEncoder = require("util").TextEncoder;
   global.TextDecoder = require("util").TextDecoder;
@@ -61,11 +60,26 @@ Options:
   --help                show this help text`);
 }
 
-function buildContent(canvasData, canvasId, locale, addPlaceholder, imported) {
-  if (imported) {
-    return imported;
-  }
+function cloneContent(content) {
+  return JSON.parse(JSON.stringify(content));
+}
+
+function buildContent(
+  canvasData,
+  canvasId,
+  locale,
+  addPlaceholder,
+  imported,
+  forRender = false,
+) {
   const canvasDef = canvasData[canvasId];
+  if (imported) {
+    const content = cloneContent(imported);
+    if (forRender) {
+      distributeMissingPositions(content, canvasDef, defaultStyles);
+    }
+    return content;
+  }
   const content = {
     templateId: canvasId,
     locale,
@@ -399,7 +413,8 @@ async function main() {
       id,
       locale,
       addPlaceholder,
-      imports[id]
+      imports[id],
+      format !== 'json'
     );
     const filename = (ext) => path.join(outDir, buildFileName(prefix, id, locale, ext));
     if (format === 'json') {

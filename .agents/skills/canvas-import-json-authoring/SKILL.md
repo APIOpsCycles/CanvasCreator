@@ -15,7 +15,7 @@ Create import JSON in two passes: (1) schema validity, (2) content quality.
 4. Generate sticky-note content from section `description` in `node_modules/apiops-cycles-method-data/src/data/canvas/localizedData.json` for the same locale + template.
 5. Apply metadata and color conventions.
 6. Return a descriptively named JSON file.
-7. Verify the file is working and that all texts fit to the sticky notes buy exporting the canvas as PNG using the export-cli-usage-patterns skill.
+7. Verify the file imports and that all texts fit inside sticky notes by running `scripts/checkNoteFit.js`. Use SVG rendering from the export-cli-usage-patterns skill as a visual confirmation step.
 
 ## Required authoring rules
 
@@ -23,7 +23,10 @@ Create import JSON in two passes: (1) schema validity, (2) content quality.
 - Use every section in the selected template; do not add unknown sections.
 - Keep `stickyNotes` present for every section.
 - Omit sticky-note `position` unless explicit coordinates are requested (auto-layout handles placement).
-- Default sticky-note `size` to `80`; only reduce when needed to prevent overflow.
+- Default sticky-note `size` to `80`.
+- If text does not fit, first shorten the wording while preserving meaning.
+- If wording is already concise and a specific note still overflows, increase that note's `size` before considering smaller notes.
+- Reduce note sizes only when section density is so high that notes cannot fit into the section at the default size.
 
 ## Metadata defaults
 
@@ -39,6 +42,9 @@ For APIOps Cycles examples:
 
 - Write concise notes that directly answer each section description.
 - Keep language aligned with selected locale.
+- Expect some locales to need shorter wording than English to fit the same canvas.
+- Treat "render and inspect fit" as a required quality pass, not an optional polish step.
+- Check both vertical fit and horizontal fit. Long compounds, labels, and unbreakable words can overflow even when line count looks acceptable.
 
 Default theme intent:
 
@@ -60,4 +66,5 @@ Use `references/canvas-json-checks.md` for:
 - template + section lookups,
 - schema validation,
 - section coverage validation,
-- optional position-field checks.
+- optional position-field checks,
+- render-and-fit checks.

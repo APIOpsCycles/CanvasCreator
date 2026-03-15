@@ -7,12 +7,13 @@
     "build": "rollup -c && npm run minify-css && node scripts/updateVersion.js",
     "prepare": "npm run build",
     "minify-css": "cleancss -o canvascreator.min.css styles/canvascreator.css",
-    "export": "node scripts/export.js"
+    "export": "node scripts/export.js",
+    "check-fit": "node scripts/checkNoteFit.js"
   },
   "dependencies": {
     "apiops-cycles-method-data": "^3.1.3",
     "jsdom": "^26.1.0",
-    "pdfkit": "^0.17.1",
+    "pdfkit": "^0.18.0",
     "svg-to-pdfkit": "^0.1.8"
   },
   "optionalDependencies": {

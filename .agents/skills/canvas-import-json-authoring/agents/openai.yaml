@@ -1,0 +1,5 @@
+interface:
+  display_name: Canvas Import JSON Authoring
+  short_description: Create importable CanvasCreator JSON with fit checks
+policy:
+  allow_implicit_invocation: true

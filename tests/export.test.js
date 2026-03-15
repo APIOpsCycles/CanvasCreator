@@ -41,6 +41,43 @@ describe('export helpers', () => {
     expect(svg).toContain(`font-size="${require('../src/defaultStyles').fontSize + 4}`);
   });
 
+  test('imported content gets default positions for rendered exports', () => {
+    const imported = {
+      templateId: 'apiBusinessModelCanvas',
+      locale: 'de',
+      metadata: {
+        source: 'APIOps Cycles method',
+        license: 'CC-BY-SA 4.0',
+        authors: ['Marjukka Niinioja'],
+        website: 'www.apiopscycles.com',
+        date: '2026-03-15T08:00:00.000Z',
+      },
+      sections: [
+        {
+          sectionId: 'keyPartners',
+          stickyNotes: [
+            { content: 'Ohne Position', size: 80, color: '#FFF399' },
+          ],
+        },
+      ],
+    };
+
+    const content = buildContent(
+      canvasData,
+      'apiBusinessModelCanvas',
+      'de',
+      false,
+      imported,
+      true,
+    );
+
+    expect(content.sections[0].stickyNotes[0].position).toEqual({
+      x: expect.any(Number),
+      y: expect.any(Number),
+    });
+    expect(imported.sections[0].stickyNotes[0].position).toBeUndefined();
+  });
+
   test('writePNG export exists', () => {
     expect(typeof writePNG).toBe('function');
   });

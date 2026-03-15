@@ -7,6 +7,8 @@ description: Create, review, or troubleshoot CanvasCreator export CLI usage for 
 
 Use this skill to produce accurate command examples, expected output descriptions, and troubleshooting guidance for `scripts/export.js` and the `canvascreator-export` binary.
 
+When the task is specifically about note-fit validation, pair this skill with `scripts/checkNoteFit.js`: use the fit-check script for automated pass/fail and SVG export for visual confirmation.
+
 ## Ground truth files
 
 - `scripts/export.js` (CLI flags, defaults, output logic)
@@ -33,6 +35,9 @@ npm run export -- --canvas apiBusinessModelCanvas --format pdf --outdir ./artifa
 
 # import existing content JSON and render image output
 npm run export -- --canvas apiBusinessModelCanvas --import ./examples/Canvas_apiBusinessModelCanvas_en.json --format png
+
+# SVG-first verification when checking text fit
+node scripts/export.js --canvas apiBusinessModelCanvas --import ./examples/Canvas_apiBusinessModelCanvas_en.json --format svg
 ```
 
 ## Preserve option semantics
@@ -81,7 +86,8 @@ When explaining JSON export behavior:
 
 - If `--format json` and no matching `--import` file exists for the canvas ID, create one placeholder sticky note per section with content `Placeholder`.
 - Placeholder JSON omits sticky-note coordinates.
-- For non-JSON outputs, distribute missing positions before rendering.
+- For imported non-JSON outputs, distribute any missing positions before rendering so UI-style auto-layout still works.
+- Prefer `svg` when checking whether note text fits, because `png` depends on the optional `canvas` package.
 
 Use this wording if needed: "JSON export defaults to scaffold content; image/document formats default to render-ready positioned content."
 

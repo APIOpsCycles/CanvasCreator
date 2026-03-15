@@ -1,0 +1,5 @@
+interface:
+  display_name: Canvas Export CLI Patterns
+  short_description: Export CanvasCreator canvases and verify rendered output
+policy:
+  allow_implicit_invocation: true
