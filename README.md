@@ -162,6 +162,16 @@ PNG output requires the optional `canvas` package (v3). Install it with `npm ins
 Files are written to an `export/` subdirectory following the pattern
 `export/{prefix}_{canvasId}_{locale}.ext`.
 
+## Command Line Fit Check
+
+To validate whether imported sticky-note text fits inside notes before sharing or committing an example, run:
+
+```sh
+npm run check-fit -- --import ./examples/Canvas_apiBusinessModelCanvas_de.json
+```
+
+The script exits with status `0` when all notes fit and with status `1` when it finds horizontal or vertical overflow risks. It reports the section and note content for each issue.
+
 ## How to Contribute
 Contributions are welcome, especially localization help, bug fixing, or contributing libraries in other languages or frameworks!
 

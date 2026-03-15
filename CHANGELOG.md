@@ -2,6 +2,19 @@
 
 The repository history shows twelve merged pull requests, which introduce localization features, bug fixes, and new tests. Key updates include:
 
+## Version 1.5.0 (PRs 66-71)
+
+Introduced skills for better human and agent consumption. 
+Import skill can now verify with a script and with svg that the texts fit in the sticky notes. The new script checkNoteFit.js can be called with an npm command. 
+
+Fixes export related issue #70 which threw error if imported canvas json did not include x and y coordinates.
+
+The export.js now supports not having x and y coordinates in the imported canvas json files. Skills have openai.yml for better packaging and installation.
+
+Improved examples.
+
+Added support for sticky note themes for UI.
+
 ## Version 1.4.0 (PRs 58-65)
 Security fixes and bug fix to CLI export
 

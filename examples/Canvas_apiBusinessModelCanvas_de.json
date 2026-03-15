@@ -1,0 +1,203 @@
+{
+  "templateId": "apiBusinessModelCanvas",
+  "locale": "de",
+  "metadata": {
+    "source": "APIOps Cycles method",
+    "license": "CC-BY-SA 4.0",
+    "authors": ["Marjukka Niinioja"],
+    "website": "www.apiopscycles.com",
+    "date": "2026-03-15T08:00:00.000Z"
+  },
+  "sections": [
+    {
+      "sectionId": "keyPartners",
+      "stickyNotes": [
+        {
+          "content": "PO klären Ziele und Roadmap.",
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "Engineers verbinden Design und Umsetzung.",
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "Research bringt Insights.",
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "Governance sichert Reuse.",
+          "size": 80,
+          "color": "#FFF399"
+        }
+      ]
+    },
+    {
+      "sectionId": "keyActivities",
+      "stickyNotes": [
+        {
+          "content": "Workshops klären den Bedarf an der API.",
+          "size": 80,
+          "color": "#7DC9E7"
+        },
+        {
+          "content": "Ergebnisse werden priorisiert umgesetzt.",
+          "size": 80,
+          "color": "#7DC9E7"
+        },
+        {
+          "content": "Annahmen werden mit Feedback überprüft.",
+          "size": 80,
+          "color": "#7DC9E7"
+        }
+      ]
+    },
+    {
+      "sectionId": "keyResources",
+      "stickyNotes": [
+        {
+          "content": "Vorlagen sparen Zeit.",
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "JSON-Import unterstützt Teamarbeit.",
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "Moderation klärt Entscheide.",
+          "size": 80,
+          "color": "#FFF399"
+        }
+      ]
+    },
+    {
+      "sectionId": "apiValueProposition",
+      "stickyNotes": [
+        {
+          "content": "Das Tool schafft gemeinsame Struktur.",
+          "size": 80,
+          "color": "#C0EB6A"
+        },
+        {
+          "content": "JSON hält Arbeit portabel.",
+          "size": 80,
+          "color": "#C0EB6A"
+        },
+        {
+          "content": "SVG/PNG macht Ergebnisse teilbar.",
+          "size": 80,
+          "color": "#C0EB6A"
+        },
+        {
+          "content": "Open Source senkt den Einstieg.",
+          "size": 80,
+          "color": "#C0EB6A"
+        }
+      ]
+    },
+    {
+      "sectionId": "developerRelations",
+      "stickyNotes": [
+        {
+          "content": "Beispiele helfen beim Start.",
+          "size": 80,
+          "color": "#7DC9E7"
+        },
+        {
+          "content": "Issues bringen direktes Feedback.",
+          "size": 80,
+          "color": "#7DC9E7"
+        },
+        {
+          "content": "Demos schaffen Vertrauen.",
+          "size": 80,
+          "color": "#7DC9E7"
+        }
+      ]
+    },
+    {
+      "sectionId": "channels",
+      "stickyNotes": [
+        {
+          "content": "GitHub verteilt Tool und Beispiele.",
+          "size": 80,
+          "color": "#7DC9E7"
+        },
+        {
+          "content": "Website erklärt die Methode.",
+          "size": 80,
+          "color": "#7DC9E7"
+        },
+        {
+          "content": "Workshops bringen Canvas in Projekte.",
+          "size": 80,
+          "color": "#7DC9E7"
+        }
+      ]
+    },
+    {
+      "sectionId": "apiConsumerSegments",
+      "stickyNotes": [
+        {
+          "content": "PMs beschreiben Nutzen und Lieferung.",
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "Engineering richtet das Team aus.",
+          "size": 80,
+          "color": "#FFF399"
+        },
+        {
+          "content": "Berater moderieren Workshops.",
+          "size": 80,
+          "color": "#FFF399"
+        }
+      ]
+    },
+    {
+      "sectionId": "costs",
+      "stickyNotes": [
+        {
+          "content": "Discovery braucht Vorlauf und Zeit.",
+          "size": 80,
+          "color": "#FFAFAF"
+        },
+        {
+          "content": "Vorlagen müssen gepflegt werden.",
+          "size": 80,
+          "color": "#FFAFAF"
+        },
+        {
+          "content": "Schlechte Abstimmung bremst die Einführung.",
+          "size": 80,
+          "color": "#FFAFAF"
+        }
+      ]
+    },
+    {
+      "sectionId": "benefits",
+      "stickyNotes": [
+        {
+          "content": "Teams teilen Klarheit.",
+          "size": 80,
+          "color": "#C0EB6A"
+        },
+        {
+          "content": "Bessere API-Wahl senkt Nacharbeit.",
+          "size": 80,
+          "color": "#C0EB6A"
+        },
+        {
+          "content": "Canvas schaffen Nachvollzug.",
+          "size": 80,
+          "color": "#C0EB6A"
+        }
+      ]
+    }
+  ]
+}
