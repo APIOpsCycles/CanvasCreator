@@ -15,6 +15,7 @@ Create import JSON in two passes: (1) schema validity, (2) content quality.
 4. Generate sticky-note content from section `description` in `node_modules/apiops-cycles-method-data/src/data/canvas/localizedData.json` for the same locale + template.
 5. Apply metadata and color conventions.
 6. Return a descriptively named JSON file.
+7. Verify the file is working and that all texts fit to the sticky notes buy exporting the canvas as PNG using the export-cli-usage-patterns skill.
 
 ## Required authoring rules
 
