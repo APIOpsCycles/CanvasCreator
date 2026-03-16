@@ -1011,8 +1011,20 @@ fileInput.addEventListener("change", function () {
         themeSelect.dataset.listenerAttached = 'true'
       }
   
+      function populateMetadataForm() {
+        const metadata = contentData?.metadata || {}
+        document.getElementById('source').value = metadata.source || ''
+        document.getElementById('license').value = metadata.license || ''
+        const authors = Array.isArray(metadata.authors)
+          ? metadata.authors.join(',')
+          : metadata.authors || ''
+        document.getElementById('authors').value = authors
+        document.getElementById('website').value = metadata.website || ''
+      }
+
       // Show metadata form
       document.getElementById("metadataButton").addEventListener("click", () => {
+        populateMetadataForm()
         document.getElementById("metadataForm").style.display = "block"
       })
   
