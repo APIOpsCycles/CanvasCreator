@@ -40,6 +40,8 @@
   },
   "types": "index.d.ts",
   "files": [
+    ".agents/skills",
+    "AGENTS.md",
     "dist",
     "scripts",
     "src",
