@@ -128,6 +128,18 @@ function populateCanvasSelector(
     canvasSelector.add(option)
   })
 }
+
+function showCanvasCreator(canvasCreator) {
+  if (canvasCreator) {
+    canvasCreator.style.display = 'flex'
+  }
+}
+
+function setColorPaletteVisibility(colorPalette, isVisible) {
+  if (!colorPalette) return
+  colorPalette.hidden = !isVisible
+  colorPalette.setAttribute('aria-hidden', String(!isVisible))
+}
   
 // Initialization function to attach DOM event listeners
 function initCanvasCreator({
@@ -148,10 +160,12 @@ function initCanvasCreator({
     canvasSelectorElement || document.getElementById('canvasSelector')
   const canvasCreator =
     canvasCreatorElement || document.getElementById('canvasCreator')
+  const colorPalette = document.getElementById('colorPalette')
 
   if (!localeSel || !canvasSel) return
 
   syncThemeStateFromSession()
+  setColorPaletteVisibility(colorPalette, false)
 
   const toolsMenuButton = document.getElementById('ToolsTitle')
   const toolsMenu = document.getElementById('canvasToolsMenu')
@@ -267,6 +281,7 @@ function initCanvasCreator({
       if (canvasCreator) {
         canvasCreator.style.display = 'none'
       }
+      setColorPaletteVisibility(colorPalette, false)
 
       currentLocale = newLocale
     },
@@ -311,10 +326,9 @@ function initCanvasCreator({
         }
       }
 
+      showCanvasCreator(canvasCreator)
+      setColorPaletteVisibility(colorPalette, true)
       loadCanvas(localeSel.value, newCanvas)
-      if (canvasCreator) {
-        canvasCreator.style.display = 'flex'
-      }
       currentCanvas = newCanvas
     },
   )
@@ -343,10 +357,9 @@ function initCanvasCreator({
       localizedData[normalizedLocale][urlCanvas]
     ) {
       canvasSel.value = urlCanvas
+      showCanvasCreator(canvasCreator)
+      setColorPaletteVisibility(colorPalette, true)
       loadCanvas(normalizedLocale, urlCanvas)
-      if (canvasCreator) {
-        canvasCreator.style.display = 'flex'
-      }
       currentLocale = normalizedLocale
       currentCanvas = urlCanvas
     }
@@ -443,7 +456,8 @@ fileInput.addEventListener("change", function () {
       document.getElementById("locale").value = locale
       populateCanvasSelector(locale)
       document.getElementById("canvasSelector").style.display = "block"
-      document.getElementById("canvasCreator").style.display = "flex"
+      showCanvasCreator(document.getElementById("canvasCreator"))
+      setColorPaletteVisibility(document.getElementById('colorPalette'), true)
 
       // Render canvas
       loadCanvas(locale, canvasId, true)

@@ -373,6 +373,10 @@ svg {
   z-index: 10;
 }
 
+#colorPalette[hidden] {
+  display: none !important;
+}
+
 .themeSelector {
   display: flex;
   align-items: center;
