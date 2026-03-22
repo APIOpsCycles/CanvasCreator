@@ -28,6 +28,14 @@ Create import JSON in two passes: (1) schema validity, (2) content quality.
 - If wording is already concise and a specific note still overflows, increase that note's `size` before considering smaller notes.
 - Reduce note sizes only when section density is so high that notes cannot fit into the section at the default size.
 
+## Template-specific rules
+
+### `apiBusinessModelCanvas`
+
+- In the `apiValueProposition` section, place one sticky note first that names the API or API family being assessed.
+- Then add the concise value proposition notes for that named API.
+- Use this naming note even when the API name is provisional, because the rest of the canvas should clearly refer to one concrete API or API family rather than an unnamed capability.
+
 ## Metadata defaults
 
 For APIOps Cycles examples:
