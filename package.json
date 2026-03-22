@@ -1,6 +1,6 @@
 {
   "name": "canvascreator",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "main": "dist/canvascreator.cjs",
   "scripts": {
     "test": "jest",
@@ -16,7 +16,7 @@
     "svg-to-pdfkit": "^0.1.8"
   },
   "peerDependencies": {
-    "apiops-cycles-method-data": "^3.1.3"
+    "apiops-cycles-method-data": "^3.2.0"
   },
   "optionalDependencies": {
     "canvas": "^3.1.2"
@@ -26,7 +26,7 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-terser": "^1.0.0",
-    "apiops-cycles-method-data": "^3.1.3",
+    "apiops-cycles-method-data": "^3.2.0",
     "clean-css-cli": "^5.6.3",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
