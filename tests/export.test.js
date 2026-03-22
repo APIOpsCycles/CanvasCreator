@@ -41,6 +41,16 @@ describe('export helpers', () => {
     expect(svg).toContain(`font-size="${require('../src/defaultStyles').fontSize + 4}`);
   });
 
+  test('renderSVG wraps long localized header and section titles', () => {
+    const content = buildContent(canvasData, 'interactionCanvas', 'de', false);
+    const svg = renderSVG(canvasData['interactionCanvas'], localizedData, content);
+    const headerFragment = svg.split('<rect')[0];
+
+    expect(headerFragment).toContain('<tspan>');
+    expect(svg).toMatch(/<text[^>]*font-weight="bold"[^>]*><tspan>/);
+    expect(svg).not.toContain('Eventgesteuerte Input- &amp; Output-Modelle</text>');
+  });
+
   test('imported content gets default positions for rendered exports', () => {
     const imported = {
       templateId: 'apiBusinessModelCanvas',

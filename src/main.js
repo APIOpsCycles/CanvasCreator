@@ -553,14 +553,6 @@ fileInput.addEventListener("change", function () {
           canvasData.layout.columns,
       )
   
-      const cellHeight = Math.floor(
-        (defaultStyles.height -
-          defaultStyles.headerHeight -
-          defaultStyles.footerHeight -
-          4 * defaultStyles.padding) /
-          canvasData.layout.rows,
-      )
-  
       const locale = getLocaleKey(contentData.locale || defaultStyles.defaultLocale)
       // Use canvasId to access the correct localized data
       const canvasId = contentData.templateId
@@ -601,36 +593,63 @@ fileInput.addEventListener("change", function () {
         defaultStyles.padding,
       )
   
-      svg
-        .append("text")
-        .attr("x", defaultStyles.headerHeight + 2 * defaultStyles.padding)
-        .attr("y", 2 * defaultStyles.padding + defaultStyles.fontSize)
-        .attr("text-anchor", "start")
-        .attr("font-family", defaultStyles.fontFamily)
-        .attr("font-size", defaultStyles.fontSize + 4 + "px")
-        .attr("font-weight", "bold")
-        .attr("fill", defaultStyles.fontColor)
-        .text(localizedCanvasData.title)
-  
-      svg
-        .append("text")
-        .attr("x", defaultStyles.headerHeight + 2 * defaultStyles.padding)
-        .attr("y", defaultStyles.headerHeight - 3 * defaultStyles.padding)
-        .attr("text-anchor", "start")
-        .attr("font-family", defaultStyles.fontFamily)
-        .attr("font-size", defaultStyles.fontSize + 2 + "px")
-        .attr("fill", defaultStyles.fontColor)
-        .text(localizedCanvasData.purpose)
-  
-      svg
-        .append("text")
-        .attr("x", defaultStyles.headerHeight + 2 * defaultStyles.padding)
-        .attr("y", defaultStyles.headerHeight - defaultStyles.padding)
-        .attr("text-anchor", "start")
-        .attr("font-family", defaultStyles.fontFamily)
-        .attr("font-size", defaultStyles.fontSize + 2 + "px")
-        .attr("fill", defaultStyles.fontColor)
-        .text(localizedCanvasData.howToUse)
+      const headerTextX = defaultStyles.headerHeight + 2 * defaultStyles.padding
+      const headerTextWidth =
+        defaultStyles.width - headerTextX - 2 * defaultStyles.padding
+
+      let headerBottomY = 0
+      const titleLayout = appendWrappedText(svg, {
+        x: headerTextX,
+        y: 2 * defaultStyles.padding + defaultStyles.fontSize,
+        text: localizedCanvasData.title,
+        maxWidth: headerTextWidth,
+        fontFamily: defaultStyles.fontFamily,
+        fontSize: defaultStyles.fontSize + 4,
+        fontWeight: "bold",
+        fill: defaultStyles.fontColor,
+        lineHeight: defaultStyles.fontSize + 6,
+      })
+      headerBottomY = titleLayout.bottomY
+
+      if (localizedCanvasData.purpose) {
+        const purposeLayout = appendWrappedText(svg, {
+          x: headerTextX,
+          y: headerBottomY + defaultStyles.padding + 2,
+          text: localizedCanvasData.purpose,
+          maxWidth: headerTextWidth,
+          fontFamily: defaultStyles.fontFamily,
+          fontSize: defaultStyles.fontSize + 2,
+          fill: defaultStyles.fontColor,
+          lineHeight: defaultStyles.fontSize + 3,
+        })
+        headerBottomY = purposeLayout.bottomY
+      }
+
+      if (localizedCanvasData.howToUse) {
+        const howToUseLayout = appendWrappedText(svg, {
+          x: headerTextX,
+          y: headerBottomY + defaultStyles.padding + 4,
+          text: localizedCanvasData.howToUse,
+          maxWidth: headerTextWidth,
+          fontFamily: defaultStyles.fontFamily,
+          fontSize: defaultStyles.fontSize + 2,
+          fill: defaultStyles.fontColor,
+          lineHeight: defaultStyles.fontSize + 2,
+        })
+        headerBottomY = howToUseLayout.bottomY
+      }
+
+      const gridTop = Math.max(
+        defaultStyles.headerHeight,
+        headerBottomY + 2 * defaultStyles.padding,
+      )
+      const cellHeight = Math.floor(
+        (defaultStyles.height -
+          gridTop -
+          defaultStyles.footerHeight -
+          3 * defaultStyles.padding) /
+          canvasData.layout.rows,
+      )
   
       svg
         .append("text")
@@ -650,7 +669,7 @@ fileInput.addEventListener("change", function () {
   
         const x =
           block.gridPosition.column * cellWidth + 2 * defaultStyles.padding
-        const y = block.gridPosition.row * cellHeight + defaultStyles.headerHeight
+        const y = block.gridPosition.row * cellHeight + gridTop
         const width = block.gridPosition.colSpan * cellWidth
         const height = block.gridPosition.rowSpan * cellHeight
         const style = { ...defaultStyles, ...block.style }
@@ -764,85 +783,28 @@ fileInput.addEventListener("change", function () {
           .attr("fill", style.highlightColor)
           .text(block.fillOrder)
   
-        svg
-          .append("text")
-          .attr("x", x + style.padding + style.circleRadius)
-          .attr("y", y + style.padding + style.circleRadius)
-          .attr("font-family", style.fontFamily)
-          .attr("font-size", style.fontSize + "px")
-          .attr("font-weight", "bold")
-          .attr("fill", style.fontColor)
-          .text(localizedSection.section)
-  
-        // split localized help texts i.e. descriptions to lines to fit to sections
-  
-        const description = localizedSection.description
-  
-        const descWords = description.split(" ")
-        let descLine = ""
-        let descLineNumber = 0
-        const lineHeight = style.fontSize + 2
-        const maxWidth = width - style.padding * 2
-  
-        const descGroup = svg.append("g")
-        descWords.forEach((word) => {
-          const testLine = descLine + word + " "
-          const testText = descGroup
-            .append("text")
-            .attr("font-family", style.fontFamily)
-            .attr("font-size", style.fontSize + "px")
-            .attr("fill", style.fontColor)
-            .attr("x", x + style.padding)
-            .attr(
-              "y",
-              y +
-                style.padding +
-                style.circleRadius +
-                2 * style.padding +
-                descLineNumber * lineHeight,
-            )
-            .text(testLine)
-  
-          if (testText.node().getComputedTextLength() > maxWidth) {
-            testText.remove()
-            svg
-              .append("text")
-              .attr("x", x + style.padding)
-              .attr(
-                "y",
-                y +
-                  style.padding +
-                  style.circleRadius +
-                  2 * style.padding +
-                  descLineNumber * lineHeight,
-              )
-              .attr("font-family", defaultStyles.fontFamily)
-              .attr("font-size", style.fontSize + "px")
-              .attr("fill", style.fontColor)
-              .text(descLine)
-            descLine = word + " "
-            descLineNumber++
-          } else {
-            testText.remove()
-            descLine = testLine
-          }
+        const titleLayoutInSection = appendWrappedText(svg, {
+          x: x + style.padding + style.circleRadius,
+          y: y + style.padding + style.circleRadius,
+          text: localizedSection.section,
+          maxWidth: width - 2 * style.padding - style.circleRadius,
+          fontFamily: style.fontFamily,
+          fontSize: style.fontSize,
+          fontWeight: "bold",
+          fill: style.fontColor,
+          lineHeight: style.fontSize + 2,
         })
-  
-        svg
-          .append("text")
-          .attr("x", x + style.padding)
-          .attr(
-            "y",
-            y +
-              style.padding +
-              style.circleRadius +
-              2 * style.padding +
-              descLineNumber * lineHeight,
-          )
-          .attr("font-family", style.fontFamily)
-          .attr("font-size", style.fontSize + "px")
-          .attr("fill", style.fontColor)
-          .text(descLine)
+
+        appendWrappedText(svg, {
+          x: x + style.padding,
+          y: titleLayoutInSection.bottomY + style.padding + 2,
+          text: localizedSection.description,
+          maxWidth: width - style.padding * 2,
+          fontFamily: style.fontFamily,
+          fontSize: style.fontSize,
+          fill: style.fontColor,
+          lineHeight: style.fontSize + 2,
+        })
       })
   
       const defs = svg.append("defs")
@@ -1349,9 +1311,16 @@ fileInput.addEventListener("change", function () {
       })
     }
   
-    function wrapText(svg, text) {
+    function wrapText(
+      svg,
+      text,
+      maxWidth = defaultStyles.maxLineWidth,
+      fontFamily = defaultStyles.fontFamily,
+      fontSize = defaultStyles.fontSize,
+    ) {
+      const safeText = text || ""
       // Normalize the text first to have only single newlines
-      const normalizedText = text.replace(/\n{2,}/g, "\n")
+      const normalizedText = safeText.replace(/\n{2,}/g, "\n")
       const words = normalizedText.split(" ")
       let line = ""
       const contentLines = []
@@ -1360,23 +1329,68 @@ fileInput.addEventListener("change", function () {
         const testLine = line + word + " "
         const tempText = svg
           .append("text")
-          .attr("font-family", defaultStyles.fontFamily)
-          .attr("font-size", defaultStyles.fontSize + "px")
+          .attr("font-family", fontFamily)
+          .attr("font-size", fontSize + "px")
           .text(testLine)
-  
+
         const testLineWidth = tempText.node().getComputedTextLength()
         tempText.remove()
-  
-        if (testLineWidth > defaultStyles.maxLineWidth) {
+
+        if (testLineWidth > maxWidth) {
           contentLines.push(line)
           line = word + " "
         } else {
           line = testLine
         }
       })
-  
+
       contentLines.push(line)
       return contentLines.join("\n")
+    }
+
+    function appendWrappedText(
+      svg,
+      {
+        x,
+        y,
+        text,
+        maxWidth,
+        fontFamily = defaultStyles.fontFamily,
+        fontSize = defaultStyles.fontSize,
+        fontWeight = null,
+        fill = defaultStyles.fontColor,
+        lineHeight = fontSize + 2,
+      },
+    ) {
+      const lines = wrapText(svg, text, maxWidth, fontFamily, fontSize)
+        .split("\n")
+        .filter((line) => line.length > 0)
+      const lineCount = Math.max(lines.length, 1)
+
+      const textNode = svg
+        .append("text")
+        .attr("x", x)
+        .attr("y", y)
+        .attr("text-anchor", "start")
+        .attr("font-family", fontFamily)
+        .attr("font-size", fontSize + "px")
+        .attr("fill", fill)
+
+      if (fontWeight) {
+        textNode.attr("font-weight", fontWeight)
+      }
+
+      lines.forEach((line, index) => {
+        const tspan = textNode.append("tspan").text(line)
+        if (index > 0) {
+          tspan.attr("x", x).attr("dy", lineHeight)
+        }
+      })
+
+      return {
+        lineCount,
+        bottomY: y + (lineCount - 1) * lineHeight,
+      }
     }
   
     // Function to check if a point is inside a rectangle

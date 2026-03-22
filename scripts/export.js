@@ -99,7 +99,7 @@ function buildContent(
 }
 
 function wrapText(text, maxWidth = defaultStyles.maxLineWidth) {
-  const normalized = text.replace(/\n{2,}/g, '\n');
+  const normalized = (text || '').replace(/\n{2,}/g, '\n');
   const words = normalized.split(' ');
   const lines = [];
   let line = '';
@@ -114,6 +114,47 @@ function wrapText(text, maxWidth = defaultStyles.maxLineWidth) {
   }
   if (line) lines.push(line.trim());
   return lines.join('\n');
+}
+
+function appendWrappedText(document, parent, {
+  x,
+  y,
+  text,
+  maxWidth,
+  fontFamily = defaultStyles.fontFamily,
+  fontSize = defaultStyles.fontSize,
+  fontWeight = null,
+  fill = defaultStyles.fontColor,
+  lineHeight = fontSize + 2,
+}) {
+  const textNode = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  textNode.setAttribute('x', x);
+  textNode.setAttribute('y', y);
+  textNode.setAttribute('text-anchor', 'start');
+  textNode.setAttribute('font-family', fontFamily);
+  textNode.setAttribute('font-size', fontSize);
+  textNode.setAttribute('fill', fill);
+  if (fontWeight) {
+    textNode.setAttribute('font-weight', fontWeight);
+  }
+
+  const lines = wrapText(text, maxWidth).split('\n').filter((line) => line.length > 0);
+  const lineCount = Math.max(lines.length, 1);
+  lines.forEach((line, idx) => {
+    const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+    if (idx > 0) {
+      tspan.setAttribute('x', x);
+      tspan.setAttribute('dy', lineHeight);
+    }
+    tspan.textContent = line;
+    textNode.appendChild(tspan);
+  });
+
+  parent.appendChild(textNode);
+  return {
+    lineCount,
+    bottomY: y + (lineCount - 1) * lineHeight,
+  };
 }
 
 function renderSVG(canvasDef, localizedData, content) {
@@ -158,51 +199,64 @@ function renderSVG(canvasDef, localizedData, content) {
     (defaultStyles.width - canvasDef.layout.columns * defaultStyles.padding) /
       canvasDef.layout.columns,
   );
-  const cellHeight = Math.floor(
-    (defaultStyles.height -
-      defaultStyles.headerHeight -
-      defaultStyles.footerHeight -
-      4 * defaultStyles.padding) /
-      canvasDef.layout.rows,
-  );
 
-  const title = locCanvas.title || canvasDef.id;
-  const titleText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-  titleText.setAttribute('x', defaultStyles.headerHeight + 2 * defaultStyles.padding);
-  titleText.setAttribute('y', 2 * defaultStyles.padding + defaultStyles.fontSize);
-  titleText.setAttribute('font-size', defaultStyles.fontSize + 4);
-  titleText.setAttribute('font-weight', 'bold');
-  titleText.setAttribute('fill', defaultStyles.fontColor);
-  titleText.textContent = title;
-  svg.appendChild(titleText);
+  const headerTextX = defaultStyles.headerHeight + 2 * defaultStyles.padding;
+  const headerTextWidth = defaultStyles.width - headerTextX - 2 * defaultStyles.padding;
+  let headerBottomY = 0;
+
+  const titleLayout = appendWrappedText(document, svg, {
+    x: headerTextX,
+    y: 2 * defaultStyles.padding + defaultStyles.fontSize,
+    text: locCanvas.title || canvasDef.id,
+    maxWidth: headerTextWidth,
+    fontSize: defaultStyles.fontSize + 4,
+    fontWeight: 'bold',
+    fill: defaultStyles.fontColor,
+    lineHeight: defaultStyles.fontSize + 6,
+  });
+  headerBottomY = titleLayout.bottomY;
 
   if (locCanvas.purpose) {
-    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    t.setAttribute('x', defaultStyles.headerHeight + 2 * defaultStyles.padding);
-    t.setAttribute('y', defaultStyles.headerHeight - 3 * defaultStyles.padding);
-    t.setAttribute('text-anchor', 'start');
-    t.setAttribute('font-family', defaultStyles.fontFamily);
-    t.setAttribute('font-size', defaultStyles.fontSize + 2);
-    t.setAttribute('fill', defaultStyles.fontColor);
-    t.textContent = locCanvas.purpose;
-    svg.appendChild(t);
+    const purposeLayout = appendWrappedText(document, svg, {
+      x: headerTextX,
+      y: headerBottomY + defaultStyles.padding + 2,
+      text: locCanvas.purpose,
+      maxWidth: headerTextWidth,
+      fontSize: defaultStyles.fontSize + 2,
+      fill: defaultStyles.fontColor,
+      lineHeight: defaultStyles.fontSize + 3,
+    });
+    headerBottomY = purposeLayout.bottomY;
   }
 
   if (locCanvas.howToUse) {
-    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    t.setAttribute('x', defaultStyles.headerHeight + 2 * defaultStyles.padding);
-    t.setAttribute('y', defaultStyles.headerHeight - defaultStyles.padding);
-    t.setAttribute('text-anchor', 'start');
-    t.setAttribute('font-family', defaultStyles.fontFamily);
-    t.setAttribute('font-size', defaultStyles.fontSize + 2);
-    t.setAttribute('fill', defaultStyles.fontColor);
-    t.textContent = locCanvas.howToUse;
-    svg.appendChild(t);
+    const howToUseLayout = appendWrappedText(document, svg, {
+      x: headerTextX,
+      y: headerBottomY + defaultStyles.padding + 4,
+      text: locCanvas.howToUse,
+      maxWidth: headerTextWidth,
+      fontSize: defaultStyles.fontSize + 2,
+      fill: defaultStyles.fontColor,
+      lineHeight: defaultStyles.fontSize + 2,
+    });
+    headerBottomY = howToUseLayout.bottomY;
   }
+
+  const gridTop = Math.max(
+    defaultStyles.headerHeight,
+    headerBottomY + 2 * defaultStyles.padding,
+  );
+  const cellHeight = Math.floor(
+    (defaultStyles.height -
+      gridTop -
+      defaultStyles.footerHeight -
+      3 * defaultStyles.padding) /
+      canvasDef.layout.rows,
+  );
 
   for (const secDef of canvasDef.sections) {
     const x = secDef.gridPosition.column * cellWidth + 2 * defaultStyles.padding;
-    const y = secDef.gridPosition.row * cellHeight + defaultStyles.headerHeight;
+    const y = secDef.gridPosition.row * cellHeight + gridTop;
     const w = secDef.gridPosition.colSpan * cellWidth;
     const h = secDef.gridPosition.rowSpan * cellHeight;
 
@@ -241,13 +295,15 @@ function renderSVG(canvasDef, localizedData, content) {
     numText.textContent = secDef.fillOrder;
     svg.appendChild(numText);
 
-    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    text.setAttribute('x', x + defaultStyles.padding + defaultStyles.circleRadius);
-    text.setAttribute('y', y + defaultStyles.padding + defaultStyles.circleRadius);
-    text.setAttribute('font-weight', 'bold');
-    text.setAttribute('fill', defaultStyles.fontColor);
-    text.textContent = label;
-    svg.appendChild(text);
+    const titleLayoutInSection = appendWrappedText(document, svg, {
+      x: x + defaultStyles.padding + defaultStyles.circleRadius,
+      y: y + defaultStyles.padding + defaultStyles.circleRadius,
+      text: label,
+      maxWidth: w - 2 * defaultStyles.padding - defaultStyles.circleRadius,
+      fontWeight: 'bold',
+      fill: defaultStyles.fontColor,
+      lineHeight: defaultStyles.fontSize + 2,
+    });
 
     const section = content.sections.find((s) => s.sectionId === secDef.id);
     if (section && section.stickyNotes.length > 0) {
@@ -288,27 +344,14 @@ function renderSVG(canvasDef, localizedData, content) {
         locCanvas.sections[secDef.id] &&
         locCanvas.sections[secDef.id].description;
       if (desc) {
-        const dText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        dText.setAttribute('x', x + defaultStyles.padding);
-        dText.setAttribute(
-          'y',
-          y + defaultStyles.padding + defaultStyles.circleRadius + defaultStyles.fontSize
-        );
-        dText.setAttribute('fill', defaultStyles.fontColor);
-        const lines = wrapText(
-          desc,
-          w - 2 * defaultStyles.padding
-        ).split('\n');
-        lines.forEach((line, idx) => {
-          const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
-          if (idx > 0) {
-            tspan.setAttribute('x', x + defaultStyles.padding);
-            tspan.setAttribute('dy', defaultStyles.fontSize + 2);
-          }
-          tspan.textContent = line;
-          dText.appendChild(tspan);
+        appendWrappedText(document, svg, {
+          x: x + defaultStyles.padding,
+          y: titleLayoutInSection.bottomY + defaultStyles.padding + 2,
+          text: desc,
+          maxWidth: w - 2 * defaultStyles.padding,
+          fill: defaultStyles.fontColor,
+          lineHeight: defaultStyles.fontSize + 2,
         });
-        svg.appendChild(dText);
       }
     }
   }
