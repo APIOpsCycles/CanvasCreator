@@ -50,5 +50,12 @@
     "src",
     "img",
     "index.d.ts"
-  ]
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/canvascreator.esm.js",
+      "require": "./dist/canvascreator.cjs"
+    },
+    "./node-export": "./src/node-export.cjs"
+  }
 }
