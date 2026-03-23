@@ -1,5 +1,10 @@
-const { buildContent, buildFileName, renderSVG, writePNG } = require('../scripts/export.js');
-const { exportJSON } = require('../scripts/noteManager.js');
+const {
+  buildContent,
+  buildFileName,
+  renderSVG,
+  writePNG,
+  exportJSON,
+} = require('../src/node-export.cjs');
 const canvasData = require('apiops-cycles-method-data/canvasData.json');
 const localizedData = require('apiops-cycles-method-data/localizedData.json');
 
