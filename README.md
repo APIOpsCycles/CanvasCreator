@@ -157,7 +157,7 @@ Options:
 - `--outdir <folder>     output directory for exported files (default export)`
 - `--help`
 
-PNG output requires the optional `canvas` package (v3). Install it with `npm install canvas@^3`.
+PNG output uses the bundled `canvas` dependency (v3), so a normal `npm install` is enough.
 
 Files are written to an `export/` subdirectory following the pattern
 `export/{prefix}_{canvasId}_{locale}.ext`.

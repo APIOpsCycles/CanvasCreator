@@ -8,19 +8,13 @@ const path = require('path');
 const { JSDOM } = require('jsdom');
 let PDFDocument;
 let SVGtoPDF;
-let Canvas;
+const Canvas = require('canvas');
 
 try {
   PDFDocument = require('pdfkit');
   SVGtoPDF = require('svg-to-pdfkit');
 } catch (e) {
   PDFDocument = null;
-}
-
-try {
-  Canvas = require('canvas');
-} catch (e) {
-  Canvas = null;
 }
 
 const { createStickyNote, exportJSON } = require('../scripts/noteManager');
@@ -367,10 +361,6 @@ function writePDF(svgString, outPath) {
 
 function writePNG(svgString, outPath) {
   return new Promise((resolve, reject) => {
-    if (!Canvas) {
-      reject(new Error('canvas module not installed'));
-      return;
-    }
     const { createCanvas, loadImage } = Canvas;
     const canvas = createCanvas(
       defaultStyles.width + defaultStyles.padding * 2,

@@ -2,6 +2,11 @@
 
 The repository history shows twelve merged pull requests, which introduce localization features, bug fixes, and new tests. Key updates include:
 
+## Version 1.6.0-1.6.2
+Canvas package for PNG generation is now a normal dependency, because it's not working as optional, and downstream modules depend on PNG generation.
+Export is now exposed for downstream modules, export related scripts are refactored and UI and CLI exports share essential functionality.
+CanvasCreator uses now APIOps Cycles method data 3.2.0 with improved canvas content and descriptions especially to Interaction Canvas and Location Canvas
+
 ## Version 1.5.0 (PRs 66-71)
 
 Introduced skills for better human and agent consumption. 

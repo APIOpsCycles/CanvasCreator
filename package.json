@@ -1,6 +1,6 @@
 {
   "name": "canvascreator",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "main": "dist/canvascreator.cjs",
   "scripts": {
     "test": "jest",
@@ -11,15 +11,13 @@
     "check-fit": "node scripts/checkNoteFit.js"
   },
   "dependencies": {
+    "canvas": "^3.1.2",
     "jsdom": "^26.1.0",
     "pdfkit": "^0.18.0",
     "svg-to-pdfkit": "^0.1.8"
   },
   "peerDependencies": {
     "apiops-cycles-method-data": "^3.2.0"
-  },
-  "optionalDependencies": {
-    "canvas": "^3.1.2"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.6",
