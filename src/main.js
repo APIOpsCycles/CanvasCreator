@@ -1522,10 +1522,7 @@ class CanvasCreatorInstance {
 
   resize() {
     const maxWidth = this.resolveDimension(this.maxWidth, this.container.clientWidth);
-    const maxHeight = this.resolveDimension(
-      this.maxHeight,
-      this.container.clientHeight || BASE_HEIGHT,
-    );
+    const maxHeight = this.resolveDimension(this.maxHeight, null);
 
     let scale = 1;
     if (this.fitToContainer) {
