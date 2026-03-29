@@ -222,6 +222,7 @@ function renderSVG(canvasDef, localizedData, content) {
       3 * defaultStyles.padding) /
       canvasDef.layout.rows,
   );
+  const noteParts = [];
 
   for (const secDef of canvasDef.sections) {
     const x = secDef.gridPosition.column * cellWidth + 2 * defaultStyles.padding;
@@ -286,7 +287,7 @@ function renderSVG(canvasDef, localizedData, content) {
         noteRect.setAttribute('stroke', note.color || defaultStyles.stickyNoteBorderColor);
         noteRect.setAttribute('rx', defaultStyles.stickyNoteCornerRadius);
         noteRect.setAttribute('ry', defaultStyles.stickyNoteCornerRadius);
-        svg.appendChild(noteRect);
+        noteParts.push(noteRect);
 
         const noteText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         noteText.setAttribute('x', (note.position.x || 0) + defaultStyles.padding / 2);
@@ -308,7 +309,7 @@ function renderSVG(canvasDef, localizedData, content) {
           tspan.textContent = line;
           noteText.appendChild(tspan);
         });
-        svg.appendChild(noteText);
+        noteParts.push(noteText);
       }
     } else {
       const desc =
@@ -326,6 +327,10 @@ function renderSVG(canvasDef, localizedData, content) {
         });
       }
     }
+  }
+
+  for (const node of noteParts) {
+    svg.appendChild(node);
   }
 
   const footer = document.createElementNS('http://www.w3.org/2000/svg', 'text');

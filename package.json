@@ -1,6 +1,6 @@
 {
   "name": "canvascreator",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "main": "dist/canvascreator.cjs",
   "scripts": {
     "test": "jest",
@@ -11,20 +11,17 @@
     "check-fit": "node scripts/checkNoteFit.js"
   },
   "dependencies": {
+    "apiops-cycles-method-data": "^3.3.2",
     "canvas": "^3.1.2",
     "jsdom": "^26.1.0",
     "pdfkit": "^0.18.0",
     "svg-to-pdfkit": "^0.1.8"
-  },
-  "peerDependencies": {
-    "apiops-cycles-method-data": "^3.2.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-terser": "^1.0.0",
-    "apiops-cycles-method-data": "^3.2.0",
     "clean-css-cli": "^5.6.3",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
@@ -43,6 +40,7 @@
   "files": [
     ".agents/skills",
     "AGENTS.md",
+    "canvascreator.min.css",
     "dist",
     "scripts",
     "src",
@@ -51,9 +49,12 @@
   ],
   "exports": {
     ".": {
+      "types": "./index.d.ts",
       "import": "./dist/canvascreator.esm.js",
       "require": "./dist/canvascreator.cjs"
     },
+    "./style.css": "./canvascreator.min.css",
+    "./img/*": "./img/*",
     "./node-export": "./src/node-export.cjs"
   }
 }

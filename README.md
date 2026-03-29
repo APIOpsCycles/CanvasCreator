@@ -78,25 +78,30 @@ Notes:
 
 - `npm run minify-css` writes `./canvascreator.min.css` from `styles/canvascreator.css`.
 - `npm run build` then copies that file into `dist/canvascreator.min.css`.
-- The published npm package includes the `dist/` folder, so package consumers should read CSS from `dist/canvascreator.min.css`.
+- The published npm package exports the stylesheet as `canvascreator/style.css` and image assets as `canvascreator/img/*`.
 
 Both JavaScript formats expose the same API so your toolchain can pick whichever it supports.
 
 The build also runs automatically when installing from git or publishing the package thanks to the `prepare` script in `package.json`.
 
-To use the library directly in a browser without a bundler, include D3 first, then import the ESM bundle and initialize it:
+To use the library directly in a browser without a bundler, import the ESM bundle and initialize it with a host container:
 
 ```html
-<script src="https://d3js.org/d3.v7.min.js"></script>
 <link rel="stylesheet" href="./dist/canvascreator.min.css" />
 
-<div id="canvasCreator"></div>
+<div id="canvasApp"></div>
 
 <script type="module">
   import CanvasCreator from "./dist/canvascreator.esm.min.js";
 
-  CanvasCreator.initCanvasCreator({ assetBase: "./dist" });
-  CanvasCreator.loadCanvas("en", "apiBusinessModelCanvas");
+  CanvasCreator.initCanvasCreator({
+    container: document.getElementById("canvasApp"),
+    assetBase: "./dist",
+    locale: "en",
+    canvas: "apiBusinessModelCanvas",
+    mode: "standalone",
+    fitToContainer: true,
+  });
 </script>
 ```
 
@@ -109,23 +114,69 @@ JavaScript, image and JSON files.
 
 ## Using in Front-end Projects
 
-In bundler-based projects (Astro, Vite, Webpack, etc.), use the package API and ensure [D3.js](https://d3js.org/) is available globally in the browser before calling `initCanvasCreator`.
+In bundler-based projects (Astro, Vite, Webpack, etc.), use the package API with a single host container. The library renders its own internal UI and returns an instance with `resize()` and `destroy()`.
 
-Also make sure static assets are served from your app (at minimum `canvascreator.min.css` and `img/*`). When consuming from npm, these live under `node_modules/canvascreator/dist/` (for CSS) and `node_modules/canvascreator/img/` (for images).
+Also make sure static assets are served from your app. The package now exposes:
+
+- `canvascreator/style.css`
+- `canvascreator/img/*`
 
 ```astro
 ---
 import CanvasCreator from "canvascreator";
+import "canvascreator/style.css";
 ---
-<div id="canvasCreator"></div>
-<link rel="stylesheet" href="/assets/canvascreator.min.css" />
+<div id="canvasCreatorHost"></div>
 <script type="module">
-  CanvasCreator.initCanvasCreator({ assetBase: "/assets" });
-  CanvasCreator.loadCanvas("en", "apiBusinessModelCanvas");
+  const canvas = CanvasCreator.initCanvasCreator({
+    container: document.getElementById("canvasCreatorHost"),
+    assetBase: "/assets",
+    locale: "en",
+    canvas: "apiBusinessModelCanvas",
+    mode: "embed",
+    fitToContainer: true,
+    toolbar: {
+      metadata: false,
+      help: false,
+    },
+  });
 </script>
 ```
 
-The optional `assetBase` setting tells the library where image assets are loaded from (for example `/assets/img/...`).
+The optional `assetBase` setting tells the library where image assets are loaded from, for example `/assets/img/...`.
+
+`initCanvasCreator()` accepts:
+
+- `container`
+- `assetBase`
+- `locale`
+- `canvas`
+- `mode: "standalone" | "embed"`
+- `embed` as an alias for `mode: "embed"`
+- `fitToContainer`
+- `maxWidth`
+- `maxHeight`
+- `compact`
+- `toolbar`
+
+Toolbar options are:
+
+- `import`
+- `metadata`
+- `export`
+- `themePicker`
+- `help`
+- `headerLinks`
+
+The official styling contract is CSS-variable based. Supported variables include:
+
+- `--cc-font-family`
+- `--cc-text-primary`
+- `--cc-text-secondary`
+- `--cc-border-primary`
+- `--cc-surface-page`
+- `--cc-surface-panel`
+- `--cc-primary`
 
 Any framework that supports ES modules (React, Vue, etc.) can use the same API.
 
