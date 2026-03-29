@@ -93,6 +93,23 @@ describe('export helpers', () => {
     expect(imported.sections[0].stickyNotes[0].position).toBeUndefined();
   });
 
+  test('renderSVG draws notes above later section backgrounds', () => {
+    const content = buildContent(canvasData, 'apiBusinessModelCanvas', 'en', false);
+    content.sections[0].stickyNotes.push({
+      content: 'BorderNote',
+      position: { x: 470, y: 120 },
+      size: 80,
+      color: '#C0EB6A',
+    });
+
+    const svg = renderSVG(canvasData['apiBusinessModelCanvas'], localizedData, content);
+    const noteIndex = svg.indexOf('BorderNote');
+    const laterSectionTitle =
+      localizedData['en']['apiBusinessModelCanvas'].sections.keyActivities.section;
+
+    expect(noteIndex).toBeGreaterThan(svg.indexOf(laterSectionTitle));
+  });
+
   test('writePNG export exists', () => {
     expect(typeof writePNG).toBe('function');
   });

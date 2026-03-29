@@ -1,72 +1,53 @@
-const chainStub = new Proxy(
-  function () {},
-  {
-    get: (target, prop) => {
-      if (prop === 'node') {
-        return () => ({
-          getComputedTextLength: () => 0,
-          getBoundingClientRect: () => ({ left: 0, top: 0 }),
-        })
-      }
-      return chainStub
-    },
-    apply: () => chainStub,
-  },
-)
-
-describe('metadata form', () => {
+describe('metadata dialog', () => {
   beforeEach(() => {
-    jest.resetModules()
-    document.body.innerHTML = ''
-    global.fetch = jest.fn(() =>
-      Promise.resolve({ ok: true, text: () => Promise.resolve('') }),
-    )
-    global.d3 = { select: () => chainStub, drag: () => chainStub }
-  })
+    jest.resetModules();
+    document.body.innerHTML = '<div id="host"></div>';
+    const host = document.getElementById('host');
+    Object.defineProperty(host, 'clientWidth', {
+      configurable: true,
+      value: 900,
+    });
+    Object.defineProperty(host, 'clientHeight', {
+      configurable: true,
+      value: 700,
+    });
+  });
 
-  test('opening metadata form pre-fills values from content data', () => {
-    document.body.innerHTML = `
-      <select id="locale"></select>
-      <div id="canvasSelector" style="display:none"><select id="canvas"></select></div>
-      <div id="canvasCreator" style="display:none"></div>
-      <button id="metadataButton"></button>
-      <div id="metadataForm" style="display:none"></div>
-      <input id="source" />
-      <input id="license" />
-      <input id="authors" />
-      <input id="website" />
-      <button id="saveMetadata"></button>
-      <button id="exportButton"></button>
-      <button id="exportSVGButton"></button>
-      <button id="exportPNGButton"></button>
-      <button id="importButton"></button>
-    `
+  test('opening metadata dialog pre-fills values from content data', () => {
+    const host = document.getElementById('host');
+    const { initCanvasCreator } = require('../src/main.js');
 
-    window.history.pushState(
-      {},
-      '',
-      '?locale=en&canvas=apiBusinessModelCanvas',
-    )
+    initCanvasCreator({
+      container: host,
+      locale: 'en',
+      canvas: 'apiBusinessModelCanvas',
+    });
 
-    const { initCanvasCreator } = require('../src/main.js')
-    initCanvasCreator()
+    host.querySelector('[data-cc-control="metadata"]').click();
+    host.querySelector('[data-cc-role="source"]').value = 'Imported Source';
+    host.querySelector('[data-cc-role="license"]').value = 'CC-BY-SA 4.0';
+    host.querySelector('[data-cc-role="authors"]').value =
+      'Test Author,Second Author';
+    host.querySelector('[data-cc-role="website"]').value = 'example.com';
+    host.querySelector('[data-cc-role="saveMetadata"]').click();
 
-    document.getElementById('source').value = 'Imported Source'
-    document.getElementById('license').value = 'CC-BY-SA 4.0'
-    document.getElementById('authors').value = 'Test Author,Second Author'
-    document.getElementById('website').value = 'example.com'
-    document.getElementById('saveMetadata').click()
+    host.querySelector('[data-cc-control="metadata"]').click();
 
-    document.getElementById('source').value = ''
-    document.getElementById('license').value = ''
-    document.getElementById('authors').value = ''
-    document.getElementById('website').value = ''
+    expect(host.querySelector('[data-cc-role="source"]').value).toBe(
+      'Imported Source',
+    );
+    expect(host.querySelector('[data-cc-role="license"]').value).toBe(
+      'CC-BY-SA 4.0',
+    );
+    expect(host.querySelector('[data-cc-role="authors"]').value).toBe(
+      'Test Author,Second Author',
+    );
+    expect(host.querySelector('[data-cc-role="website"]').value).toBe(
+      'example.com',
+    );
 
-    document.getElementById('metadataButton').click()
-
-    expect(document.getElementById('source').value).toBe('Imported Source')
-    expect(document.getElementById('license').value).toBe('CC-BY-SA 4.0')
-    expect(document.getElementById('authors').value).toBe('Test Author,Second Author')
-    expect(document.getElementById('website').value).toBe('example.com')
-  })
-})
+    const svgText = host.querySelector('.cc-stage-svg').textContent;
+    expect(svgText).toContain('Imported Source');
+    expect(svgText).toContain('Template by:');
+  });
+});

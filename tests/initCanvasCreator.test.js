@@ -1,137 +1,157 @@
 describe('initCanvasCreator', () => {
   beforeEach(() => {
     jest.resetModules();
-    document.body.innerHTML = '';
+    document.body.innerHTML = '<div id="host"></div>';
+    window.history.pushState({}, '', '/');
   });
 
-  test('module can be required without DOM', () => {
+  function createHost(width = 900, height = 700) {
+    const host = document.getElementById('host');
+    Object.defineProperty(host, 'clientWidth', {
+      configurable: true,
+      value: width,
+    });
+    Object.defineProperty(host, 'clientHeight', {
+      configurable: true,
+      value: height,
+    });
+    return host;
+  }
+
+  test('module can be required without DOM usage', () => {
     expect(() => require('../src/main.js')).not.toThrow();
   });
 
-  test('initialization attaches without throwing', () => {
-    document.body.innerHTML = `
-      <select id="locale"></select>
-      <div id="canvasSelector"><select id="canvas"></select></div>
-      <div id="canvasCreator"></div>
-      <button id="metadataButton"></button>
-      <button id="saveMetadata"></button>
-    `;
+  test('renders into a supplied container and returns instance methods', () => {
+    const host = createHost();
     const { initCanvasCreator } = require('../src/main.js');
-    expect(() => initCanvasCreator()).not.toThrow();
+
+    const instance = initCanvasCreator({
+      container: host,
+      locale: 'en',
+      canvas: 'apiBusinessModelCanvas',
+    });
+
+    expect(typeof instance.resize).toBe('function');
+    expect(typeof instance.destroy).toBe('function');
+    expect(host.querySelector('.cc-root')).not.toBeNull();
+    expect(host.querySelector('.cc-stage-svg svg')).not.toBeNull();
   });
 
-  test('first manual canvas render happens after canvas container is shown', () => {
-    let hiddenAtSvgAppend = null;
-
-    const makeChain = (selector) =>
-      new Proxy(
-        function () {},
-        {
-          get: (target, prop) => {
-            if (prop === 'append') {
-              return (tagName) => {
-                if (selector === '#canvasCreator' && tagName === 'svg') {
-                  hiddenAtSvgAppend =
-                    document.getElementById('canvasCreator').style.display === 'none';
-                }
-                return makeChain(tagName);
-              };
-            }
-            if (prop === 'node') {
-              return () => ({
-                getComputedTextLength: () => 0,
-                getBoundingClientRect: () => ({ left: 0, top: 0 }),
-              });
-            }
-            return makeChain(selector);
-          },
-          apply: () => makeChain(selector),
-        },
-      );
-
-    document.body.innerHTML = `
-      <select id="locale"></select>
-      <div id="canvasSelector" style="display:none"><select id="canvas"></select></div>
-      <div id="canvasCreator" style="display:none"></div>
-      <button id="metadataButton"></button>
-      <button id="saveMetadata"></button>
-      <button id="exportButton"></button>
-      <button id="exportSVGButton"></button>
-      <button id="exportPNGButton"></button>
-      <button id="importButton"></button>
-    `;
-
-    global.fetch = jest.fn(() =>
-      Promise.resolve({ ok: true, text: () => Promise.resolve('') }),
-    );
-    global.d3 = { select: (selector) => makeChain(selector), drag: () => makeChain('drag') };
-
+  test('standalone mode shows full controls by default', () => {
+    const host = createHost();
     const { initCanvasCreator } = require('../src/main.js');
-    initCanvasCreator();
 
-    const locale = document.getElementById('locale');
-    locale.value = 'en';
-    locale.dispatchEvent(new Event('change'));
+    initCanvasCreator({
+      container: host,
+      mode: 'standalone',
+      locale: 'en',
+      canvas: 'apiBusinessModelCanvas',
+    });
 
-    const canvas = document.getElementById('canvas');
-    canvas.value = 'apiBusinessModelCanvas';
-    canvas.dispatchEvent(new Event('change'));
-
-    expect(hiddenAtSvgAppend).toBe(false);
-    expect(document.getElementById('canvasCreator').style.display).toBe('flex');
+    expect(host.querySelector('[data-cc-control="import"]')).not.toBeNull();
+    expect(host.querySelector('[data-cc-control="metadata"]')).not.toBeNull();
+    expect(host.querySelector('[data-cc-control="help"]')).not.toBeNull();
+    expect(host.querySelector('.cc-header__links').hidden).toBe(false);
+    expect(host.querySelector('.cc-theme-panel').hidden).toBe(false);
   });
 
-  test('color palette stays hidden until a canvas is selected', () => {
-    const chainStub = new Proxy(
-      function () {},
-      {
-        get: (target, prop) => {
-          if (prop === 'node') {
-            return () => ({
-              getComputedTextLength: () => 0,
-              getBoundingClientRect: () => ({ left: 0, top: 0 }),
-            });
-          }
-          return chainStub;
-        },
-        apply: () => chainStub,
+  test('embed mode uses lean defaults', () => {
+    const host = createHost();
+    const { initCanvasCreator } = require('../src/main.js');
+
+    initCanvasCreator({
+      container: host,
+      mode: 'embed',
+      locale: 'en',
+      canvas: 'apiBusinessModelCanvas',
+    });
+
+    expect(host.querySelector('[data-cc-control="import"]')).not.toBeNull();
+    expect(host.querySelector('[data-cc-control="help"]')).toBeNull();
+    expect(host.querySelector('.cc-header__links').hidden).toBe(true);
+    expect(host.querySelector('.cc-theme-panel').hidden).toBe(true);
+  });
+
+  test('toolbar overrides mode defaults', () => {
+    const host = createHost();
+    const { initCanvasCreator } = require('../src/main.js');
+
+    initCanvasCreator({
+      container: host,
+      mode: 'embed',
+      locale: 'en',
+      canvas: 'apiBusinessModelCanvas',
+      toolbar: {
+        help: true,
+        headerLinks: true,
+        themePicker: true,
       },
-    );
+    });
 
-    document.body.innerHTML = `
-      <select id="locale"></select>
-      <div id="canvasSelector" style="display:none"><select id="canvas"></select></div>
-      <div id="canvasCreator" style="display:none"></div>
-      <div id="colorPalette" hidden></div>
-      <button id="metadataButton"></button>
-      <button id="saveMetadata"></button>
-      <button id="exportButton"></button>
-      <button id="exportSVGButton"></button>
-      <button id="exportPNGButton"></button>
-      <button id="importButton"></button>
-      <select id="themeSelect"></select>
-      <div id="paletteSwatches"></div>
-    `;
+    expect(host.querySelector('[data-cc-control="help"]')).not.toBeNull();
+    expect(host.querySelector('.cc-header__links').hidden).toBe(false);
+    expect(host.querySelector('.cc-theme-panel').hidden).toBe(false);
+  });
 
-    global.fetch = jest.fn(() =>
-      Promise.resolve({ ok: true, text: () => Promise.resolve('') }),
-    );
-    global.d3 = { select: () => chainStub, drag: () => chainStub };
-
+  test('initial locale and canvas are applied through init options', () => {
+    const host = createHost();
     const { initCanvasCreator } = require('../src/main.js');
-    initCanvasCreator();
 
-    const palette = document.getElementById('colorPalette');
-    expect(palette.hidden).toBe(true);
+    initCanvasCreator({
+      container: host,
+      locale: 'fi-FI',
+      canvas: 'apiBusinessModelCanvas',
+    });
 
-    const locale = document.getElementById('locale');
-    locale.value = 'fi';
-    locale.dispatchEvent(new Event('change'));
-    expect(palette.hidden).toBe(true);
+    expect(host.querySelector('[data-cc-role="locale"]').value).toBe('fi');
+    expect(host.querySelector('[data-cc-role="canvas"]').value).toBe(
+      'apiBusinessModelCanvas',
+    );
+  });
 
-    const canvas = document.getElementById('canvas');
-    canvas.value = 'interactionCanvas';
-    canvas.dispatchEvent(new Event('change'));
-    expect(palette.hidden).toBe(false);
+  test('resize respects fitToContainer and max dimensions', () => {
+    const host = createHost(500, 400);
+    const { initCanvasCreator } = require('../src/main.js');
+
+    const instance = initCanvasCreator({
+      container: host,
+      locale: 'en',
+      canvas: 'apiBusinessModelCanvas',
+      fitToContainer: true,
+      maxWidth: 480,
+      maxHeight: 320,
+    });
+
+    instance.resize();
+
+    const stageHost = host.querySelector('.cc-stage-host');
+    const stageFrame = host.querySelector('.cc-stage-frame');
+
+    expect(stageHost.style.maxWidth).toBe('480px');
+    expect(stageHost.style.maxHeight).toBe('320px');
+    expect(stageFrame.style.transform).toMatch(/^scale\(/);
+  });
+
+  test('destroy clears the mounted UI and re-init does not duplicate controls', () => {
+    const host = createHost();
+    const { initCanvasCreator } = require('../src/main.js');
+
+    const first = initCanvasCreator({
+      container: host,
+      locale: 'en',
+      canvas: 'apiBusinessModelCanvas',
+    });
+    expect(host.querySelectorAll('[data-cc-control="import"]')).toHaveLength(1);
+
+    first.destroy();
+    expect(host.innerHTML).toBe('');
+
+    initCanvasCreator({
+      container: host,
+      locale: 'en',
+      canvas: 'apiBusinessModelCanvas',
+    });
+    expect(host.querySelectorAll('[data-cc-control="import"]')).toHaveLength(1);
   });
 });

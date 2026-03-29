@@ -26,28 +26,59 @@ declare module "canvascreator" {
     defaultLocale: string;
   }
 
+  export interface ToolbarOptions {
+    import?: boolean;
+    metadata?: boolean;
+    export?: boolean;
+    themePicker?: boolean;
+    help?: boolean;
+    headerLinks?: boolean;
+  }
+
+  export interface InitOptions {
+    container: HTMLElement;
+    assetBase?: string;
+    locale?: string;
+    canvas?: string;
+    mode?: "standalone" | "embed";
+    embed?: boolean;
+    fitToContainer?: boolean;
+    maxWidth?: number | string;
+    maxHeight?: number | string;
+    compact?: boolean;
+    toolbar?: ToolbarOptions;
+  }
+
+  export interface CanvasCreatorInstance {
+    loadCanvas(
+      locale: string,
+      canvasId: string,
+      preserveContentData?: boolean
+    ): any;
+    createCanvas(
+      locale: string,
+      canvasId: string,
+      preserveContentData?: boolean
+    ): any;
+    resize(): void;
+    destroy(): void;
+  }
+
   export function createCanvas(
     locale: string,
     canvasId: string,
     preserveContentData?: boolean
-  ): void;
+  ): any;
 
   export function loadCanvas(
     locale: string,
     canvasId: string,
     preserveContentData?: boolean
-  ): void;
+  ): any;
 
-  export interface InitOptions {
-    localeElement?: HTMLElement | null;
-    canvasElement?: HTMLElement | null;
-    canvasSelectorElement?: HTMLElement | null;
-    canvasCreatorElement?: HTMLElement | null;
-    toolsSelector?: string;
-    assetBase?: string;
-  }
-
-  export function initCanvasCreator(options?: InitOptions): void;
+  export function initCanvasCreator(
+    options: InitOptions
+  ): CanvasCreatorInstance;
 
   export function sanitizeInput(text: string): string;
   export function validateInput(text: string): string;
@@ -66,6 +97,7 @@ declare module "canvascreator" {
     sanitizeInput: typeof sanitizeInput;
     validateInput: typeof validateInput;
     distributeMissingPositions: typeof distributeMissingPositions;
-    defaultStyles: DefaultStyles;  };
+    defaultStyles: DefaultStyles;
+  };
   export default _default;
 }

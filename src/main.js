@@ -1,12 +1,3 @@
-/* 
-APIOps Cycles Canvas Creator
-Creates canvases from json and localization files (note: current code requires the data is directly inserted in the Javascript file.
-The JSON files are so big and the client side Javascript not the most efficient way, that also the JSON needs to be minimized with the script).
-When you update the Javascript, also create the minimized file and raise version number to help cache to update.
-Original author Marjukka Niinioja, licensed under Apache 2.0
-
- */
-
 const {
   sanitizeInput,
   validateInput,
@@ -14,1421 +5,1586 @@ const {
 } = require('./helpers');
 const defaultStyles = require('./defaultStyles');
 const {
-  stickyThemes,
   getTheme,
   getThemeNames,
   getSafeColorForTheme,
   buildPaletteSwatches,
 } = require('./stickyThemes');
+const canvasData = require('apiops-cycles-method-data/canvasData.json');
+const localizedData = require('apiops-cycles-method-data/localizedData.json');
 
-// Base path for images and CSS, updated by initCanvasCreator
-let assetBase = '';
+const BASE_WIDTH = defaultStyles.width + defaultStyles.padding * 2;
+const BASE_HEIGHT = defaultStyles.height;
+const SVG_NS = 'http://www.w3.org/2000/svg';
 
-// Load canvas layouts and localizations from the data package
-const canvasData = require('../node_modules/apiops-cycles-method-data/src/data/canvas/canvasData.json');
-const localizedData = require('../node_modules/apiops-cycles-method-data/src/data/canvas/localizedData.json');
-
-  // No DOMPurify setup; sanitization is handled in helpers
-
-  // Sticky note variables
-  let currentColor = defaultStyles.stickyNoteColor
-  let selectedNote = null
-  // Track the currently selected canvas ID
-  let canvasId = null
-  // Maintain selected locale and canvas for confirmation logic
-  let currentLocale = null
-  let currentCanvas = null
-  // Track if current canvas has unsaved changes
-let unsavedChanges = false
-let selectedTheme = getThemeNames()[0]
+let latestInstance = null;
 
 function getSessionStorage() {
-  if (typeof window === 'undefined' || !window.sessionStorage) return null
-  return window.sessionStorage
-}
-
-function readSessionValue(key) {
-  const storage = getSessionStorage()
-  return storage ? storage.getItem(key) : null
+  if (typeof window === 'undefined' || !window.sessionStorage) return null;
+  return window.sessionStorage;
 }
 
 function writeSessionValue(key, value) {
-  const storage = getSessionStorage()
-  if (!storage) return
-  storage.setItem(key, value)
+  const storage = getSessionStorage();
+  if (storage) {
+    storage.setItem(key, value);
+  }
 }
 
-function syncThemeStateFromSession() {
-  const persistedTheme = readSessionValue('selectedTheme')
-  if (persistedTheme && stickyThemes[persistedTheme]) {
-    selectedTheme = persistedTheme
+function readSessionValue(key) {
+  const storage = getSessionStorage();
+  return storage ? storage.getItem(key) : null;
+}
+
+function syncThemeStateFromSession(state) {
+  const themeName = readSessionValue('selectedTheme');
+  const selectedColor = readSessionValue('selectedColor');
+
+  if (themeName && getThemeNames().includes(themeName)) {
+    state.selectedTheme = themeName;
   }
 
-  const persistedColor = readSessionValue('selectedColor')
-  if (persistedColor) {
-    currentColor = persistedColor.toUpperCase()
+  if (selectedColor) {
+    state.currentColor = getSafeColorForTheme(
+      state.selectedTheme,
+      selectedColor,
+    );
+  } else {
+    state.currentColor = getSafeColorForTheme(
+      state.selectedTheme,
+      state.currentColor,
+    );
   }
-
-  currentColor = getSafeColorForTheme(selectedTheme, currentColor)
 }
 
 function getLocaleKey(locale) {
-  if (!locale) return defaultStyles.defaultLocale
-  const lower = locale.toLowerCase()
-  if (localizedData[lower]) return lower
-  const base = lower.split('-')[0]
-  return localizedData[base] ? base : lower
+  if (!locale) return defaultStyles.defaultLocale;
+  const lower = String(locale).toLowerCase();
+  if (localizedData[lower]) return lower;
+  const base = lower.split('-')[0];
+  return localizedData[base] ? base : lower;
 }
 
-
-  
-// Function to populate the locale selector
-function populateLocaleSelector(localeSelector = document.getElementById('locale')) {
-  if (!localeSelector) return
-  const locales = Object.keys(localizedData)
-
-  // Add the "Select Locale" option first
-  const selectOption = document.createElement('option')
-  selectOption.value = ''
-  selectOption.text = 'Select Locale'
-  localeSelector.add(selectOption)
-
-  // Add locales only once
-  locales.forEach((locale) => {
-    const option = document.createElement('option')
-    option.value = locale
-    option.text = locale
-    localeSelector.add(option)
-  })
-}
-  
-// Function to populate the canvas selector based on the selected locale
-function populateCanvasSelector(
-  locale,
-  canvasSelector = document.getElementById('canvas'),
-) {
-  if (!canvasSelector) return
-  canvasSelector.innerHTML = '' // Clear previous options
-
-  // Add placeholder option so no canvas is auto-selected
-  const selectOption = document.createElement('option')
-  selectOption.value = ''
-  selectOption.text = 'Select Canvas'
-  canvasSelector.add(selectOption)
-
-  // Get available canvas IDs from localizedData for the selected locale
-  const locKey = getLocaleKey(locale)
-  const canvasIds = localizedData[locKey] ? Object.keys(localizedData[locKey]) : []
-
-  canvasIds.forEach((canvasId) => {
-    const option = document.createElement('option')
-    option.value = canvasId
-    // Access the localized title correctly
-    option.text = localizedData[locKey][canvasId].title
-    canvasSelector.add(option)
-  })
+function normalizeMode(options = {}) {
+  if (options.mode === 'embed' || options.embed) return 'embed';
+  return 'standalone';
 }
 
-function showCanvasCreator(canvasCreator) {
-  if (canvasCreator) {
-    canvasCreator.style.display = 'flex'
-  }
-}
-
-function setColorPaletteVisibility(colorPalette, isVisible) {
-  if (!colorPalette) return
-  colorPalette.hidden = !isVisible
-  colorPalette.setAttribute('aria-hidden', String(!isVisible))
-}
-  
-// Initialization function to attach DOM event listeners
-function initCanvasCreator({
-  localeElement,
-  canvasElement,
-  canvasSelectorElement,
-  canvasCreatorElement,
-  toolsSelector = '.canvas-tools',
-  assetBase: assetBaseParam = '',
-} = {}) {
-  // Expose assetBase to other functions
-  assetBase = assetBaseParam;
-  const localeSel =
-    localeElement || document.getElementById('locale')
-  const canvasSel =
-    canvasElement || document.getElementById('canvas')
-  const canvasSelectorContainer =
-    canvasSelectorElement || document.getElementById('canvasSelector')
-  const canvasCreator =
-    canvasCreatorElement || document.getElementById('canvasCreator')
-  const colorPalette = document.getElementById('colorPalette')
-
-  if (!localeSel || !canvasSel) return
-
-  syncThemeStateFromSession()
-  setColorPaletteVisibility(colorPalette, false)
-
-  const toolsMenuButton = document.getElementById('ToolsTitle')
-  const toolsMenu = document.getElementById('canvasToolsMenu')
-  const helpToggle = document.getElementById('helpToggle')
-  const helpTooltip = document.getElementById('helpTooltip')
-  const importButton = document.getElementById('importButton')
-  const headerMoreToggle = document.getElementById('headerMoreToggle')
-  const headerMorePanel = document.getElementById('headerMorePanel')
-
-  function togglePanel(button, panel) {
-    if (!button || !panel) return
-    const shouldOpen = panel.hidden
-    panel.hidden = !shouldOpen
-    button.setAttribute('aria-expanded', String(shouldOpen))
-  }
-
-  function closePanel(button, panel) {
-    if (!button || !panel) return
-    panel.hidden = true
-    button.setAttribute('aria-expanded', 'false')
-  }
-
-  if (toolsMenuButton && toolsMenu && !toolsMenuButton.dataset.listenerAttached) {
-    toolsMenuButton.addEventListener('click', () => {
-      togglePanel(toolsMenuButton, toolsMenu)
-    })
-    toolsMenuButton.dataset.listenerAttached = 'true'
-  }
-
-  if (helpToggle && helpTooltip && !helpToggle.dataset.listenerAttached) {
-    helpToggle.addEventListener('click', () => {
-      togglePanel(helpToggle, helpTooltip)
-    })
-    helpToggle.dataset.listenerAttached = 'true'
-  }
-
-  if (importButton && !importButton.dataset.listenerAttached) {
-    importButton.addEventListener('click', () => {
-      fileInput.click()
-    })
-    importButton.dataset.listenerAttached = 'true'
-  }
-
-  if (headerMoreToggle && headerMorePanel && !headerMoreToggle.dataset.listenerAttached) {
-    headerMoreToggle.addEventListener('click', () => {
-      togglePanel(headerMoreToggle, headerMorePanel)
-    })
-    headerMoreToggle.dataset.listenerAttached = 'true'
-  }
-
-  if (!document.body.dataset.canvasCreatorNavAttached) {
-    document.addEventListener('click', (event) => {
-      const insideActionMenu =
-        toolsMenuButton && toolsMenu
-          ? toolsMenuButton.contains(event.target) || toolsMenu.contains(event.target)
-          : false
-      const insideHelpMenu =
-        helpToggle && helpTooltip
-          ? helpToggle.contains(event.target) || helpTooltip.contains(event.target)
-          : false
-      const insideHeaderMore =
-        headerMoreToggle && headerMorePanel
-          ? headerMoreToggle.contains(event.target) || headerMorePanel.contains(event.target)
-          : false
-
-      if (!insideActionMenu) closePanel(toolsMenuButton, toolsMenu)
-      if (!insideHelpMenu) closePanel(helpToggle, helpTooltip)
-      if (!insideHeaderMore) closePanel(headerMoreToggle, headerMorePanel)
-    })
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key !== 'Escape') return
-      closePanel(toolsMenuButton, toolsMenu)
-      closePanel(helpToggle, helpTooltip)
-      closePanel(headerMoreToggle, headerMorePanel)
-    })
-
-    document.body.dataset.canvasCreatorNavAttached = 'true'
-  }
-
-  // Event listeners for locale and canvas selection
-  localeSel.addEventListener(
-    'change',
-    (event) => {
-      const newLocale = event.target.value
-
-      if (contentData && contentData.sections) {
-        const hasStickyNotes = contentData.sections.some(
-          (section) => section.stickyNotes.length > 0,
-        )
-        if (hasStickyNotes) {
-          if (
-            !confirm(
-              'Are you sure you want to remove sticky notes and change canvas?',
-            )
-          ) {
-            localeSel.value = currentLocale || ''
-            return
-          }
-          contentData.sections.forEach((section) => {
-            section.stickyNotes = []
-          })
+function normalizeToolbar(mode, toolbar = {}) {
+  const defaults =
+    mode === 'embed'
+      ? {
+          import: true,
+          metadata: true,
+          export: true,
+          themePicker: false,
+          help: false,
+          headerLinks: false,
         }
-      }
+      : {
+          import: true,
+          metadata: true,
+          export: true,
+          themePicker: true,
+          help: true,
+          headerLinks: true,
+        };
 
-      if (canvasSelectorContainer) {
-        canvasSelectorContainer.style.display = 'block'
-      }
+  return { ...defaults, ...toolbar };
+}
 
-      populateCanvasSelector(newLocale, canvasSel)
-      canvasSel.value = ''
+function normalizeAssetBase(assetBase = '') {
+  return String(assetBase).replace(/\/+$/, '');
+}
 
-      if (canvasCreator) {
-        canvasCreator.style.display = 'none'
-      }
-      setColorPaletteVisibility(colorPalette, false)
+function resolveAssetUrl(assetBase, relativePath) {
+  return assetBase ? `${assetBase}/${relativePath}` : relativePath;
+}
 
-      currentLocale = newLocale
-    },
-  )
+function escapeXml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
-  // add touch events to tool section
-  document.querySelectorAll(toolsSelector).forEach((menu) => {
-    menu.querySelectorAll('button').forEach((button) => {
-      button.addEventListener(
-        'touchstart',
-        function (event) {
-          event.preventDefault()
-          this.click()
-        },
-        { passive: false },
-      )
+function wrapText(text, maxWidth = defaultStyles.maxLineWidth) {
+  const normalized = String(text || '').replace(/\n{2,}/g, '\n');
+  const words = normalized.split(' ');
+  const lines = [];
+  let line = '';
+
+  for (const word of words) {
+    const testLine = `${line}${word} `;
+    if (testLine.length * 6 > maxWidth && line.trim()) {
+      lines.push(line.trim());
+      line = `${word} `;
+    } else {
+      line = testLine;
+    }
+  }
+
+  if (line.trim()) {
+    lines.push(line.trim());
+  }
+
+  return lines.join('\n');
+}
+
+function getCanvasGeometry(canvasDef, locale, content) {
+  const localizedCanvas =
+    (localizedData[locale] && localizedData[locale][content.templateId]) || {};
+  const cellWidth = Math.floor(
+    (defaultStyles.width - canvasDef.layout.columns * defaultStyles.padding) /
+      canvasDef.layout.columns,
+  );
+
+  const headerWidth =
+    defaultStyles.width -
+    (defaultStyles.headerHeight + 2 * defaultStyles.padding) -
+    2 * defaultStyles.padding;
+
+  const titleLines = wrapText(
+    localizedCanvas.title || canvasDef.id,
+    headerWidth,
+  ).split('\n').length;
+  let headerBottomY =
+    2 * defaultStyles.padding +
+    defaultStyles.fontSize +
+    (titleLines - 1) * (defaultStyles.fontSize + 6);
+
+  if (localizedCanvas.purpose) {
+    const purposeLines = wrapText(localizedCanvas.purpose, headerWidth).split(
+      '\n',
+    ).length;
+    headerBottomY +=
+      defaultStyles.padding +
+      2 +
+      (purposeLines - 1) * (defaultStyles.fontSize + 3);
+  }
+
+  if (localizedCanvas.howToUse) {
+    const howToUseLines = wrapText(
+      localizedCanvas.howToUse,
+      headerWidth,
+    ).split('\n').length;
+    headerBottomY +=
+      defaultStyles.padding +
+      4 +
+      (howToUseLines - 1) * (defaultStyles.fontSize + 2);
+  }
+
+  const gridTop = Math.max(
+    defaultStyles.headerHeight,
+    headerBottomY + 2 * defaultStyles.padding,
+  );
+
+  const cellHeight = Math.floor(
+    (defaultStyles.height -
+      gridTop -
+      defaultStyles.footerHeight -
+      3 * defaultStyles.padding) /
+      canvasDef.layout.rows,
+  );
+
+  return {
+    localizedCanvas,
+    cellWidth,
+    cellHeight,
+    gridTop,
+    sections: canvasDef.sections.map((section) => ({
+      id: section.id,
+      x:
+        section.gridPosition.column * cellWidth + 2 * defaultStyles.padding,
+      y: section.gridPosition.row * cellHeight + gridTop,
+      width: section.gridPosition.colSpan * cellWidth,
+      height: section.gridPosition.rowSpan * cellHeight,
+    })),
+  };
+}
+
+function appendWrappedSvgText(parts, config) {
+  const {
+    x,
+    y,
+    text,
+    maxWidth,
+    fontFamily = defaultStyles.fontFamily,
+    fontSize = defaultStyles.fontSize,
+    fontWeight = '',
+    fill = defaultStyles.fontColor,
+    lineHeight = fontSize + 2,
+    anchor = 'start',
+  } = config;
+  const lines = wrapText(text, maxWidth)
+    .split('\n')
+    .filter((line) => line.length > 0);
+  const safeLines = lines.length > 0 ? lines : [''];
+  const weightAttr = fontWeight ? ` font-weight="${fontWeight}"` : '';
+  const tspanMarkup = safeLines
+    .map((line, index) => {
+      const dy = index === 0 ? '0' : String(lineHeight);
+      return `<tspan x="${x}" dy="${dy}">${escapeXml(line)}</tspan>`;
     })
-  })
+    .join('');
 
-  canvasSel.addEventListener(
-    'change',
-    (event) => {
-      const newCanvas = event.target.value
-      if (!newCanvas) return
+  parts.push(
+    `<text x="${x}" y="${y}" text-anchor="${anchor}" font-family="${escapeXml(
+      fontFamily,
+    )}" font-size="${fontSize}" fill="${escapeXml(fill)}"${weightAttr}>${tspanMarkup}</text>`,
+  );
 
-      if (contentData && contentData.sections) {
-        const hasStickyNotes = contentData.sections.some(
-          (section) => section.stickyNotes.length > 0,
-        )
-        if (hasStickyNotes) {
-          if (
-            !confirm(
-              'Are you sure you want to remove sticky notes and change canvas?',
-            )
-          ) {
-            canvasSel.value = currentCanvas || ''
-            return
-          }
-          contentData.sections.forEach((section) => {
-            section.stickyNotes = []
+  return {
+    lineCount: safeLines.length,
+    bottomY: y + (safeLines.length - 1) * lineHeight,
+  };
+}
+
+function buildCanvasSvgMarkup({
+  assetBase,
+  content,
+  includeNotes = false,
+  inlineLogo = null,
+}) {
+  const canvasDef = canvasData[content.templateId];
+  const locale = getLocaleKey(content.locale || defaultStyles.defaultLocale);
+
+  if (!canvasDef) {
+    return '';
+  }
+
+  const geometry = getCanvasGeometry(canvasDef, locale, content);
+  const { localizedCanvas } = geometry;
+  const noteParts = [];
+  const parts = [
+    `<svg xmlns="${SVG_NS}" width="${BASE_WIDTH}" height="${BASE_HEIGHT}" viewBox="0 0 ${BASE_WIDTH} ${BASE_HEIGHT}" font-family="${escapeXml(
+      defaultStyles.fontFamily,
+    )}" font-size="${defaultStyles.fontSize}" style="background-color:${escapeXml(
+      defaultStyles.backgroundColor,
+    )}">`,
+  ];
+
+  if (inlineLogo && inlineLogo.markup) {
+    parts.push(
+      `<svg x="${defaultStyles.padding}" y="${
+        defaultStyles.padding / 2
+      }" width="${defaultStyles.headerHeight}" height="${
+        defaultStyles.headerHeight
+      }" viewBox="${escapeXml(inlineLogo.viewBox)}">${inlineLogo.markup}</svg>`,
+    );
+  } else {
+    const logoUrl = resolveAssetUrl(
+      assetBase,
+      'img/apiops-cycles-logo2025-blue.svg',
+    );
+    parts.push(
+      `<image href="${escapeXml(logoUrl)}" x="${defaultStyles.padding}" y="${
+        defaultStyles.padding / 2
+      }" width="${defaultStyles.headerHeight}" height="${
+        defaultStyles.headerHeight
+      }" />`,
+    );
+  }
+
+  const headerTextX = defaultStyles.headerHeight + 2 * defaultStyles.padding;
+  const headerTextWidth = defaultStyles.width - headerTextX;
+  let headerBottomY = 0;
+
+  const titleLayout = appendWrappedSvgText(parts, {
+    x: headerTextX,
+    y: 2 * defaultStyles.padding + defaultStyles.fontSize,
+    text: localizedCanvas.title || canvasDef.id,
+    maxWidth: headerTextWidth,
+    fontSize: defaultStyles.fontSize + 4,
+    fontWeight: 'bold',
+    lineHeight: defaultStyles.fontSize + 6,
+  });
+  headerBottomY = titleLayout.bottomY;
+
+  if (localizedCanvas.purpose) {
+    const purposeLayout = appendWrappedSvgText(parts, {
+      x: headerTextX,
+      y: headerBottomY + defaultStyles.padding + 2,
+      text: localizedCanvas.purpose,
+      maxWidth: headerTextWidth,
+      fontSize: defaultStyles.fontSize + 2,
+      lineHeight: defaultStyles.fontSize + 3,
+    });
+    headerBottomY = purposeLayout.bottomY;
+  }
+
+  if (localizedCanvas.howToUse) {
+    const howToUseLayout = appendWrappedSvgText(parts, {
+      x: headerTextX,
+      y: headerBottomY + defaultStyles.padding + 4,
+      text: localizedCanvas.howToUse,
+      maxWidth: headerTextWidth,
+      fontSize: defaultStyles.fontSize + 2,
+      lineHeight: defaultStyles.fontSize + 2,
+    });
+    headerBottomY = howToUseLayout.bottomY;
+  }
+
+  canvasDef.sections.forEach((sectionDef) => {
+    const sectionBox = geometry.sections.find(
+      (section) => section.id === sectionDef.id,
+    );
+    if (!sectionBox) return;
+
+    const sectionLocale =
+      localizedCanvas.sections && localizedCanvas.sections[sectionDef.id]
+        ? localizedCanvas.sections[sectionDef.id]
+        : {};
+    const sectionTitle = sectionLocale.section || sectionDef.id;
+
+    parts.push(
+      `<rect x="${sectionBox.x}" y="${sectionBox.y}" width="${sectionBox.width}" height="${sectionBox.height}" fill="${escapeXml(
+        sectionDef.highlight
+          ? defaultStyles.highlightColor
+          : defaultStyles.sectionColor,
+      )}" stroke="${escapeXml(defaultStyles.borderColor)}" rx="${
+        defaultStyles.cornerRadius
+      }" ry="${defaultStyles.cornerRadius}" />`,
+    );
+
+    parts.push(
+      `<circle cx="${sectionBox.x + defaultStyles.padding}" cy="${
+        sectionBox.y + defaultStyles.padding
+      }" r="${defaultStyles.circleRadius}" fill="${escapeXml(
+        defaultStyles.borderColor,
+      )}" />`,
+    );
+    parts.push(
+      `<text x="${sectionBox.x + defaultStyles.padding}" y="${
+        sectionBox.y + defaultStyles.padding + 5
+      }" text-anchor="middle" font-family="${escapeXml(
+        defaultStyles.fontFamily,
+      )}" font-size="${defaultStyles.fontSize}" fill="${escapeXml(
+        defaultStyles.highlightColor,
+      )}">${escapeXml(sectionDef.fillOrder)}</text>`,
+    );
+
+    const titleLayoutInSection = appendWrappedSvgText(parts, {
+      x: sectionBox.x + defaultStyles.padding + defaultStyles.circleRadius,
+      y: sectionBox.y + defaultStyles.padding + defaultStyles.circleRadius,
+      text: sectionTitle,
+      maxWidth:
+        sectionBox.width -
+        2 * defaultStyles.padding -
+        defaultStyles.circleRadius,
+      fontWeight: 'bold',
+    });
+
+    const sectionContent = content.sections.find(
+      (section) => section.sectionId === sectionDef.id,
+    );
+
+    if (includeNotes && sectionContent) {
+      sectionContent.stickyNotes.forEach((note) => {
+        const noteX = note.position ? note.position.x || 0 : 0;
+        const noteY = note.position ? note.position.y || 0 : 0;
+        const noteSize = note.size || defaultStyles.stickyNoteSize;
+        noteParts.push(
+          `<rect x="${noteX}" y="${noteY}" width="${noteSize}" height="${noteSize}" fill="${escapeXml(
+            note.color || defaultStyles.stickyNoteColor,
+          )}" stroke="${escapeXml(
+            note.color || defaultStyles.stickyNoteBorderColor,
+          )}" rx="${defaultStyles.stickyNoteCornerRadius}" ry="${
+            defaultStyles.stickyNoteCornerRadius
+          }" />`,
+        );
+
+        const noteLines = wrapText(
+          note.content,
+          noteSize - defaultStyles.padding,
+        ).split('\n');
+        const tspans = noteLines
+          .map((line, index) => {
+            const dy = index === 0 ? '0' : String(defaultStyles.fontSize + 2);
+            return `<tspan x="${
+              noteX + defaultStyles.padding / 2
+            }" dy="${dy}">${escapeXml(line)}</tspan>`;
           })
-        }
-      }
+          .join('');
 
-      showCanvasCreator(canvasCreator)
-      setColorPaletteVisibility(colorPalette, true)
-      loadCanvas(localeSel.value, newCanvas)
-      currentCanvas = newCanvas
+        noteParts.push(
+          `<text x="${noteX + defaultStyles.padding / 2}" y="${
+            noteY + defaultStyles.fontSize + defaultStyles.padding / 2
+          }" fill="${escapeXml(
+            defaultStyles.contentFontColor,
+          )}" font-family="${escapeXml(
+            defaultStyles.fontFamily,
+          )}" font-size="${defaultStyles.fontSize}">${tspans}</text>`,
+        );
+      });
+    } else if (sectionLocale.description) {
+      appendWrappedSvgText(parts, {
+        x: sectionBox.x + defaultStyles.padding,
+        y: titleLayoutInSection.bottomY + defaultStyles.padding + 2,
+        text: sectionLocale.description,
+        maxWidth: sectionBox.width - 2 * defaultStyles.padding,
+      });
+    }
+  });
+
+  if (noteParts.length > 0) {
+    parts.push(noteParts.join(''));
+  }
+
+  const contentMetadataLine = formatMetadataLine(content.metadata);
+  const templateMetadataLine = `Template by: ${canvasDef.metadata.source} | ${canvasDef.metadata.license} | ${canvasDef.metadata.authors.join(
+    ', ',
+  )} | ${canvasDef.metadata.website}`;
+
+  const footerLines = [];
+  if (contentMetadataLine) {
+    footerLines.push(contentMetadataLine);
+  }
+  footerLines.push(templateMetadataLine);
+
+  parts.push(
+    footerLines
+      .map((line, index) => {
+        const y =
+          defaultStyles.height -
+          defaultStyles.footerHeight +
+          index * (defaultStyles.fontSize + 4);
+        return `<text x="${defaultStyles.width / 2}" y="${y}" text-anchor="middle" font-family="${escapeXml(
+          defaultStyles.fontFamily,
+        )}" font-size="${defaultStyles.fontSize}" fill="${escapeXml(
+          defaultStyles.fontColor,
+        )}">${escapeXml(line)}</text>`;
+      })
+      .join(''),
+  );
+
+  parts.push('</svg>');
+  return parts.join('');
+}
+
+function cloneContent(content) {
+  return JSON.parse(JSON.stringify(content));
+}
+
+function buildEmptyContent(locale, canvasId) {
+  return {
+    templateId: canvasId,
+    locale,
+    metadata: {
+      source: '',
+      license: '',
+      authors: [],
+      website: '',
     },
-  )
+    sections: (canvasData[canvasId]?.sections || []).map((section) => ({
+      sectionId: section.id,
+      stickyNotes: [],
+    })),
+  };
+}
 
-  // Initialize the locale selector
-  populateLocaleSelector(localeSel)
+function downloadBlob(documentRef, blob, fileName) {
+  const url = URL.createObjectURL(blob);
+  const link = documentRef.createElement('a');
+  link.href = url;
+  link.download = fileName;
+  documentRef.body.appendChild(link);
+  link.click();
+  documentRef.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 
-  // Parse locale and canvas from URL parameters securely
-  const params = new URLSearchParams(window.location.search)
-  let urlLocale = params.get('locale') || ''
-  let urlCanvas = params.get('canvas') || ''
-  urlLocale = validateInput(sanitizeInput(urlLocale))
-  urlCanvas = validateInput(sanitizeInput(urlCanvas))
+function getExportBaseName(content) {
+  const source = (content.metadata && content.metadata.source) || 'Canvas';
+  return `${source}_${content.templateId}_${content.locale}`.replace(/\s+/g, '_');
+}
 
-  if (urlLocale && localizedData[getLocaleKey(urlLocale)]) {
-    const normalizedLocale = getLocaleKey(urlLocale)
-    localeSel.value = normalizedLocale
-    populateCanvasSelector(normalizedLocale, canvasSel)
-    if (canvasSelectorContainer) {
-      canvasSelectorContainer.style.display = 'block'
+function formatMetadataLine(metadata = {}) {
+  const parts = [];
+  if (metadata.source) parts.push(metadata.source);
+  if (metadata.license) parts.push(metadata.license);
+  if (Array.isArray(metadata.authors) && metadata.authors.length > 0) {
+    parts.push(metadata.authors.join(', '));
+  } else if (metadata.authors) {
+    parts.push(String(metadata.authors));
+  }
+  if (metadata.website) parts.push(metadata.website);
+  return parts.join(' | ');
+}
+
+function extractInlineSvgData(svgText) {
+  if (!svgText) return { markup: '', viewBox: '0 0 567 567.000005' };
+  const source = String(svgText);
+  const viewBoxMatch = source.match(/viewBox="([^"]+)"/i);
+  return {
+    viewBox: viewBoxMatch ? viewBoxMatch[1] : '0 0 567 567.000005',
+    markup: source
+    .replace(/<\?xml[\s\S]*?\?>/i, '')
+    .replace(/<!DOCTYPE[\s\S]*?>/i, '')
+    .replace(/<sodipodi:namedview[\s\S]*?<\/sodipodi:namedview>/i, '')
+    .replace(/<sodipodi:namedview[\s\S]*?\/>/i, '')
+    .replace(/^[\s\S]*?<svg[^>]*>/i, '')
+    .replace(/<\/svg>\s*$/i, '')
+    .trim(),
+  };
+}
+
+class CanvasCreatorInstance {
+  constructor(options = {}) {
+    const { container } = options;
+    if (!container || !container.ownerDocument) {
+      throw new Error('initCanvasCreator requires a container HTMLElement.');
+    }
+
+    if (container.__canvasCreatorInstance) {
+      container.__canvasCreatorInstance.destroy();
+    }
+
+    this.container = container;
+    this.document = container.ownerDocument;
+    this.window = this.document.defaultView || window;
+    this.assetBase = normalizeAssetBase(options.assetBase);
+    this.mode = normalizeMode(options);
+    this.toolbar = normalizeToolbar(this.mode, options.toolbar);
+    this.fitToContainer = options.fitToContainer !== false;
+    this.maxWidth = options.maxWidth;
+    this.maxHeight = options.maxHeight;
+    this.compact = Boolean(options.compact || this.mode === 'embed');
+    this.currentScale = 1;
+    this.contentData = null;
+    this.currentLocale = null;
+    this.currentCanvas = null;
+    this.selectedNoteRef = null;
+    this.dragState = null;
+    this.currentColor = getTheme(getThemeNames()[0]).swatches[0];
+    this.selectedTheme = getThemeNames()[0];
+    this.inlineLogo = null;
+    this.isEditingNote = false;
+    syncThemeStateFromSession(this);
+
+    this.handleWindowResize = this.resize.bind(this);
+    this.handlePointerMove = this.onPointerMove.bind(this);
+    this.handlePointerUp = this.onPointerUp.bind(this);
+
+    this.buildShell();
+    this.attachStaticEvents();
+    this.initializeSelections(options);
+    this.installAutoResize();
+    this.preloadInlineLogo();
+
+    container.__canvasCreatorInstance = this;
+  }
+
+  preloadInlineLogo() {
+    const logoUrl = resolveAssetUrl(
+      this.assetBase,
+      'img/apiops-cycles-logo2025-blue.svg',
+    );
+
+    if (!this.window.fetch) return;
+
+    this.window
+      .fetch(logoUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to load logo SVG');
+        }
+        return response.text();
+      })
+      .then((svgText) => {
+        this.inlineLogo = extractInlineSvgData(svgText);
+        if (this.contentData) {
+          this.render();
+        }
+      })
+      .catch(() => {
+        this.inlineLogo = null;
+      });
+  }
+
+  buildShell() {
+    this.container.innerHTML = '';
+
+    const root = this.document.createElement('div');
+    root.className = 'cc-root';
+    root.dataset.mode = this.mode;
+    if (this.compact) {
+      root.classList.add('cc-root--compact');
+    }
+
+    root.innerHTML = `
+      <div class="cc-shell">
+        <header class="cc-header">
+          <a class="cc-brand" href="https://www.apiopscycles.com/resources/customer-journey-canvas/" target="_blank" rel="noopener noreferrer">
+            <img class="cc-brand__logo" alt="CanvasCreator logo" width="64" height="64" />
+            <span class="cc-brand__title">CanvasCreator</span>
+          </a>
+          <div class="cc-header__links"></div>
+        </header>
+        <section class="cc-toolbar">
+          <div class="cc-toolbar__primary"></div>
+          <div class="cc-toolbar__selectors">
+            <label class="cc-field">
+              <span>Language</span>
+              <select data-cc-role="locale"></select>
+            </label>
+            <label class="cc-field">
+              <span>Canvas</span>
+              <select data-cc-role="canvas"></select>
+            </label>
+          </div>
+          <div class="cc-toolbar__secondary"></div>
+        </section>
+        <section class="cc-workspace">
+          <div class="cc-help" hidden></div>
+          <div class="cc-stage-shell">
+            <div class="cc-stage-host">
+              <div class="cc-stage-frame">
+                <div class="cc-stage-svg"></div>
+                <div class="cc-notes-layer"></div>
+              </div>
+            </div>
+            <div class="cc-theme-panel" hidden>
+              <label class="cc-field cc-field--inline">
+                <span>Theme</span>
+                <select data-cc-role="theme"></select>
+              </label>
+              <div class="cc-swatches" data-cc-role="swatches"></div>
+            </div>
+          </div>
+        </section>
+        <dialog class="cc-metadata-dialog">
+          <form method="dialog" class="cc-metadata-form">
+            <h2>Content Metadata</h2>
+            <label class="cc-field">
+              <span>Source</span>
+              <input type="text" data-cc-role="source" />
+            </label>
+            <label class="cc-field">
+              <span>License</span>
+              <input type="text" data-cc-role="license" />
+            </label>
+            <label class="cc-field">
+              <span>Authors</span>
+              <input type="text" data-cc-role="authors" />
+            </label>
+            <label class="cc-field">
+              <span>Website</span>
+              <input type="text" data-cc-role="website" />
+            </label>
+            <div class="cc-dialog-actions">
+              <button type="button" data-cc-role="saveMetadata">Save</button>
+              <button type="button" data-cc-role="closeMetadata">Close</button>
+            </div>
+          </form>
+        </dialog>
+      </div>
+    `;
+
+    this.root = root;
+    this.container.appendChild(root);
+
+    this.headerLinks = root.querySelector('.cc-header__links');
+    this.primaryToolbar = root.querySelector('.cc-toolbar__primary');
+    this.secondaryToolbar = root.querySelector('.cc-toolbar__secondary');
+    this.localeSelect = root.querySelector('[data-cc-role="locale"]');
+    this.canvasSelect = root.querySelector('[data-cc-role="canvas"]');
+    this.themeSelect = root.querySelector('[data-cc-role="theme"]');
+    this.swatches = root.querySelector('[data-cc-role="swatches"]');
+    this.helpPanel = root.querySelector('.cc-help');
+    this.stageHost = root.querySelector('.cc-stage-host');
+    this.stageFrame = root.querySelector('.cc-stage-frame');
+    this.svgHost = root.querySelector('.cc-stage-svg');
+    this.notesLayer = root.querySelector('.cc-notes-layer');
+    this.themePanel = root.querySelector('.cc-theme-panel');
+    this.metadataDialog = root.querySelector('.cc-metadata-dialog');
+    this.metadataSource = root.querySelector('[data-cc-role="source"]');
+    this.metadataLicense = root.querySelector('[data-cc-role="license"]');
+    this.metadataAuthors = root.querySelector('[data-cc-role="authors"]');
+    this.metadataWebsite = root.querySelector('[data-cc-role="website"]');
+    this.fileInput = this.document.createElement('input');
+    this.fileInput.type = 'file';
+    this.fileInput.accept = 'application/json';
+    this.fileInput.hidden = true;
+    this.root.appendChild(this.fileInput);
+
+    this.stageFrame.style.width = `${BASE_WIDTH}px`;
+    this.stageFrame.style.height = `${BASE_HEIGHT}px`;
+    this.stageFrame.style.transformOrigin = 'top left';
+
+    const brandLogo = root.querySelector('.cc-brand__logo');
+    brandLogo.src = resolveAssetUrl(
+      this.assetBase,
+      'img/apiops-cycles-logo-2025-64.png',
+    );
+
+    this.renderHeaderLinks();
+    this.renderToolbar();
+    this.renderThemeControls();
+    this.renderHelp();
+  }
+
+  renderHeaderLinks() {
+    this.headerLinks.innerHTML = '';
+    if (!this.toolbar.headerLinks) {
+      this.headerLinks.hidden = true;
+      return;
+    }
+
+    this.headerLinks.hidden = false;
+    this.headerLinks.innerHTML = `
+      <a href="https://github.com/APIOpsCycles/CanvasCreator.git" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://www.apiopscycles.com/getting-started/partners/" target="_blank" rel="noopener noreferrer">Partners</a>
+      <a href="https://tally.so/r/3yQEpp" target="_blank" rel="noopener noreferrer">Contact</a>
+    `;
+  }
+
+  createButton(label, control, className = '') {
+    const button = this.document.createElement('button');
+    button.type = 'button';
+    button.textContent = label;
+    button.dataset.ccControl = control;
+    button.className = className || 'cc-button';
+    return button;
+  }
+
+  renderToolbar() {
+    this.primaryToolbar.innerHTML = '';
+    this.secondaryToolbar.innerHTML = '';
+
+    if (this.toolbar.import) {
+      this.importButton = this.createButton(
+        'Import JSON',
+        'import',
+        'cc-button cc-button--primary',
+      );
+      this.primaryToolbar.appendChild(this.importButton);
+    } else {
+      this.importButton = null;
+    }
+
+    if (this.toolbar.metadata) {
+      this.metadataButton = this.createButton('Metadata', 'metadata');
+      this.secondaryToolbar.appendChild(this.metadataButton);
+    } else {
+      this.metadataButton = null;
+    }
+
+    if (this.toolbar.export) {
+      this.exportJsonButton = this.createButton('Export JSON', 'export-json');
+      this.exportSvgButton = this.createButton('Export SVG', 'export-svg');
+      this.exportPngButton = this.createButton('Export PNG', 'export-png');
+      this.secondaryToolbar.append(
+        this.exportJsonButton,
+        this.exportSvgButton,
+        this.exportPngButton,
+      );
+    } else {
+      this.exportJsonButton = null;
+      this.exportSvgButton = null;
+      this.exportPngButton = null;
+    }
+
+    if (this.toolbar.help) {
+      this.helpButton = this.createButton('Help', 'help');
+      this.secondaryToolbar.appendChild(this.helpButton);
+    } else {
+      this.helpButton = null;
+    }
+  }
+
+  renderThemeControls() {
+    if (!this.toolbar.themePicker) {
+      this.themePanel.hidden = true;
+      return;
+    }
+
+    this.themePanel.hidden = !this.contentData;
+    this.themeSelect.innerHTML = '';
+    getThemeNames().forEach((themeName) => {
+      const option = this.document.createElement('option');
+      option.value = themeName;
+      option.textContent = getTheme(themeName).label;
+      option.selected = themeName === this.selectedTheme;
+      this.themeSelect.appendChild(option);
+    });
+    this.renderSwatches();
+  }
+
+  renderSwatches() {
+    if (!this.swatches) return;
+    this.swatches.innerHTML = '';
+    buildPaletteSwatches(this.selectedTheme, this.currentColor).forEach(
+      ({ color, isSelected }) => {
+        const swatch = this.document.createElement('button');
+        swatch.type = 'button';
+        swatch.className = 'cc-swatch';
+        if (isSelected) {
+          swatch.classList.add('is-selected');
+        }
+        swatch.dataset.color = color;
+        swatch.style.backgroundColor = color;
+        swatch.setAttribute('aria-label', `Select ${color} note color`);
+        this.swatches.appendChild(swatch);
+      },
+    );
+  }
+
+  renderHelp() {
+    if (!this.toolbar.help) {
+      this.helpPanel.hidden = true;
+      return;
+    }
+
+    this.helpPanel.hidden = this.mode !== 'standalone';
+    this.helpPanel.innerHTML = `
+      <strong>Canvas Help</strong>
+      <ul>
+        <li>Choose a locale and canvas, or import a canvas JSON file.</li>
+        <li>Double-click the canvas to add a note.</li>
+        <li>Drag notes to reposition them.</li>
+        <li>Double-click a note to edit it and right-click to remove it.</li>
+        <li>Use the toolbar to manage metadata and exports.</li>
+      </ul>
+    `;
+  }
+
+  initializeSelections(options) {
+    this.populateLocaleSelector();
+
+    const routeParams =
+      this.mode === 'standalone' && typeof this.window !== 'undefined'
+        ? new URLSearchParams(this.window.location.search)
+        : null;
+    const rawRouteLocale = routeParams ? routeParams.get('locale') || '' : '';
+    const rawRouteCanvas = routeParams ? routeParams.get('canvas') || '' : '';
+    const sanitizedRouteLocale = rawRouteLocale
+      ? validateInput(sanitizeInput(rawRouteLocale))
+      : '';
+    const sanitizedRouteCanvas = rawRouteCanvas
+      ? validateInput(sanitizeInput(rawRouteCanvas))
+      : '';
+
+    const localeFromOptions = options.locale
+      ? getLocaleKey(validateInput(sanitizeInput(options.locale)))
+      : null;
+    const canvasFromOptions = options.canvas
+      ? validateInput(sanitizeInput(options.canvas))
+      : null;
+
+    const localeFromRoute =
+      sanitizedRouteLocale && !localeFromOptions
+        ? getLocaleKey(sanitizedRouteLocale)
+        : null;
+    const canvasFromRoute =
+      sanitizedRouteCanvas && !canvasFromOptions
+        ? sanitizedRouteCanvas
+        : null;
+
+    const initialLocale =
+      localeFromOptions ||
+      (localeFromRoute && localizedData[localeFromRoute] ? localeFromRoute : '') ||
+      '';
+    const initialCanvas = canvasFromOptions || canvasFromRoute || '';
+
+    if (initialLocale) {
+      this.localeSelect.value = initialLocale;
+      this.populateCanvasSelector(initialLocale);
+    } else {
+      this.populateCanvasSelector('');
     }
 
     if (
-      urlCanvas &&
-      localizedData[normalizedLocale] &&
-      localizedData[normalizedLocale][urlCanvas]
+      initialLocale &&
+      initialCanvas &&
+      localizedData[initialLocale] &&
+      localizedData[initialLocale][initialCanvas]
     ) {
-      canvasSel.value = urlCanvas
-      showCanvasCreator(canvasCreator)
-      setColorPaletteVisibility(colorPalette, true)
-      loadCanvas(normalizedLocale, urlCanvas)
-      currentLocale = normalizedLocale
-      currentCanvas = urlCanvas
+      this.canvasSelect.value = initialCanvas;
+      this.loadCanvas(initialLocale, initialCanvas);
+    } else {
+      this.clearCanvas();
     }
   }
 
-  // Before unload warning
-  window.addEventListener('beforeunload', checkForUnsavedChanges)
+  attachStaticEvents() {
+    this.localeSelect.addEventListener('change', () => {
+      const locale = this.localeSelect.value;
+      this.currentLocale = locale || null;
+      this.populateCanvasSelector(locale);
+      this.clearCanvas();
+    });
 
-  // Focus handling for selectors
-  function handleSelectorFocus(event) {
-    if (contentData && contentData.sections) {
-      const hasStickyNotes = contentData.sections.some(
-        (section) => section.stickyNotes.length > 0,
-      )
-      if (hasStickyNotes) {
+    this.canvasSelect.addEventListener('change', () => {
+      const locale = this.localeSelect.value;
+      const canvasId = this.canvasSelect.value;
+      if (!locale || !canvasId) {
+        this.clearCanvas();
+        return;
+      }
+      this.loadCanvas(locale, canvasId);
+    });
+
+    if (this.importButton) {
+      this.importButton.addEventListener('click', () => this.fileInput.click());
+    }
+
+    this.fileInput.addEventListener('change', () => this.importFromFile());
+
+    if (this.metadataButton) {
+      this.metadataButton.addEventListener('click', () =>
+        this.openMetadataDialog(),
+      );
+    }
+
+    if (this.exportJsonButton) {
+      this.exportJsonButton.addEventListener('click', () => this.exportJSON());
+      this.exportSvgButton.addEventListener('click', () => this.exportSVG());
+      this.exportPngButton.addEventListener('click', () => this.exportPNG());
+    }
+
+    if (this.helpButton) {
+      this.helpButton.addEventListener('click', () => {
+        this.helpPanel.hidden = !this.helpPanel.hidden;
+      });
+    }
+
+    this.themeSelect.addEventListener('change', () => {
+      this.selectedTheme = this.themeSelect.value;
+      this.currentColor = getSafeColorForTheme(
+        this.selectedTheme,
+        this.currentColor,
+      );
+      writeSessionValue('selectedTheme', this.selectedTheme);
+      writeSessionValue('selectedColor', this.currentColor);
+      this.renderSwatches();
+    });
+
+    this.swatches.addEventListener('click', (event) => {
+      const swatch = event.target.closest('.cc-swatch');
+      if (!swatch) return;
+
+      this.currentColor = swatch.dataset.color;
+      writeSessionValue('selectedColor', this.currentColor);
+
+      const selectedNote = this.getSelectedNote();
+      if (selectedNote) {
+        selectedNote.note.color = this.currentColor;
+        this.render();
+      } else {
+        this.renderSwatches();
+      }
+    });
+
+    this.root
+      .querySelector('[data-cc-role="saveMetadata"]')
+      .addEventListener('click', () => this.saveMetadata());
+    this.root
+      .querySelector('[data-cc-role="closeMetadata"]')
+      .addEventListener('click', () => this.closeMetadataDialog());
+
+    this.notesLayer.addEventListener('click', (event) => this.onNoteClick(event));
+    this.notesLayer.addEventListener('dblclick', (event) =>
+      this.onNoteDoubleClick(event),
+    );
+    this.notesLayer.addEventListener('contextmenu', (event) =>
+      this.onNoteContextMenu(event),
+    );
+    this.notesLayer.addEventListener('pointerdown', (event) =>
+      this.onNotePointerDown(event),
+    );
+
+    this.stageHost.addEventListener('dblclick', (event) => {
+      if (event.target.closest('.cc-note')) return;
+      this.createStickyNoteAtEvent(event);
+    });
+  }
+
+  installAutoResize() {
+    if (this.window && this.window.addEventListener) {
+      this.window.addEventListener('resize', this.handleWindowResize);
+    }
+
+    if (typeof this.window.ResizeObserver === 'function') {
+      this.resizeObserver = new this.window.ResizeObserver(() => this.resize());
+      this.resizeObserver.observe(this.container);
+    }
+  }
+
+  populateLocaleSelector() {
+    this.localeSelect.innerHTML = '';
+    const empty = this.document.createElement('option');
+    empty.value = '';
+    empty.textContent = 'Select Locale';
+    this.localeSelect.appendChild(empty);
+
+    Object.keys(localizedData).forEach((locale) => {
+      const option = this.document.createElement('option');
+      option.value = locale;
+      option.textContent = locale;
+      this.localeSelect.appendChild(option);
+    });
+  }
+
+  populateCanvasSelector(locale) {
+    this.canvasSelect.innerHTML = '';
+    const empty = this.document.createElement('option');
+    empty.value = '';
+    empty.textContent = 'Select Canvas';
+    this.canvasSelect.appendChild(empty);
+
+    if (!locale || !localizedData[locale]) return;
+
+    Object.keys(localizedData[locale]).forEach((canvasId) => {
+      const option = this.document.createElement('option');
+      option.value = canvasId;
+      option.textContent = localizedData[locale][canvasId].title;
+      this.canvasSelect.appendChild(option);
+    });
+  }
+
+  clearCanvas() {
+    this.contentData = null;
+    this.currentCanvas = this.canvasSelect.value || null;
+    this.selectedNoteRef = null;
+    this.render();
+  }
+
+  loadCanvas(locale, canvasId, preserveContentData = false) {
+    const normalizedLocale = getLocaleKey(locale);
+    const canvasDef = canvasData[canvasId];
+    if (!canvasDef || !localizedData[normalizedLocale]?.[canvasId]) {
+      this.clearCanvas();
+      return null;
+    }
+
+    this.currentLocale = normalizedLocale;
+    this.currentCanvas = canvasId;
+    this.localeSelect.value = normalizedLocale;
+    this.populateCanvasSelector(normalizedLocale);
+    this.canvasSelect.value = canvasId;
+
+    if (!preserveContentData || !this.contentData) {
+      this.contentData = buildEmptyContent(normalizedLocale, canvasId);
+    } else {
+      this.contentData.locale = normalizedLocale;
+      this.contentData.templateId = canvasId;
+    }
+
+    this.selectedNoteRef = null;
+    this.render();
+    return this.contentData;
+  }
+
+  createCanvas(locale, canvasId, preserveContentData = false) {
+    return this.loadCanvas(locale, canvasId, preserveContentData);
+  }
+
+  render() {
+    this.root.dataset.mode = this.mode;
+    this.root.classList.toggle('cc-root--compact', this.compact);
+
+    if (!this.contentData) {
+      this.svgHost.innerHTML = `
+        <div class="cc-empty-state">
+          <strong>Select a canvas to start</strong>
+          <span>Choose a locale and template, or import a saved canvas JSON file.</span>
+        </div>
+      `;
+      this.notesLayer.innerHTML = '';
+      this.themePanel.hidden = true;
+      this.resize();
+      return;
+    }
+
+    this.svgHost.innerHTML = buildCanvasSvgMarkup({
+      assetBase: this.assetBase,
+      content: this.contentData,
+      includeNotes: false,
+      inlineLogo: this.inlineLogo,
+    });
+
+    this.geometry = getCanvasGeometry(
+      canvasData[this.contentData.templateId],
+      this.contentData.locale,
+      this.contentData,
+    );
+
+    this.renderNotes();
+    this.renderThemeControls();
+    this.resize();
+  }
+
+  renderNotes() {
+    this.notesLayer.innerHTML = '';
+    this.contentData.sections.forEach((section, sectionIndex) => {
+      section.stickyNotes.forEach((note, noteIndex) => {
+        const noteElement = this.document.createElement('div');
+        noteElement.className = 'cc-note';
+        noteElement.dataset.sectionIndex = String(sectionIndex);
+        noteElement.dataset.noteIndex = String(noteIndex);
+        noteElement.style.left = `${note.position?.x || 0}px`;
+        noteElement.style.top = `${note.position?.y || 0}px`;
+        noteElement.style.width = `${note.size || defaultStyles.stickyNoteSize}px`;
+        noteElement.style.height = `${note.size || defaultStyles.stickyNoteSize}px`;
+        noteElement.style.backgroundColor =
+          note.color || defaultStyles.stickyNoteColor;
+        noteElement.textContent = note.content;
+
         if (
-          confirm(
-            'Are you sure you want to remove sticky notes and change canvas?',
-          )
+          this.selectedNoteRef &&
+          this.selectedNoteRef.sectionIndex === sectionIndex &&
+          this.selectedNoteRef.noteIndex === noteIndex
         ) {
-          contentData.sections.forEach((section) => {
-            section.stickyNotes = []
-          })
-          const selectedLocale = localeSel.value
-          const selectedCanvas = canvasSel.value
-          loadCanvas(selectedLocale, selectedCanvas)
-          currentLocale = selectedLocale
-          currentCanvas = selectedCanvas
-          return false
-        } else {
-          event.target.blur()
+          noteElement.classList.add('is-selected');
         }
-      }
+
+        this.notesLayer.appendChild(noteElement);
+      });
+    });
+  }
+
+  updateNoteSelectionStyles() {
+    const selected = this.selectedNoteRef;
+    this.notesLayer.querySelectorAll('.cc-note').forEach((noteElement) => {
+      const sectionIndex = Number(noteElement.dataset.sectionIndex);
+      const noteIndex = Number(noteElement.dataset.noteIndex);
+      const isSelected =
+        selected &&
+        selected.sectionIndex === sectionIndex &&
+        selected.noteIndex === noteIndex;
+      noteElement.classList.toggle('is-selected', Boolean(isSelected));
+    });
+  }
+
+  getSelectedNote() {
+    if (!this.selectedNoteRef || !this.contentData) return null;
+    const section = this.contentData.sections[this.selectedNoteRef.sectionIndex];
+    if (!section) return null;
+    const note = section.stickyNotes[this.selectedNoteRef.noteIndex];
+    if (!note) return null;
+    return { section, note };
+  }
+
+  openMetadataDialog() {
+    if (!this.contentData) return;
+    const metadata = this.contentData.metadata || {};
+    this.metadataSource.value = metadata.source || '';
+    this.metadataLicense.value = metadata.license || '';
+    this.metadataAuthors.value = Array.isArray(metadata.authors)
+      ? metadata.authors.join(',')
+      : metadata.authors || '';
+    this.metadataWebsite.value = metadata.website || '';
+
+    if (typeof this.metadataDialog.showModal === 'function') {
+      this.metadataDialog.showModal();
+    } else {
+      this.metadataDialog.setAttribute('open', 'open');
     }
   }
 
-  localeSel.addEventListener('focus', handleSelectorFocus)
-  canvasSel.addEventListener('focus', handleSelectorFocus)
-}
-  
-// Create file input once globally
-const fileInput = document.createElement("input")
-fileInput.type = "file"
-fileInput.accept = "application/json"
-fileInput.style.display = 'none'
-if (typeof document !== 'undefined' && document.body && !fileInput.isConnected) {
-  document.body.appendChild(fileInput)
-}
-
-// Ensure change handler is attached once
-fileInput.addEventListener("change", function () {
-  const file = fileInput.files[0]
-  if (!file) return
-
-  const reader = new FileReader()
-  reader.onload = function (event) {
-    try {
-      const importedData = JSON.parse(event.target.result)
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
-      if (
-        !importedData.templateId ||
-        !importedData.metadata ||
-        !importedData.sections
-      ) {
-        alert("Invalid JSON file format.")
-        return
-      }
-  
-      // Save the imported values
-      canvasId = importedData.templateId
-      contentData = importedData
-      canvasDataForId = canvasData[canvasId]
-
-      if (canvasDataForId) {
-        // If sticky notes have no coordinates, distribute them evenly
-        distributeMissingPositions(contentData, canvasDataForId)
-      }
-      
-      if (!canvasDataForId) {
-        alert("Canvas data not found for canvasId: " + canvasId)
-        return
-      }
-      
-      // Sync selectors
-      const canvasSelector = document.getElementById("canvas")
-      const canvasChangeHandler = canvasSelector.onchange
-      canvasSelector.onchange = null
-      canvasSelector.value = canvasId
-      setTimeout(() => {
-        canvasSelector.onchange = canvasChangeHandler
-      }, 0)
-      
-      const locale = getLocaleKey(importedData.locale || defaultStyles.defaultLocale)
-      document.getElementById("locale").value = locale
-      populateCanvasSelector(locale)
-      document.getElementById("canvasSelector").style.display = "block"
-      showCanvasCreator(document.getElementById("canvasCreator"))
-      setColorPaletteVisibility(document.getElementById('colorPalette'), true)
-
-      // Render canvas
-      loadCanvas(locale, canvasId, true)
-      currentLocale = locale
-      currentCanvas = canvasId
-      
-      // Mark as dirty
-      unsavedChanges = true
-      
-      alert("Canvas imported successfully.")
-      
-    } catch (err) {
-      alert("Failed to parse JSON: " + err.message)
-      console.error(err)
+  closeMetadataDialog() {
+    if (typeof this.metadataDialog.close === 'function') {
+      this.metadataDialog.close();
+    } else {
+      this.metadataDialog.removeAttribute('open');
     }
   }
-  
 
-  reader.readAsText(file)
-  fileInput.value = "" // Reset so same file can be selected again
-})
+  saveMetadata() {
+    if (!this.contentData) return;
+    this.contentData.metadata = {
+      source: this.metadataSource.value,
+      license: this.metadataLicense.value,
+      authors: this.metadataAuthors.value
+        .split(',')
+        .map((author) => author.trim())
+        .filter(Boolean),
+      website: this.metadataWebsite.value,
+    };
+    this.closeMetadataDialog();
+    this.render();
+  }
 
-  
+  importFromFile() {
+    const file = this.fileInput.files && this.fileInput.files[0];
+    if (!file) return;
 
-
-  let canvasDataForId = null
-  let contentData = {}
-
-  
-  function loadCanvas(locale, canvasId, preserveContentData = false) {
-    const locKey = getLocaleKey(locale)
-    currentLocale = locKey
-    currentCanvas = canvasId
-    // Access canvasData directly
-    canvasDataForId = canvasData[canvasId]
-  
-    if (!canvasDataForId) {
-      console.error(`Canvas data not found for canvasId: ${canvasId}`)
-      return
-    }
-  
-    // Only reset contentData if NOT importing
-    if (!preserveContentData) {
-      contentData = {
-        templateId: canvasId,
-        locale: locKey,
-        metadata: {
-          source: "",
-          license: "",
-          authors: [],
-          website: "",
-        },
-        sections: canvasDataForId.sections
-          ? canvasDataForId.sections.map((section) => ({
-              sectionId: section.id,
-              stickyNotes: [],
-            }))
-          : [],
-      }
-    }
-  
-    const fetchAPIOpsLogo = async (
-      url,
-      parentGroup,
-      x = 0,
-      y = 0,
-      width = defaultStyles.headerHeight + 2 * defaultStyles.padding,
-      height = defaultStyles.headerHeight + 2 * defaultStyles.padding,
-    ) => {
+    const reader = new this.window.FileReader();
+    reader.onload = (event) => {
       try {
-        const response = await fetch(url)
-        if (!response.ok) throw new Error("Failed to fetch the logo SVG")
-        const svgContent = await response.text()
-        parentGroup
-          .append("g")
-          .attr(
-            "transform",
-            `translate(${x}, ${y}) scale(${width / 100}, ${height / 100})`,
-          ) // Adjust scaling
-          .html(svgContent)
-      } catch (error) {}
+        const imported = JSON.parse(event.target.result);
+        if (
+          !imported.templateId ||
+          !imported.metadata ||
+          !Array.isArray(imported.sections)
+        ) {
+          throw new Error('Invalid JSON file format.');
+        }
+
+        const locale = getLocaleKey(imported.locale || defaultStyles.defaultLocale);
+        const cloned = cloneContent(imported);
+        distributeMissingPositions(
+          cloned,
+          canvasData[imported.templateId],
+          defaultStyles,
+        );
+
+        this.contentData = cloned;
+        this.contentData.locale = locale;
+        this.currentLocale = locale;
+        this.currentCanvas = imported.templateId;
+        this.localeSelect.value = locale;
+        this.populateCanvasSelector(locale);
+        this.canvasSelect.value = imported.templateId;
+        this.selectedNoteRef = null;
+        this.render();
+      } catch (error) {
+        this.window.alert(`Failed to import canvas JSON: ${error.message}`);
+      } finally {
+        this.fileInput.value = '';
+      }
+    };
+
+    reader.readAsText(file);
+  }
+
+  onNoteClick(event) {
+    const noteElement = event.target.closest('.cc-note');
+    if (!noteElement || this.isEditingNote || event.target.closest('.cc-note-editor')) {
+      return;
     }
-  
-    let svg = d3.select("#canvasCreator svg")
-  
-    //main
-    const renderCanvas = (canvasData, contentData, localizedData) => {
-      d3.select("#canvasCreator svg").remove()
-  
-      const cellWidth = Math.floor(
-        (defaultStyles.width -
-          canvasData.layout.columns * defaultStyles.padding) /
-          canvasData.layout.columns,
-      )
-  
-      const locale = getLocaleKey(contentData.locale || defaultStyles.defaultLocale)
-      // Use canvasId to access the correct localized data
-      const canvasId = contentData.templateId
-      const localizedCanvasData = localizedData[locale] ? localizedData[locale][canvasId] : null
-  
-      // Check if contentData is empty
-      if (Object.keys(contentData).length === 0) {
-        // Create a new contentData structure based on canvasData
-        contentData.templateId = canvasData.id
-        contentData.locale = locale // Or any default locale you prefer
-        contentData.metadata = {
-          source: "",
-          license: "",
-          authors: [],
-          website: "",
-        }
-        contentData.sections = canvasData.sections.map((section) => ({
-          sectionId: section.id,
-          stickyNotes: [], // Empty array for sticky notes
-        }))
+    this.selectedNoteRef = {
+      sectionIndex: Number(noteElement.dataset.sectionIndex),
+      noteIndex: Number(noteElement.dataset.noteIndex),
+    };
+    this.updateNoteSelectionStyles();
+    this.renderSwatches();
+  }
+
+  onNoteDoubleClick(event) {
+    const noteElement = event.target.closest('.cc-note');
+    if (!noteElement) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    const sectionIndex = Number(noteElement.dataset.sectionIndex);
+    const noteIndex = Number(noteElement.dataset.noteIndex);
+    const section = this.contentData.sections[sectionIndex];
+    const note = section && section.stickyNotes[noteIndex];
+    if (!note) return;
+
+    if (noteElement.querySelector('textarea')) return;
+
+    this.isEditingNote = true;
+    noteElement.textContent = '';
+    const textarea = this.document.createElement('textarea');
+    textarea.className = 'cc-note-editor';
+    textarea.value = note.content;
+    noteElement.appendChild(textarea);
+    textarea.focus();
+
+    const finishEditing = () => {
+      note.content = validateInput(sanitizeInput(textarea.value.trim()));
+      if (!note.content) {
+        note.content = ' ';
       }
-  
-      svg = d3
-        .select("#canvasCreator")
-        .append("svg")
-        .attr("width", defaultStyles.width + defaultStyles.padding * 2)
-        .attr("height", defaultStyles.height)
-        .style("background-color", defaultStyles.backgroundColor)
-  
-      const logoUrl = `${assetBase}/img/apiops-cycles-logo2025-blue.svg`
-  
-      fetchAPIOpsLogo(
-        logoUrl,
-        svg,
-        defaultStyles.padding,
-        defaultStyles.padding / 2,
-        defaultStyles.padding,
-        defaultStyles.padding,
-      )
-  
-      const headerTextX = defaultStyles.headerHeight + 2 * defaultStyles.padding
-      const headerTextWidth =
-        defaultStyles.width - headerTextX - 2 * defaultStyles.padding
+      this.isEditingNote = false;
+      this.render();
+    };
 
-      let headerBottomY = 0
-      const titleLayout = appendWrappedText(svg, {
-        x: headerTextX,
-        y: 2 * defaultStyles.padding + defaultStyles.fontSize,
-        text: localizedCanvasData.title,
-        maxWidth: headerTextWidth,
-        fontFamily: defaultStyles.fontFamily,
-        fontSize: defaultStyles.fontSize + 4,
-        fontWeight: "bold",
-        fill: defaultStyles.fontColor,
-        lineHeight: defaultStyles.fontSize + 6,
-      })
-      headerBottomY = titleLayout.bottomY
-
-      if (localizedCanvasData.purpose) {
-        const purposeLayout = appendWrappedText(svg, {
-          x: headerTextX,
-          y: headerBottomY + defaultStyles.padding + 2,
-          text: localizedCanvasData.purpose,
-          maxWidth: headerTextWidth,
-          fontFamily: defaultStyles.fontFamily,
-          fontSize: defaultStyles.fontSize + 2,
-          fill: defaultStyles.fontColor,
-          lineHeight: defaultStyles.fontSize + 3,
-        })
-        headerBottomY = purposeLayout.bottomY
+    textarea.addEventListener('blur', finishEditing, { once: true });
+    textarea.addEventListener('keydown', (keyboardEvent) => {
+      if (keyboardEvent.key === 'Escape') {
+        keyboardEvent.preventDefault();
+        this.isEditingNote = false;
+        this.render();
       }
-
-      if (localizedCanvasData.howToUse) {
-        const howToUseLayout = appendWrappedText(svg, {
-          x: headerTextX,
-          y: headerBottomY + defaultStyles.padding + 4,
-          text: localizedCanvasData.howToUse,
-          maxWidth: headerTextWidth,
-          fontFamily: defaultStyles.fontFamily,
-          fontSize: defaultStyles.fontSize + 2,
-          fill: defaultStyles.fontColor,
-          lineHeight: defaultStyles.fontSize + 2,
-        })
-        headerBottomY = howToUseLayout.bottomY
+      if (
+        keyboardEvent.key === 'Enter' &&
+        (keyboardEvent.ctrlKey || keyboardEvent.metaKey)
+      ) {
+        keyboardEvent.preventDefault();
+        textarea.blur();
       }
+    });
+  }
 
-      const gridTop = Math.max(
-        defaultStyles.headerHeight,
-        headerBottomY + 2 * defaultStyles.padding,
-      )
-      const cellHeight = Math.floor(
-        (defaultStyles.height -
-          gridTop -
-          defaultStyles.footerHeight -
-          3 * defaultStyles.padding) /
-          canvasData.layout.rows,
-      )
-  
-      svg
-        .append("text")
-        .attr("x", defaultStyles.width / 2)
-        .attr("y", defaultStyles.height - defaultStyles.footerHeight)
-        .attr("text-anchor", "middle")
-        .attr("font-family", defaultStyles.fontFamily)
-        .attr("font-size", defaultStyles.fontSize)
-        .attr("fill", defaultStyles.fontColor)
-        .html(
-          `Template by: ${canvasData.metadata.source} | ${canvasData.metadata.license} | ${canvasData.metadata.authors} | <a href='https://${canvasData.metadata.website}' target='_blank'>${canvasData.metadata.website}</a>`
-        )
-  
-      canvasData.sections.forEach((block, index) => {
-        const sectionId = block.id
-        const localizedSection = localizedCanvasData.sections[sectionId]
-  
-        const x =
-          block.gridPosition.column * cellWidth + 2 * defaultStyles.padding
-        const y = block.gridPosition.row * cellHeight + gridTop
-        const width = block.gridPosition.colSpan * cellWidth
-        const height = block.gridPosition.rowSpan * cellHeight
-        const style = { ...defaultStyles, ...block.style }
-  
-        svg
-          .append("rect")
-          .attr("x", x)
-          .attr("y", y)
-          .attr("width", width)
-          .attr("height", height)
-          .attr("fill", style.sectionColor)
-          .attr("stroke", style.borderColor)
-          .attr("rx", style.cornerRadius)
-          .attr("ry", style.cornerRadius)
-          .attr("stroke-width", style.lineSize)
-  
-        if (block.highlight) {
-          svg
-            .append("rect")
-            .attr("x", x)
-            .attr("y", y)
-            .attr("width", width)
-            .attr("height", height)
-            .attr("fill", style.highlightColor)
-            .attr("stroke", style.borderColor)
-            .attr("rx", style.cornerRadius)
-            .attr("ry", style.cornerRadius)
-            .attr("stroke-width", 2 * style.lineSize)
-        }
-  
-        if (block.journeySteps) {
-          const steps = ["", "", "", "", ""]
-          const stepCount = steps.length
-          const stepWidth = Math.max(
-            width / stepCount - 2 * style.padding,
-            style.stickyNoteSize,
-          )
-          const stepHeight = style.stickyNoteSize
-          const arrowPadding = 0 // Space between the arrow and the box
-  
-          // Add a marker definition for arrowheads
-          const defs = svg.append("defs")
-          defs
-            .append("marker")
-            .attr("id", "arrowhead")
-            .attr("markerWidth", 4)
-            .attr("markerHeight", 7)
-            .attr("refX", 5)
-            .attr("refY", 3.5)
-            .attr("orient", "auto")
-            .append("polygon")
-            .attr("points", "0 0, 5 3.5, 0 7")
-            .attr("fill", style.borderColor)
-  
-          steps.forEach((step, i) => {
-            const stepX = x + i * (stepWidth + 2 * style.stickyNoteSpacing)
-            const stepCenterX = stepX + stepWidth / 2
-            const stepCenterY = y + style.stickyNoteSize
-  
-            svg
-              .append("rect")
-              .attr("x", stepX)
-              .attr(
-                "y",
-                y + style.stickyNoteSize / 2 + 2 * style.stickyNoteSpacing,
-              )
-              .attr("width", stepWidth)
-              .attr("height", stepHeight)
-              .attr("fill", "#fff")
-              .attr("stroke", style.borderColor)
-              .attr("stroke-width", style.lineSize)
-              .attr("stroke-dasharray", 3 * style.lineSize)
-              .attr("rx", style.cornerRadius / 2)
-              .attr("ry", style.cornerRadius / 2)
-  
-            // Draw the arrow to the next step (if not the last step)
-            if (i < steps.length - 1) {
-              const nextStepX = stepX + stepWidth + 2 * style.stickyNoteSpacing
-              const nextStepCenterX = nextStepX + stepWidth / 2
-  
-              svg
-                .append("line")
-                .attr("x1", stepCenterX + stepWidth / 2 + arrowPadding)
-                .attr("y1", stepCenterY)
-                .attr("x2", nextStepCenterX - stepWidth / 2 - arrowPadding)
-                .attr("y2", stepCenterY)
-                .attr("stroke", style.borderColor)
-                .attr("stroke-width", 2 * style.lineSize)
-                .attr("marker-end", "url(#arrowhead)")
-            }
-          })
-        }
-  
-        // adding numbered circles to sections to indicate fill order
-  
-        svg
-          .append("circle")
-          .attr("cx", x + style.padding)
-          .attr("cy", y + style.padding)
-          .attr("r", style.circleRadius)
-          .attr("fill", style.borderColor)
-  
-        svg
-          .append("text")
-          .attr("x", x + style.padding)
-          .attr("y", y + style.padding + 5)
-          .attr("text-anchor", "middle")
-          .attr("font-family", style.fontFamily)
-          .attr("font-size", style.fontSize + "px")
-          .attr("fill", style.fontColor)
-          .attr("fill", style.highlightColor)
-          .text(block.fillOrder)
-  
-        const titleLayoutInSection = appendWrappedText(svg, {
-          x: x + style.padding + style.circleRadius,
-          y: y + style.padding + style.circleRadius,
-          text: localizedSection.section,
-          maxWidth: width - 2 * style.padding - style.circleRadius,
-          fontFamily: style.fontFamily,
-          fontSize: style.fontSize,
-          fontWeight: "bold",
-          fill: style.fontColor,
-          lineHeight: style.fontSize + 2,
-        })
+  onNoteContextMenu(event) {
+    const noteElement = event.target.closest('.cc-note');
+    if (!noteElement) return;
+    event.preventDefault();
 
-        appendWrappedText(svg, {
-          x: x + style.padding,
-          y: titleLayoutInSection.bottomY + style.padding + 2,
-          text: localizedSection.description,
-          maxWidth: width - style.padding * 2,
-          fontFamily: style.fontFamily,
-          fontSize: style.fontSize,
-          fill: style.fontColor,
-          lineHeight: style.fontSize + 2,
-        })
-      })
-  
-      const defs = svg.append("defs")
-      const filter = defs.append("filter").attr("id", "shadow")
-  
-      filter
-        .append("feDropShadow")
-        .attr("dx", 3)
-        .attr("dy", 3)
-        .attr("stdDeviation", 2)
-        .attr("flood-color", defaultStyles.shadowColor)
-  
-      // Function to update the footer text
-      function updateFooter() {
-        // Remove existing footer
-        svg.selectAll("text.footer").remove()
-  
-        // Add content footer
-        svg
-          .append("text")
-          .attr("class", "footer")
-          .attr("x", defaultStyles.width / 2)
-          .attr(
-            "y",
-            defaultStyles.height -
-              defaultStyles.footerHeight -
-              2 * defaultStyles.padding,
-          )
-          .attr("text-anchor", "middle")
-          .attr("font-family", defaultStyles.fontFamily)
-          .attr("font-size", defaultStyles.fontSize)
-          .attr("fill", defaultStyles.fontColor)
-          .html(
-            `Content by: ${contentData?.metadata?.source} | ${contentData?.metadata?.license} | ${contentData?.metadata?.authors} | <a href='https://${contentData?.metadata?.website}' target='_blank'>${contentData?.metadata?.website}</a>`
-          )
-      }
-  
-      // Export the canvas content as JSON (attach listener only once)
-      const exportJSONButton = document.getElementById("exportButton")
-      exportJSONButton.onclick = () => {
-        const exportData = {
-          templateId: contentData.templateId,
-          locale: contentData.locale,
-          metadata: {
-            ...contentData.metadata,
-            date: new Date().toISOString(),
-          },
-          sections: contentData.sections.map((section) => ({
-            sectionId: section.sectionId,
-            stickyNotes: section.stickyNotes.map((note) => ({
-              content: note.content.replace(/\n/g, ""),
-              position: note.position,
-              size: note.size,
-              color: note.color,
-            })),
-          })),
-        };
-      
-        const jsonString = JSON.stringify(exportData, null, 2);
-        const link = document.createElement("a");
-        link.href =
-          "data:application/json;charset=utf-8," + encodeURIComponent(jsonString);
-        const filename = `${contentData.metadata.source || "Canvas"}_${contentData.templateId}_${contentData.locale}.json`;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      };
-  
-      // Export the canvas content as SVG (attach listener only once)
-      const exportSVGButton = document.getElementById("exportSVGButton")
-      exportSVGButton.onclick = () => {
-        const svgNode = svg.node();
-        const serializer = new XMLSerializer();
-        const svgString = serializer.serializeToString(svgNode);
-        const blob = new Blob([svgString], {
-          type: "image/svg+xml;charset=utf-8",
-        });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        const filename = `${contentData.metadata.source || "Canvas"}_${contentData.templateId}_${contentData.locale}`;
-        link.download = filename + ".svg";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      };
+    const sectionIndex = Number(noteElement.dataset.sectionIndex);
+    const noteIndex = Number(noteElement.dataset.noteIndex);
+    const section = this.contentData.sections[sectionIndex];
+    if (!section) return;
 
-      const exportPNGButton = document.getElementById("exportPNGButton")
-      exportPNGButton.onclick = () => {
-        const svgNode = svg.node()
-        const serializer = new XMLSerializer()
-        const svgString = serializer.serializeToString(svgNode)
-        const img = new Image()
-        img.onload = () => {
-          const canvasEl = document.createElement('canvas')
-          canvasEl.width = defaultStyles.width + defaultStyles.padding * 2
-          canvasEl.height = defaultStyles.height
-          const ctx = canvasEl.getContext('2d')
-          ctx.drawImage(img, 0, 0)
-          const pngUrl = canvasEl.toDataURL('image/png')
-          const link = document.createElement('a')
-          link.href = pngUrl
-          const filename = `${contentData.metadata.source || 'Canvas'}_${contentData.templateId}_${contentData.locale}.png`
-          link.download = filename
-          document.body.appendChild(link)
-          link.click()
-          document.body.removeChild(link)
-        }
-        const svg64 = btoa(unescape(encodeURIComponent(svgString)))
-        img.src = 'data:image/svg+xml;base64,' + svg64
-      }
-      
-  
-      // Theme + color selection
-      const themeSelect = document.getElementById('themeSelect')
-      const paletteSwatches = document.getElementById('paletteSwatches')
-
-      function applyColorSelection(color) {
-        currentColor = color
-        writeSessionValue('selectedColor', currentColor)
-
-        if (selectedNote) {
-          selectedNote.color = currentColor
-          updateStickyNotes(contentData)
-          selectedNote = null
-        }
-      }
-
-      function renderThemeSelector() {
-        if (!themeSelect) return
-        themeSelect.innerHTML = ''
-
-        getThemeNames().forEach((themeName) => {
-          const option = document.createElement('option')
-          const themeConfig = getTheme(themeName)
-          option.value = themeName
-          option.textContent = themeConfig.label || themeName
-          option.selected = themeName === selectedTheme
-          themeSelect.appendChild(option)
-        })
-      }
-
-      function renderPaletteForTheme() {
-        if (!paletteSwatches) return
-        const activeTheme = getTheme(selectedTheme)
-
-        currentColor = getSafeColorForTheme(activeTheme.name, currentColor)
-        writeSessionValue('selectedColor', currentColor)
-
-        paletteSwatches.innerHTML = ''
-        buildPaletteSwatches(activeTheme.name, currentColor).forEach(({ color: swatchColor, isSelected }) => {
-          const swatch = document.createElement('button')
-          swatch.type = 'button'
-          swatch.className = 'colorSwatch'
-          if (isSelected) {
-            swatch.classList.add('selected')
-          }
-          swatch.style.backgroundColor = swatchColor
-          swatch.dataset.color = swatchColor
-          swatch.setAttribute('aria-label', `Select ${swatchColor} sticky note color`)
-          swatch.addEventListener('click', () => {
-            applyColorSelection(swatchColor)
-            renderPaletteForTheme()
-          })
-          paletteSwatches.appendChild(swatch)
-        })
-      }
-
-      renderThemeSelector()
-      renderPaletteForTheme()
-
-      if (themeSelect && !themeSelect.dataset.listenerAttached) {
-        themeSelect.addEventListener('change', (event) => {
-          selectedTheme = event.target.value
-          currentColor = getSafeColorForTheme(selectedTheme, currentColor)
-          writeSessionValue('selectedTheme', selectedTheme)
-          writeSessionValue('selectedColor', currentColor)
-          renderPaletteForTheme()
-        })
-        themeSelect.dataset.listenerAttached = 'true'
-      }
-  
-      function populateMetadataForm() {
-        const metadata = contentData?.metadata || {}
-        document.getElementById('source').value = metadata.source || ''
-        document.getElementById('license').value = metadata.license || ''
-        const authors = Array.isArray(metadata.authors)
-          ? metadata.authors.join(',')
-          : metadata.authors || ''
-        document.getElementById('authors').value = authors
-        document.getElementById('website').value = metadata.website || ''
-      }
-
-      // Show metadata form
-      document.getElementById("metadataButton").addEventListener("click", () => {
-        populateMetadataForm()
-        document.getElementById("metadataForm").style.display = "block"
-      })
-  
-      // Save metadata
-      document.getElementById("saveMetadata").addEventListener("click", () => {
-        contentData.metadata = {
-          // Update contentData.metadata
-          source: document.getElementById("source").value,
-          license: document.getElementById("license").value,
-          authors: document.getElementById("authors").value.split(","),
-          website: document.getElementById("website").value,
-        }
-  
-        // Hide the metadata form
-        document.getElementById("metadataForm").style.display = "none"
-  
-        // Update the footer with the new metadata
-        updateFooter()
-      })
-  
-      function getEventCoordinates(event) {
-        let x, y
-        const svgRect = svg.node().getBoundingClientRect()
-  
-        if (event.type.startsWith("touch")) {
-          const touch = event.changedTouches[0]
-          x = touch.clientX - svgRect.left
-          y = touch.clientY - svgRect.top
-        } else {
-          x = event.clientX - svgRect.left
-          y = event.clientY - svgRect.top
-        }
-  
-        return { x, y }
-      }
-  
-      let lastTapTime = 0
-      let lastClickTime = 0
-  
-      // Attach event listener to the entire SVG
-      svg.on("click touchend", function (event) {
-        event.preventDefault() // Prevent scrolling on mobile devices
-  
-        // Get correct event coordinates
-        const { x, y } = getEventCoordinates(event)
-  
-        const now = new Date().getTime()
-        const isTouch = event.type === "touchend"
-  
-        // Handle mouse double-click separately
-        if (!isTouch) {
-          if (now - lastClickTime < 300) {
-            handleCreateStickyNote(event, "mouse")
-          }
-          lastClickTime = now
-        }
-        // Handle double-tap for touch
-        else {
-          if (now - lastTapTime < 300) {
-            handleCreateStickyNote(event, "touch")
-          }
-          lastTapTime = now
-        }
-      })
-  
-      // Function to create a sticky note
-      function handleCreateStickyNote(event, inputType) {
-        let x, y
-  
-        if (inputType === "mouse") {
-          x = event.offsetX - defaultStyles.stickyNoteSize / 2
-          y = event.offsetY - defaultStyles.stickyNoteSize / 2
-        } else if (inputType === "touch") {
-          const touch = event.changedTouches[0]
-  
-          // Convert touch coordinates from viewport to SVG coordinates
-          const svgRect = svg.node().getBoundingClientRect()
-          x = touch.clientX - svgRect.left - defaultStyles.stickyNoteSize / 2
-          y = touch.clientY - svgRect.top - defaultStyles.stickyNoteSize / 2
-        }
-  
-        // Find the section that was clicked
-        const clickedSection = canvasData.sections.find((section) => {
-          const sectionRect = {
-            x:
-              section.gridPosition.column * cellWidth + 2 * defaultStyles.padding,
-            y: section.gridPosition.row * cellHeight + defaultStyles.headerHeight,
-            width: section.gridPosition.colSpan * cellWidth,
-            height: section.gridPosition.rowSpan * cellHeight,
-          }
-          return isPointInRect(
-            x + defaultStyles.stickyNoteSize / 2,
-            y + defaultStyles.stickyNoteSize / 2,
-            sectionRect,
-          )
-        })
-  
-        if (clickedSection) {
-          const contentSection = contentData.sections.find(
-            (section) => section.sectionId === clickedSection.id,
-          )
-          contentSection.stickyNotes.push({
-            content: sanitizeInput(
-              "Double-click on text to edit. Click and select color ",
-            ),
-            position: { x, y },
-            size: defaultStyles.stickyNoteSize,
-            color: currentColor,
-          })
-          updateStickyNotes(contentData)
-        }
-      }
-  
-      // Call updateStickyNotes to display initial sticky notes
-      updateStickyNotes(contentData)
+    if (this.window.confirm('Are you sure you want to delete this sticky note?')) {
+      section.stickyNotes.splice(noteIndex, 1);
+      this.selectedNoteRef = null;
+      this.render();
     }
-  
-    const updateStickyNotes = (contentData) => {
-      svg.selectAll(".sticky-note").remove()
-  
-      if (!contentData || !contentData.sections) {
-        return // Return early if contentData or its sections are not defined
-      }
-  
-      contentData.sections.forEach((contentSection) => {
-        // Find the corresponding section in canvasData using sectionId and templateId
-        const canvasId = contentData.templateId // Get the canvas ID from contentData
-        const canvasSection = canvasData[canvasId].sections.find(
-          (section) => section.id === contentSection.sectionId,
-        )
-  
-        if (contentSection.stickyNotes && contentSection.stickyNotes.length > 0) {
-          const stickyNotes = svg
-            .selectAll(`.sticky-note-${contentSection.sectionId}`)
-            .data(contentSection.stickyNotes)
-            .enter()
-            .append("g")
-            .attr("class", `sticky-note sticky-note-${contentSection.sectionId}`)
-            .attr("id", (d, i) => `sticky-note-${contentSection.sectionId}-${i}`)
-            .attr("transform", (d) => {
-              // Calculate the y-coordinate with the offset for each section
-              const y =
-                (d.position.y || 0) + 0 * (canvasSection.gridPosition.row + 1)
-              return `translate(${d.position.x || 0},${y})`
-            })
-  
-          stickyNotes.on("click touchstart", function (event, d) {
-            event.stopPropagation()
-            event.preventDefault() // Prevents zooming when interacting with the canvas
-            selectedNote = d
-          })
-  
-          stickyNotes
-            .append("rect")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("width", defaultStyles.stickyNoteSize)
-            .attr("height", defaultStyles.stickyNoteSize)
-            .attr("fill", (d) => d.color || defaultStyles.stickyNoteColor)
-            .attr("stroke", (d) => d.color || defaultStyles.stickyNoteBorderColor)
-            .attr("rx", 3)
-            .attr("ry", 3)
-  
-          stickyNotes
-            .append("text")
-            .attr("x", 5)
-            .attr("y", 15)
-            .attr("font-family", defaultStyles.fontFamily)
-            .attr("font-size", defaultStyles.fontSize + "px")
-            .attr("fill", defaultStyles.contentFontColor)
-            .each(function (d) {
-              d.content = wrapText(svg, d.content)
-              const lines = d.content.split("\n")
-              let lineHeight = 14
-              for (let i = 0; i < lines.length; i++) {
-                d3.select(this) // Select the current 'tspan' element using d3.select(this)
-                  .append("tspan")
-                  .attr("x", 5)
-                  .attr("dy", i === 0 ? 0 : lineHeight)
-                  .text(lines[i])
-              }
-            })
-            .on("dblclick touchend", function (event, d) {
-              event.stopPropagation()
-              event.preventDefault() // Prevents browser zoom on double-tap
-  
-              const parentG = d3.select(this.parentNode)
-  
-              // Get the existing text element (no removal)
-              const existingText = parentG.select("text")
-  
-              // Hide the existing text element
-              parentG.select("text").style("visibility", "hidden")
-  
-              // Create an input field (overlay on top of existing text)
-              const inputField = parentG
-                .append("foreignObject")
-                .attr("x", 0)
-                .attr("y", 0)
-                .attr("width", defaultStyles.stickyNoteSize)
-                .attr("height", defaultStyles.stickyNoteSize)
-                .append("xhtml:textarea")
-                .attr("value", d.content)
-                .style("font-family", defaultStyles.fontFamily)
-                .style("font-size", defaultStyles.fontSize + "px")
-                .style("width", "calc(100% + 0px)")
-                .style("height", "calc(100% + 0px)")
-                .style("border", "none")
-                .style("padding", "5px")
-                .style("resize", "none")
-              //.style("white-space", "pre-wrap");
-  
-              // Delay the focus action slightly
-              setTimeout(() => {
-                inputField.node().focus()
-              }, 0)
-  
-              // Append the existing text content to the textarea on focus
-              inputField
-                .on("focus", function () {
-                  this.value = d.content.replace(/\n{2,}/g, "\n")
-                })
-                .on("blur", function (event, d) {
-                  let newContent = this.value
-  
-                  // Sanitize and validate the input
-                  newContent = sanitizeInput(newContent)
-                  newContent = validateInput(newContent)
-  
-                  d.content = wrapText(svg, newContent)
-  
-                  // Update the existing text element with the new content
-                  parentG
-                    .select("text")
-                    .selectAll("tspan") // Select all existing tspans
-                    .remove() // Remove them before adding new ones
-  
-                  d3.select(this.parentNode).remove()
-                  updateStickyNotes(contentData)
-                })
-            })
-        }
-      })
-  
-      svg.selectAll(".sticky-note").call(
-        d3
-          .drag()
-          .on("start", function (event, d) {
-            d3.select(this) // Add d3.select(this) here
-              .attr("originalPosition", { x: d.position.x, y: d.position.y })
-          })
-          .on("drag", function (event, d) {
-            d.position.x = event.x
-            d.position.y = event.y
-            d3.select(this).attr(
-              "transform",
-              `translate(${d.position.x},${d.position.y})`,
-            )
-          })
-          .on("end", function (event, d) {
-            // Do not updateStickyNotes here
-          }),
-      )
-  
-      //right click on mouse or long press on touch open alert to remove sticky note
-      svg.on("contextmenu", function (event) {
-        event.preventDefault() // Prevent default right-click menu
-  
-        // Get mouse coordinates relative to the SVG
-        const x = event.offsetX
-        const y = event.offsetY
-  
-        // Find the sticky note that was clicked
-        let clickedNote = null
-        for (let i = 0; i < contentData.sections.length; i++) {
-          const section = contentData.sections[i]
-          for (let j = 0; j < section.stickyNotes.length; j++) {
-            const note = section.stickyNotes[j]
-            if (
-              x >= note.position.x &&
-              x <= note.position.x + defaultStyles.stickyNoteSize &&
-              y >= note.position.y &&
-              y <= note.position.y + defaultStyles.stickyNoteSize
-            ) {
-              clickedNote = note
-              break
-            }
-          }
-          if (clickedNote) {
-            break
-          }
-        }
-  
-        if (clickedNote) {
-          if (confirm("Are you sure you want to delete this sticky note?")) {
-            // Remove the sticky note from the data
-            const section = contentData.sections.find((section) =>
-              section.stickyNotes.includes(clickedNote),
-            )
-            section.stickyNotes = section.stickyNotes.filter(
-              (note) => note !== clickedNote,
-            )
-  
-            // Update the sticky notes on the canvas
-            updateStickyNotes(contentData)
-          }
-        }
-      })
-    }
-  
-    function wrapText(
-      svg,
-      text,
-      maxWidth = defaultStyles.maxLineWidth,
-      fontFamily = defaultStyles.fontFamily,
-      fontSize = defaultStyles.fontSize,
-    ) {
-      const safeText = text || ""
-      // Normalize the text first to have only single newlines
-      const normalizedText = safeText.replace(/\n{2,}/g, "\n")
-      const words = normalizedText.split(" ")
-      let line = ""
-      const contentLines = []
-  
-      words.forEach((word) => {
-        const testLine = line + word + " "
-        const tempText = svg
-          .append("text")
-          .attr("font-family", fontFamily)
-          .attr("font-size", fontSize + "px")
-          .text(testLine)
+  }
 
-        const testLineWidth = tempText.node().getComputedTextLength()
-        tempText.remove()
+  onNotePointerDown(event) {
+    const noteElement = event.target.closest('.cc-note');
+    if (!noteElement) return;
 
-        if (testLineWidth > maxWidth) {
-          contentLines.push(line)
-          line = word + " "
-        } else {
-          line = testLine
-        }
-      })
+    const sectionIndex = Number(noteElement.dataset.sectionIndex);
+    const noteIndex = Number(noteElement.dataset.noteIndex);
+    const section = this.contentData.sections[sectionIndex];
+    const note = section && section.stickyNotes[noteIndex];
+    if (!note) return;
 
-      contentLines.push(line)
-      return contentLines.join("\n")
-    }
+    const frameRect = this.stageFrame.getBoundingClientRect();
+    this.dragState = {
+      sectionIndex,
+      noteIndex,
+      pointerId: event.pointerId,
+      offsetX: event.clientX - frameRect.left - note.position.x * this.currentScale,
+      offsetY: event.clientY - frameRect.top - note.position.y * this.currentScale,
+    };
 
-    function appendWrappedText(
-      svg,
-      {
-        x,
-        y,
-        text,
-        maxWidth,
-        fontFamily = defaultStyles.fontFamily,
-        fontSize = defaultStyles.fontSize,
-        fontWeight = null,
-        fill = defaultStyles.fontColor,
-        lineHeight = fontSize + 2,
+    this.selectedNoteRef = { sectionIndex, noteIndex };
+    this.updateNoteSelectionStyles();
+
+    this.window.addEventListener('pointermove', this.handlePointerMove);
+    this.window.addEventListener('pointerup', this.handlePointerUp);
+  }
+
+  onPointerMove(event) {
+    if (!this.dragState || !this.contentData) return;
+
+    const frameRect = this.stageFrame.getBoundingClientRect();
+    const section = this.contentData.sections[this.dragState.sectionIndex];
+    const note = section && section.stickyNotes[this.dragState.noteIndex];
+    if (!note) return;
+
+    note.position.x = Math.max(
+      0,
+      (event.clientX - frameRect.left - this.dragState.offsetX) /
+        this.currentScale,
+    );
+    note.position.y = Math.max(
+      0,
+      (event.clientY - frameRect.top - this.dragState.offsetY) /
+        this.currentScale,
+    );
+    this.renderNotes();
+  }
+
+  onPointerUp() {
+    this.dragState = null;
+    this.window.removeEventListener('pointermove', this.handlePointerMove);
+    this.window.removeEventListener('pointerup', this.handlePointerUp);
+  }
+
+  createStickyNoteAtEvent(event) {
+    if (!this.contentData || !this.geometry) return;
+
+    const frameRect = this.stageFrame.getBoundingClientRect();
+    const x = (event.clientX - frameRect.left) / this.currentScale;
+    const y = (event.clientY - frameRect.top) / this.currentScale;
+
+    const targetSection = this.geometry.sections.find(
+      (section) =>
+        x >= section.x &&
+        x <= section.x + section.width &&
+        y >= section.y &&
+        y <= section.y + section.height,
+    );
+
+    if (!targetSection) return;
+
+    const sectionContent = this.contentData.sections.find(
+      (section) => section.sectionId === targetSection.id,
+    );
+    if (!sectionContent) return;
+
+    sectionContent.stickyNotes.push({
+      content: 'Double-click to edit',
+      position: {
+        x: Math.max(0, x - defaultStyles.stickyNoteSize / 2),
+        y: Math.max(0, y - defaultStyles.stickyNoteSize / 2),
       },
-    ) {
-      const lines = wrapText(svg, text, maxWidth, fontFamily, fontSize)
-        .split("\n")
-        .filter((line) => line.length > 0)
-      const lineCount = Math.max(lines.length, 1)
+      size: defaultStyles.stickyNoteSize,
+      color: this.currentColor,
+    });
 
-      const textNode = svg
-        .append("text")
-        .attr("x", x)
-        .attr("y", y)
-        .attr("text-anchor", "start")
-        .attr("font-family", fontFamily)
-        .attr("font-size", fontSize + "px")
-        .attr("fill", fill)
-
-      if (fontWeight) {
-        textNode.attr("font-weight", fontWeight)
-      }
-
-      lines.forEach((line, index) => {
-        const tspan = textNode.append("tspan").text(line)
-        if (index > 0) {
-          tspan.attr("x", x).attr("dy", lineHeight)
-        }
-      })
-
-      return {
-        lineCount,
-        bottomY: y + (lineCount - 1) * lineHeight,
-      }
-    }
-  
-    // Function to check if a point is inside a rectangle
-    function isPointInRect(x, y, rect) {
-      return (
-        x >= rect.x &&
-        x <= rect.x + rect.width &&
-        y >= rect.y &&
-        y <= rect.y + rect.height
-      )
-    }
-  
-    // Render the canvas
-    renderCanvas(canvasDataForId, contentData, localizedData)
+    this.selectedNoteRef = {
+      sectionIndex: this.contentData.sections.indexOf(sectionContent),
+      noteIndex: sectionContent.stickyNotes.length - 1,
+    };
+    this.render();
   }
-  
-  let hasStickyNotes = false
 
-  // Function to check for unsaved changes and show confirmation dialog
-  function checkForUnsavedChanges(event) {
-    if (contentData && contentData.sections) {
-      hasStickyNotes = contentData.sections.some(
-        (section) => section.stickyNotes.length > 0,
-      )
+  exportJSON() {
+    if (!this.contentData) return;
+    const blob = new Blob([JSON.stringify(this.contentData, null, 2)], {
+      type: 'application/json',
+    });
+    downloadBlob(
+      this.document,
+      blob,
+      `${getExportBaseName(this.contentData)}.json`,
+    );
+  }
 
-      if (hasStickyNotes) {
-        const message =
-          "You have unsaved changes. Are you sure you want to leave this page?"
-        event.preventDefault()
-        event.returnValue = message
-        return message // Return the message for other use cases
+  exportSVG() {
+    if (!this.contentData) return;
+    const svgMarkup = buildCanvasSvgMarkup({
+      assetBase: this.assetBase,
+      content: this.contentData,
+      includeNotes: true,
+      inlineLogo: this.inlineLogo,
+    });
+    const blob = new Blob([svgMarkup], {
+      type: 'image/svg+xml;charset=utf-8',
+    });
+    downloadBlob(
+      this.document,
+      blob,
+      `${getExportBaseName(this.contentData)}.svg`,
+    );
+  }
+
+  exportPNG() {
+    if (!this.contentData) return;
+    const svgMarkup = buildCanvasSvgMarkup({
+      assetBase: this.assetBase,
+      content: this.contentData,
+      includeNotes: true,
+      inlineLogo: this.inlineLogo,
+    });
+    const image = new this.window.Image();
+    const canvas = this.document.createElement('canvas');
+    canvas.width = BASE_WIDTH;
+    canvas.height = BASE_HEIGHT;
+
+    image.onload = () => {
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(image, 0, 0);
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        downloadBlob(
+          this.document,
+          blob,
+          `${getExportBaseName(this.contentData)}.png`,
+        );
+      });
+    };
+
+    image.src = `data:image/svg+xml;base64,${this.window.btoa(
+      unescape(encodeURIComponent(svgMarkup)),
+    )}`;
+  }
+
+  resize() {
+    const maxWidth = this.resolveDimension(this.maxWidth, this.container.clientWidth);
+    const maxHeight = this.resolveDimension(
+      this.maxHeight,
+      this.container.clientHeight || BASE_HEIGHT,
+    );
+
+    let scale = 1;
+    if (this.fitToContainer) {
+      const widthScale = maxWidth ? maxWidth / BASE_WIDTH : 1;
+      const heightScale = maxHeight ? maxHeight / BASE_HEIGHT : 1;
+      const containerWidthScale = this.container.clientWidth
+        ? this.container.clientWidth / BASE_WIDTH
+        : 1;
+      scale = Math.min(widthScale, heightScale, containerWidthScale, 1);
+      if (!Number.isFinite(scale) || scale <= 0) {
+        scale = 1;
       }
     }
+
+    this.currentScale = scale;
+    this.stageHost.style.maxWidth = maxWidth ? `${maxWidth}px` : '';
+    this.stageHost.style.maxHeight = maxHeight ? `${maxHeight}px` : '';
+    this.stageHost.style.width = `${BASE_WIDTH * scale}px`;
+    this.stageHost.style.height = `${BASE_HEIGHT * scale}px`;
+    this.stageFrame.style.transform = `scale(${scale})`;
   }
+
+  resolveDimension(value, fallback) {
+    if (typeof value === 'number') return value;
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (trimmed.endsWith('px')) {
+        return Number(trimmed.replace('px', ''));
+      }
+      if (trimmed.endsWith('%') && this.container.clientWidth) {
+        return (
+          (Number(trimmed.replace('%', '')) / 100) * this.container.clientWidth
+        );
+      }
+      const numeric = Number(trimmed);
+      if (Number.isFinite(numeric)) {
+        return numeric;
+      }
+    }
+    return fallback;
+  }
+
+  destroy() {
+    this.onPointerUp();
+
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
+
+    if (this.window && this.window.removeEventListener) {
+      this.window.removeEventListener('resize', this.handleWindowResize);
+    }
+
+    if (this.container.__canvasCreatorInstance === this) {
+      delete this.container.__canvasCreatorInstance;
+    }
+
+    if (latestInstance === this) {
+      latestInstance = null;
+    }
+
+    this.container.innerHTML = '';
+  }
+}
+
+function initCanvasCreator(options = {}) {
+  latestInstance = new CanvasCreatorInstance(options);
+  return latestInstance;
+}
+
+function requireLatestInstance() {
+  if (!latestInstance) {
+    throw new Error(
+      'No active CanvasCreator instance. Call initCanvasCreator({ container }) first.',
+    );
+  }
+  return latestInstance;
+}
+
+function loadCanvas(locale, canvasId, preserveContentData = false) {
+  return requireLatestInstance().loadCanvas(locale, canvasId, preserveContentData);
+}
+
+function createCanvas(locale, canvasId, preserveContentData = false) {
+  return requireLatestInstance().createCanvas(
+    locale,
+    canvasId,
+    preserveContentData,
+  );
+}
 
 module.exports = {
-  loadCanvas,
+  CanvasCreatorInstance,
   initCanvasCreator,
-  syncThemeStateFromSession,
+  loadCanvas,
+  createCanvas,
   getSessionStorage,
-}
+  syncThemeStateFromSession: () =>
+    latestInstance ? syncThemeStateFromSession(latestInstance) : null,
+};

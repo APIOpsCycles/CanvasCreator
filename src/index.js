@@ -2,7 +2,7 @@ const helpers = require('./helpers');
 const canvasCreator = require('./main');
 const defaultStyles = require('./defaultStyles');
 
-exports.createCanvas = canvasCreator.loadCanvas;
+exports.createCanvas = canvasCreator.createCanvas;
 exports.loadCanvas = canvasCreator.loadCanvas;
 exports.initCanvasCreator = canvasCreator.initCanvasCreator;
 exports.sanitizeInput = helpers.sanitizeInput;

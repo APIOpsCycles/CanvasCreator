@@ -1,96 +1,67 @@
-const chainStub = new Proxy(
-  function () {},
-  {
-    get: (target, prop) => {
-      if (prop === 'node') {
-        return () => ({ getComputedTextLength: () => 0 })
-      }
-      return chainStub
-    },
-    apply: () => chainStub,
-  }
-)
-
 describe('URL parameter handling', () => {
   beforeEach(() => {
-    jest.resetModules()
-    document.body.innerHTML = ''
-    global.fetch = jest.fn(() =>
-      Promise.resolve({ ok: true, text: () => Promise.resolve('') })
-    )
-    global.d3 = { select: () => chainStub, drag: () => chainStub }
-  })
+    jest.resetModules();
+    document.body.innerHTML = '<div id="host"></div>';
+    const host = document.getElementById('host');
+    Object.defineProperty(host, 'clientWidth', {
+      configurable: true,
+      value: 900,
+    });
+    Object.defineProperty(host, 'clientHeight', {
+      configurable: true,
+      value: 700,
+    });
+  });
 
-  test('valid locale and canvas are preselected', () => {
-    document.body.innerHTML = `
-      <select id="locale"></select>
-      <div id="canvasSelector" style="display:none"><select id="canvas"></select></div>
-      <div id="canvasCreator" style="display:none"></div>
-      <button id="metadataButton"></button>
-      <button id="saveMetadata"></button>
-      <button id="exportButton"></button>
-      <button id="exportSVGButton"></button>
-      <button id="exportPNGButton"></button>
-      <button id="importButton"></button>
-    `
+  test('valid locale and canvas are preselected in standalone mode', () => {
     window.history.pushState(
       {},
       '',
-      '?locale=en&canvas=apiBusinessModelCanvas'
-    )
-    const { initCanvasCreator } = require('../src/main.js')
-    initCanvasCreator()
-    expect(document.getElementById('locale').value).toBe('en')
-    expect(document.getElementById('canvas').value).toBe(
-      'apiBusinessModelCanvas'
-    )
-  })
+      '?locale=en&canvas=apiBusinessModelCanvas',
+    );
+
+    const host = document.getElementById('host');
+    const { initCanvasCreator } = require('../src/main.js');
+
+    initCanvasCreator({ container: host, mode: 'standalone' });
+
+    expect(host.querySelector('[data-cc-role="locale"]').value).toBe('en');
+    expect(host.querySelector('[data-cc-role="canvas"]').value).toBe(
+      'apiBusinessModelCanvas',
+    );
+  });
 
   test('locale parameter is case-insensitive and supports region variants', () => {
-    document.body.innerHTML = `
-      <select id="locale"></select>
-      <div id="canvasSelector" style="display:none"><select id="canvas"></select></div>
-      <div id="canvasCreator" style="display:none"></div>
-      <button id="metadataButton"></button>
-      <button id="saveMetadata"></button>
-      <button id="exportButton"></button>
-      <button id="exportSVGButton"></button>
-      <button id="exportPNGButton"></button>
-      <button id="importButton"></button>
-    `
     window.history.pushState(
       {},
       '',
       '?locale=FI-fi&canvas=apiBusinessModelCanvas',
-    )
-    const { initCanvasCreator } = require('../src/main.js')
-    initCanvasCreator()
-    expect(document.getElementById('locale').value).toBe('fi')
-    expect(document.getElementById('canvas').value).toBe(
+    );
+
+    const host = document.getElementById('host');
+    const { initCanvasCreator } = require('../src/main.js');
+
+    initCanvasCreator({ container: host, mode: 'standalone' });
+
+    expect(host.querySelector('[data-cc-role="locale"]').value).toBe('fi');
+    expect(host.querySelector('[data-cc-role="canvas"]').value).toBe(
       'apiBusinessModelCanvas',
-    )
-  })
+    );
+  });
 
   test('malicious parameters are sanitized', () => {
-    document.body.innerHTML = `
-      <select id="locale"></select>
-      <div id="canvasSelector" style="display:none"><select id="canvas"></select></div>
-      <div id="canvasCreator" style="display:none"></div>
-      <button id="metadataButton"></button>
-      <button id="saveMetadata"></button>
-      <button id="exportButton"></button>
-      <button id="exportSVGButton"></button>
-      <button id="exportPNGButton"></button>
-      <button id="importButton"></button>
-    `
     window.history.pushState(
       {},
       '',
-      '?locale=<script>alert(1)</script>&canvas=<img src=x onerror=alert(1)>'
-    )
-    const { initCanvasCreator } = require('../src/main.js')
-    initCanvasCreator()
-    expect(document.getElementById('locale').value).toBe('')
-    expect(document.getElementById('canvas').value).toBe('')
-  })
-})
+      '?locale=<script>alert(1)</script>&canvas=<img src=x onerror=alert(1)>',
+    );
+
+    const host = document.getElementById('host');
+    const { initCanvasCreator } = require('../src/main.js');
+
+    initCanvasCreator({ container: host, mode: 'standalone' });
+
+    expect(host.querySelector('[data-cc-role="locale"]').value).toBe('');
+    expect(host.querySelector('[data-cc-role="canvas"]').value).toBe('');
+  });
+});
