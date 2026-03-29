@@ -239,6 +239,7 @@
   cursor: move;
   user-select: none;
   white-space: pre-wrap;
+  font-size: 0.85rem;
 }
 
 .cc-note.is-selected {
@@ -370,6 +371,10 @@
 
   .cc-stage-shell {
     padding: var(--cc-space-md);
+  }
+
+  .cc-toolbar__secondary [data-cc-control="help"] {
+    display: none;
   }
 
   .cc-help {

@@ -133,6 +133,34 @@ describe('initCanvasCreator', () => {
     expect(stageFrame.style.transform).toMatch(/^scale\(/);
   });
 
+  test('resize does not react to container height changes when maxHeight is unset', () => {
+    const host = createHost(500, 300);
+    const { initCanvasCreator } = require('../src/main.js');
+
+    const instance = initCanvasCreator({
+      container: host,
+      locale: 'en',
+      canvas: 'apiBusinessModelCanvas',
+      fitToContainer: true,
+    });
+
+    const stageHost = host.querySelector('.cc-stage-host');
+    const stageFrame = host.querySelector('.cc-stage-frame');
+    const initialTransform = stageFrame.style.transform;
+    const initialHeight = stageHost.style.height;
+
+    Object.defineProperty(host, 'clientHeight', {
+      configurable: true,
+      value: 120,
+    });
+
+    instance.resize();
+
+    expect(stageFrame.style.transform).toBe(initialTransform);
+    expect(stageHost.style.height).toBe(initialHeight);
+    expect(stageHost.style.maxHeight).toBe('');
+  });
+
   test('destroy clears the mounted UI and re-init does not duplicate controls', () => {
     const host = createHost();
     const { initCanvasCreator } = require('../src/main.js');
