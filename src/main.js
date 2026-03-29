@@ -94,7 +94,11 @@ function normalizeToolbar(mode, toolbar = {}) {
 }
 
 function normalizeAssetBase(assetBase = '') {
-  return String(assetBase).replace(/\/+$/, '');
+  let normalized = String(assetBase);
+  while (normalized.endsWith('/')) {
+    normalized = normalized.slice(0, -1);
+  }
+  return normalized;
 }
 
 function resolveAssetUrl(assetBase, relativePath) {
@@ -567,6 +571,7 @@ class CanvasCreatorInstance {
     this.handleWindowResize = this.resize.bind(this);
     this.handlePointerMove = this.onPointerMove.bind(this);
     this.handlePointerUp = this.onPointerUp.bind(this);
+    this.handleBeforeUnload = this.checkForUnsavedChanges.bind(this);
 
     this.buildShell();
     this.attachStaticEvents();
@@ -912,6 +917,12 @@ class CanvasCreatorInstance {
   attachStaticEvents() {
     this.localeSelect.addEventListener('change', () => {
       const locale = this.localeSelect.value;
+      if (this.hasStickyNotes() && !this.window.confirm(
+        'Are you sure you want to remove sticky notes and change language?'
+      )) {
+        this.localeSelect.value = this.currentLocale || '';
+        return;
+      }
       this.currentLocale = locale || null;
       this.populateCanvasSelector(locale);
       this.clearCanvas();
@@ -920,6 +931,12 @@ class CanvasCreatorInstance {
     this.canvasSelect.addEventListener('change', () => {
       const locale = this.localeSelect.value;
       const canvasId = this.canvasSelect.value;
+      if (this.hasStickyNotes() && !this.window.confirm(
+        'Are you sure you want to remove sticky notes and change canvas?'
+      )) {
+        this.canvasSelect.value = this.currentCanvas || '';
+        return;
+      }
       if (!locale || !canvasId) {
         this.clearCanvas();
         return;
@@ -1005,6 +1022,7 @@ class CanvasCreatorInstance {
   installAutoResize() {
     if (this.window && this.window.addEventListener) {
       this.window.addEventListener('resize', this.handleWindowResize);
+      this.window.addEventListener('beforeunload', this.handleBeforeUnload);
     }
 
     if (typeof this.window.ResizeObserver === 'function') {
@@ -1050,6 +1068,16 @@ class CanvasCreatorInstance {
     this.currentCanvas = this.canvasSelect.value || null;
     this.selectedNoteRef = null;
     this.render();
+  }
+
+  hasStickyNotes() {
+    return Boolean(
+      this.contentData &&
+        this.contentData.sections &&
+        this.contentData.sections.some(
+          (section) => section.stickyNotes && section.stickyNotes.length > 0,
+        ),
+    );
   }
 
   loadCanvas(locale, canvasId, preserveContentData = false) {
@@ -1382,6 +1410,16 @@ class CanvasCreatorInstance {
     this.window.removeEventListener('pointerup', this.handlePointerUp);
   }
 
+  checkForUnsavedChanges(event) {
+    if (!this.hasStickyNotes()) return;
+
+    const message =
+      'You have unsaved changes. Are you sure you want to leave this page?';
+    event.preventDefault();
+    event.returnValue = message;
+    return message;
+  }
+
   createStickyNoteAtEvent(event) {
     if (!this.contentData || !this.geometry) return;
 
@@ -1539,6 +1577,7 @@ class CanvasCreatorInstance {
 
     if (this.window && this.window.removeEventListener) {
       this.window.removeEventListener('resize', this.handleWindowResize);
+      this.window.removeEventListener('beforeunload', this.handleBeforeUnload);
     }
 
     if (this.container.__canvasCreatorInstance === this) {
