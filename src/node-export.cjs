@@ -262,6 +262,9 @@ function renderSVG(canvasDef, localizedData, content) {
       canvasDef.layout.rows,
   );
   const noteParts = [];
+  const hasStickyNotes = content.sections.some(
+    (section) => section.stickyNotes && section.stickyNotes.length > 0,
+  );
   const hasJourneySteps = canvasDef.sections.some((section) => section.journeySteps);
 
   if (hasJourneySteps) {
@@ -372,7 +375,7 @@ function renderSVG(canvasDef, localizedData, content) {
         });
         noteParts.push(noteText);
       }
-    } else {
+    } else if (!hasStickyNotes) {
       const desc =
         locCanvas.sections &&
         locCanvas.sections[secDef.id] &&

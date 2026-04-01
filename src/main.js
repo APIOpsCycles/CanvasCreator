@@ -292,6 +292,9 @@ function buildCanvasSvgMarkup({
   const { localizedCanvas } = geometry;
   const noteParts = [];
   const hasJourneySteps = canvasDef.sections.some((section) => section.journeySteps);
+  const hasStickyNotes = content.sections.some(
+    (section) => section.stickyNotes && section.stickyNotes.length > 0,
+  );
   const parts = [
     `<svg xmlns="${SVG_NS}" width="${BASE_WIDTH}" height="${BASE_HEIGHT}" viewBox="0 0 ${BASE_WIDTH} ${BASE_HEIGHT}" font-family="${escapeXml(
       defaultStyles.fontFamily,
@@ -425,7 +428,7 @@ function buildCanvasSvgMarkup({
       (section) => section.sectionId === sectionDef.id,
     );
 
-    if (includeNotes && sectionContent) {
+    if (includeNotes && sectionContent && sectionContent.stickyNotes.length > 0) {
       sectionContent.stickyNotes.forEach((note) => {
         const noteX = note.position ? note.position.x || 0 : 0;
         const noteY = note.position ? note.position.y || 0 : 0;
@@ -463,7 +466,7 @@ function buildCanvasSvgMarkup({
           )}" font-size="${defaultStyles.fontSize}">${tspans}</text>`,
         );
       });
-    } else if (sectionLocale.description) {
+    } else if (!hasStickyNotes && sectionLocale.description) {
       appendWrappedSvgText(parts, {
         x: sectionBox.x + defaultStyles.padding,
         y: titleLayoutInSection.bottomY + defaultStyles.padding + 2,

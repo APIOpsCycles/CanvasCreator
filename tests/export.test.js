@@ -66,6 +66,26 @@ describe('export helpers', () => {
     expect(svg.includes('Placeholder')).toBe(false);
   });
 
+  test('empty canvas export keeps section descriptions', () => {
+    const content = buildContent(canvasData, 'apiBusinessModelCanvas', 'en', false);
+    const svg = renderSVG(canvasData['apiBusinessModelCanvas'], localizedData, content);
+    expect(svg).toContain('Who are the key');
+    expect(svg).toContain('How does the API provider');
+  });
+
+  test('any sticky notes hide section descriptions in export', () => {
+    const content = buildContent(canvasData, 'apiBusinessModelCanvas', 'en', false);
+    content.sections[0].stickyNotes.push({
+      content: 'Note',
+      position: { x: 100, y: 100 },
+      size: 80,
+      color: '#FFF399',
+    });
+    const svg = renderSVG(canvasData['apiBusinessModelCanvas'], localizedData, content);
+    expect(svg).not.toContain('Who are the key');
+    expect(svg).not.toContain('How does the API provider');
+  });
+
   test('renderSVG title has larger font size', () => {
     const content = buildContent(canvasData, 'apiBusinessModelCanvas', 'en', false);
     const svg = renderSVG(canvasData['apiBusinessModelCanvas'], localizedData, content);
