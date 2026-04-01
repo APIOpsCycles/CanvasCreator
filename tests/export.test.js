@@ -1,3 +1,4 @@
+const fs = require('fs');
 const {
   buildContent,
   buildFileName,
@@ -7,6 +8,30 @@ const {
 } = require('../src/node-export.cjs');
 const canvasData = require('apiops-cycles-method-data/canvasData.json');
 const localizedData = require('apiops-cycles-method-data/localizedData.json');
+const defaultStyles = require('../src/defaultStyles');
+
+function wrapTextApprox(text, maxWidth = defaultStyles.maxLineWidth) {
+  const normalized = String(text || '').replace(/\n{2,}/g, '\n');
+  const words = normalized.split(' ');
+  const lines = [];
+  let line = '';
+
+  for (const word of words) {
+    const testLine = `${line}${word} `;
+    if (testLine.length * 6 > maxWidth && line.trim()) {
+      lines.push(line.trim());
+      line = `${word} `;
+    } else {
+      line = testLine;
+    }
+  }
+
+  if (line.trim()) {
+    lines.push(line.trim());
+  }
+
+  return lines.join('\n');
+}
 
 describe('export helpers', () => {
   test('buildFileName applies prefix', () => {
@@ -91,6 +116,80 @@ describe('export helpers', () => {
       y: expect.any(Number),
     });
     expect(imported.sections[0].stickyNotes[0].position).toBeUndefined();
+  });
+
+  test('imported domain canvas notes start below titles and journey steps', () => {
+    const imported = JSON.parse(
+      fs.readFileSync(
+        'C:/Users/MarjukkaNiinioja/Downloads/specs/canvases/api-product-strategy/domainCanvas.example.json',
+        'utf8',
+      ),
+    );
+
+    const content = buildContent(
+      canvasData,
+      'domainCanvas',
+      'en',
+      false,
+      imported,
+      true,
+    );
+
+    const canvasDef = canvasData.domainCanvas;
+    const cellWidth = Math.floor(
+      (defaultStyles.width - canvasDef.layout.columns * defaultStyles.padding) /
+        canvasDef.layout.columns,
+    );
+    const cellHeight = Math.floor(
+      (defaultStyles.height -
+        defaultStyles.headerHeight -
+        defaultStyles.footerHeight -
+        4 * defaultStyles.padding) /
+        canvasDef.layout.rows,
+    );
+
+    const journeySectionDef = canvasDef.sections.find(
+      (section) => section.id === 'selectedCustomerJourneySteps',
+    );
+    const journeySection = content.sections.find(
+      (section) => section.sectionId === 'selectedCustomerJourneySteps',
+    );
+    const journeyTop =
+      journeySectionDef.gridPosition.row * cellHeight + defaultStyles.headerHeight;
+    const journeyStepTop =
+      journeyTop +
+      defaultStyles.stickyNoteSize / 2 +
+      2 * defaultStyles.stickyNoteSpacing;
+
+    expect(journeySection.stickyNotes[0].position.y).toBeGreaterThanOrEqual(
+      journeyStepTop,
+    );
+
+    const coreEntitiesDef = canvasDef.sections.find(
+      (section) => section.id === 'coreEntitiesAndBusinessMeaning',
+    );
+    const coreEntities = content.sections.find(
+      (section) => section.sectionId === 'coreEntitiesAndBusinessMeaning',
+    );
+    const coreTop =
+      coreEntitiesDef.gridPosition.row * cellHeight + defaultStyles.headerHeight;
+    const coreWidth = coreEntitiesDef.gridPosition.colSpan * cellWidth;
+    const coreTitle = localizedData.en.domainCanvas.sections.coreEntitiesAndBusinessMeaning.section;
+    const coreTitleLines = wrapTextApprox(
+      coreTitle,
+      coreWidth - 2 * defaultStyles.padding - defaultStyles.circleRadius,
+    )
+      .split('\n')
+      .filter(Boolean).length || 1;
+    const coreTitleBottom =
+      coreTop +
+      defaultStyles.padding +
+      defaultStyles.circleRadius +
+      (coreTitleLines - 1) * (defaultStyles.fontSize + 2);
+
+    expect(coreEntities.stickyNotes[0].position.y).toBeGreaterThan(
+      coreTitleBottom,
+    );
   });
 
   test('renderSVG draws notes above later section backgrounds', () => {

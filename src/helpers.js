@@ -1,4 +1,36 @@
 const defaultStyles = require('./defaultStyles');
+const localizedData = require('apiops-cycles-method-data/localizedData.json');
+
+function getLocaleKey(locale) {
+  if (!locale) return defaultStyles.defaultLocale;
+  const lower = String(locale).toLowerCase();
+  if (localizedData[lower]) return lower;
+  const base = lower.split('-')[0];
+  return localizedData[base] ? base : lower;
+}
+
+function wrapTextApprox(text, maxWidth = defaultStyles.maxLineWidth) {
+  const normalized = String(text || '').replace(/\n{2,}/g, '\n');
+  const words = normalized.split(' ');
+  const lines = [];
+  let line = '';
+
+  for (const word of words) {
+    const testLine = `${line}${word} `;
+    if (testLine.length * 6 > maxWidth && line.trim()) {
+      lines.push(line.trim());
+      line = `${word} `;
+    } else {
+      line = testLine;
+    }
+  }
+
+  if (line.trim()) {
+    lines.push(line.trim());
+  }
+
+  return lines.join('\n');
+}
 
 function sanitizeInput(text) {
   // Remove script tags entirely
@@ -19,18 +51,24 @@ function validateInput(text) {
 }
 
 function distributeMissingPositions(content, canvasDef, styles = defaultStyles) {
+  const resolvedStyles = { ...defaultStyles, ...styles };
   const cellWidth = Math.floor(
-    (styles.width - canvasDef.layout.columns * styles.padding) /
+    (resolvedStyles.width - canvasDef.layout.columns * resolvedStyles.padding) /
       canvasDef.layout.columns,
   );
 
   const cellHeight = Math.floor(
-    (styles.height -
-      styles.headerHeight -
-      styles.footerHeight -
-      4 * styles.padding) /
+    (resolvedStyles.height -
+      resolvedStyles.headerHeight -
+      resolvedStyles.footerHeight -
+      4 * resolvedStyles.padding) /
       canvasDef.layout.rows,
   );
+  const locale = getLocaleKey(content.locale || resolvedStyles.defaultLocale);
+  const localizedCanvas =
+    (localizedData[locale] && localizedData[locale][canvasDef.id]) || {};
+  const noteGap = Math.max(4, Math.floor(resolvedStyles.stickyNoteSpacing / 2));
+  const borderGap = Math.max(4, Math.floor(resolvedStyles.padding / 2));
 
   content.sections.forEach((section) => {
     const templateSection = canvasDef.sections.find(
@@ -44,49 +82,126 @@ function distributeMissingPositions(content, canvasDef, styles = defaultStyles) 
     if (notesToPlace.length === 0) return;
 
     const startX =
-      templateSection.gridPosition.column * cellWidth + 2 * styles.padding;
-    const startY =
-      templateSection.gridPosition.row * cellHeight + styles.headerHeight;
+      templateSection.gridPosition.column * cellWidth + borderGap;
     const secWidth = templateSection.gridPosition.colSpan * cellWidth;
     const secHeight = templateSection.gridPosition.rowSpan * cellHeight;
+    const sectionTop =
+      templateSection.gridPosition.row * cellHeight + resolvedStyles.headerHeight;
+    const sectionBottom = sectionTop + secHeight;
+    const sectionTitle =
+      (localizedCanvas.sections &&
+        localizedCanvas.sections[section.sectionId] &&
+        localizedCanvas.sections[section.sectionId].section) ||
+      templateSection.id;
+    const sectionDescription =
+      (localizedCanvas.sections &&
+        localizedCanvas.sections[section.sectionId] &&
+        localizedCanvas.sections[section.sectionId].description) ||
+      '';
+    const titleLines = wrapTextApprox(
+      sectionTitle,
+      secWidth - 2 * resolvedStyles.padding - resolvedStyles.circleRadius,
+    )
+      .split('\n')
+      .filter((line) => line.length > 0).length || 1;
+    const titleTop = sectionTop + resolvedStyles.padding + resolvedStyles.circleRadius;
+    const titleBottom =
+      titleTop + titleLines * (resolvedStyles.fontSize + 6); 
+    const descriptionBottom =
+      titleBottom + noteGap;
+    const sectionBox = {
+      x: templateSection.gridPosition.column * cellWidth + 2 * resolvedStyles.padding,
+      y: sectionTop,
+      width: secWidth,
+      height: secHeight,
+    };
+    const journeyLayout = templateSection.journeySteps
+      ? getJourneyStepsLayout(templateSection, sectionBox, resolvedStyles)
+      : null;
+    const startY = templateSection.journeySteps
+      ? Math.max(
+          descriptionBottom + noteGap,
+          journeyLayout ? journeyLayout.boxes[0].y + noteGap : titleBottom + noteGap,
+        ) 
+      : descriptionBottom + noteGap;
 
-    const noteSize = styles.stickyNoteSize;
+    const noteSize = resolvedStyles.stickyNoteSize;
+    if (journeyLayout) {
+      notesToPlace.forEach((note, index) => {
+        const box = journeyLayout.boxes[index % journeyLayout.boxes.length];
+        const row = Math.floor(index / journeyLayout.boxes.length);
+        const rowOffset = row * (noteSize + noteGap);
+        note.position = {
+          x: box.x + Math.max(0, Math.floor((box.width - noteSize) / 2)),
+          y: box.y + Math.max(0, Math.floor((box.height - noteSize) / 2))+ rowOffset,
+
+        };
+      });
+      return;
+    }
+
+    const innerLeft = sectionBox.x;
+    const innerRight = sectionBox.x + secWidth;
+    const availableWidth = Math.max(noteSize, innerRight - innerLeft);
+    const availableHeight = sectionBottom - startY - borderGap - (resolvedStyles.circleRadius / 2);
     const maxCols = Math.max(
       1,
-      Math.floor(secWidth / (noteSize + styles.stickyNoteSpacing)),
+      Math.floor((availableWidth + noteGap) / (noteSize + noteGap)),
     );
-    const cols = Math.min(notesToPlace.length, maxCols);
-    const rows = Math.ceil(notesToPlace.length / cols);
+    const maxRows = Math.max(
+      1,
+      Math.floor((availableHeight + noteGap) / (noteSize + noteGap)),
+    );
+    let cols = Math.max(
+      1,
+      Math.min(maxCols, Math.ceil(notesToPlace.length / maxRows)),
+    );
+    while (Math.ceil(notesToPlace.length / cols) > maxRows && cols < maxCols) {
+      cols += 1;
+    }
+    const gridStartY = startY;
+    const rows = Array.from({ length: Math.ceil(notesToPlace.length / cols) }, (_, rowIndex) =>
+      notesToPlace.slice(rowIndex * cols, (rowIndex + 1) * cols),
+    );
 
-    const spaceX = Math.max(0, (secWidth - cols * noteSize) / (cols + 1));
-    const spaceY = Math.max(0, (secHeight - rows * noteSize) / (rows + 1));
+    rows.forEach((rowNotes, rowIndex) => {
+      const rowWidth = rowNotes.length * noteSize + Math.max(0, rowNotes.length - 1) * noteGap;
+      let rowStartX;
+      // if (rowIndex === 0) {
+        rowStartX = innerLeft + Math.max(0, Math.floor((availableWidth - rowWidth) / 2));
+/*       } else {
+        rowStartX = Math.max(innerLeft, innerRight - rowWidth);
+      } */
 
-    notesToPlace.forEach((note, index) => {
-      const c = index % cols;
-      const r = Math.floor(index / cols);
-      note.position = {
-        x: startX + spaceX + c * (noteSize + spaceX),
-        y: startY + spaceY + r * (noteSize + spaceY),
-      };
+      rowNotes.forEach((note, index) => {
+        note.position = {
+          x: rowStartX + index * (noteSize + noteGap),
+          y: gridStartY + rowIndex * (noteSize + noteGap),
+        };
+      });
     });
   });
 }
 
 function getJourneyStepsLayout(sectionDef, sectionBox, styles = defaultStyles) {
+  const resolvedStyles = { ...defaultStyles, ...styles };
   if (!sectionDef || !sectionDef.journeySteps || !sectionBox) {
     return null;
   }
 
   const stepCount = 5;
   const stepWidth = Math.max(
-    sectionBox.width / stepCount - 2 * styles.padding,
-    styles.stickyNoteSize,
+    sectionBox.width / stepCount - 2 * resolvedStyles.padding,
+    resolvedStyles.stickyNoteSize,
   );
-  const stepHeight = styles.stickyNoteSize;
-  const stepY = sectionBox.y + styles.stickyNoteSize / 2 + 2 * styles.stickyNoteSpacing;
+  const stepHeight = resolvedStyles.stickyNoteSize;
+  const stepY =
+    sectionBox.y +
+    resolvedStyles.stickyNoteSize / 2 +
+    2 * resolvedStyles.stickyNoteSpacing;
 
   const boxes = Array.from({ length: stepCount }, (_, index) => ({
-    x: sectionBox.x + index * (stepWidth + 2 * styles.stickyNoteSpacing),
+    x: sectionBox.x + index * (stepWidth + 2 * resolvedStyles.stickyNoteSpacing),
     y: stepY,
     width: stepWidth,
     height: stepHeight,
