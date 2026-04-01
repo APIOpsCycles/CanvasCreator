@@ -51,6 +51,7 @@ describe('initCanvasCreator', () => {
 
     expect(host.querySelector('[data-cc-control="import"]')).not.toBeNull();
     expect(host.querySelector('[data-cc-control="metadata"]')).not.toBeNull();
+    expect(host.querySelector('[data-cc-control="export-pdf"]')).not.toBeNull();
     expect(host.querySelector('[data-cc-control="help"]')).not.toBeNull();
     expect(host.querySelector('.cc-header__links').hidden).toBe(false);
     expect(host.querySelector('.cc-theme-panel').hidden).toBe(false);

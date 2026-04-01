@@ -18,7 +18,7 @@ try {
 }
 
 const { createStickyNote, exportJSON } = require('../scripts/noteManager');
-const { distributeMissingPositions } = require('./helpers');
+const { distributeMissingPositions, getJourneyStepsLayout } = require('./helpers');
 const defaultStyles = require('./defaultStyles');
 
 function buildFileName(prefix, canvasId, locale, ext) {
@@ -126,6 +126,45 @@ function appendWrappedText(document, parent, {
   };
 }
 
+function appendJourneyStepsSvg(document, parent, sectionDef, sectionBox) {
+  const layout = getJourneyStepsLayout(sectionDef, sectionBox, defaultStyles);
+  if (!layout) {
+    return;
+  }
+
+  const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  group.setAttribute('class', 'cc-journey-steps');
+
+  layout.boxes.forEach((box) => {
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', box.x);
+    rect.setAttribute('y', box.y);
+    rect.setAttribute('width', box.width);
+    rect.setAttribute('height', box.height);
+    rect.setAttribute('fill', '#fff');
+    rect.setAttribute('stroke', defaultStyles.borderColor);
+    rect.setAttribute('stroke-width', defaultStyles.lineSize);
+    rect.setAttribute('stroke-dasharray', 3 * defaultStyles.lineSize);
+    rect.setAttribute('rx', defaultStyles.cornerRadius / 2);
+    rect.setAttribute('ry', defaultStyles.cornerRadius / 2);
+    group.appendChild(rect);
+  });
+
+  layout.arrows.forEach((arrow) => {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', arrow.x1);
+    line.setAttribute('y1', arrow.y1);
+    line.setAttribute('x2', arrow.x2);
+    line.setAttribute('y2', arrow.y2);
+    line.setAttribute('stroke', defaultStyles.borderColor);
+    line.setAttribute('stroke-width', 2 * defaultStyles.lineSize);
+    line.setAttribute('marker-end', 'url(#journey-arrowhead)');
+    group.appendChild(line);
+  });
+
+  parent.appendChild(group);
+}
+
 function renderSVG(canvasDef, localizedData, content) {
   const logo = fs.readFileSync(
     path.join(__dirname, '../img/apiops-cycles-logo2025-blue.svg'),
@@ -223,6 +262,27 @@ function renderSVG(canvasDef, localizedData, content) {
       canvasDef.layout.rows,
   );
   const noteParts = [];
+  const hasStickyNotes = content.sections.some(
+    (section) => section.stickyNotes && section.stickyNotes.length > 0,
+  );
+  const hasJourneySteps = canvasDef.sections.some((section) => section.journeySteps);
+
+  if (hasJourneySteps) {
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+    marker.setAttribute('id', 'journey-arrowhead');
+    marker.setAttribute('markerWidth', 4);
+    marker.setAttribute('markerHeight', 7);
+    marker.setAttribute('refX', 5);
+    marker.setAttribute('refY', 3.5);
+    marker.setAttribute('orient', 'auto');
+    const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    polygon.setAttribute('points', '0 0, 5 3.5, 0 7');
+    polygon.setAttribute('fill', defaultStyles.borderColor);
+    marker.appendChild(polygon);
+    defs.appendChild(marker);
+    svg.appendChild(defs);
+  }
 
   for (const secDef of canvasDef.sections) {
     const x = secDef.gridPosition.column * cellWidth + 2 * defaultStyles.padding;
@@ -243,6 +303,10 @@ function renderSVG(canvasDef, localizedData, content) {
     rect.setAttribute('rx', defaultStyles.cornerRadius);
     rect.setAttribute('ry', defaultStyles.cornerRadius);
     svg.appendChild(rect);
+
+    if (secDef.journeySteps) {
+      appendJourneyStepsSvg(document, svg, secDef, { x, y, width: w, height: h });
+    }
 
     const label =
       locCanvas.sections && locCanvas.sections[secDef.id]
@@ -311,7 +375,7 @@ function renderSVG(canvasDef, localizedData, content) {
         });
         noteParts.push(noteText);
       }
-    } else {
+    } else if (!hasStickyNotes) {
       const desc =
         locCanvas.sections &&
         locCanvas.sections[secDef.id] &&
