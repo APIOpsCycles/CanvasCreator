@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const {
   buildContent,
   buildFileName,
@@ -142,7 +143,16 @@ describe('export helpers', () => {
   test('imported domain canvas notes start below titles and journey steps', () => {
     const imported = JSON.parse(
       fs.readFileSync(
-        'C:/Users/MarjukkaNiinioja/Downloads/specs/canvases/api-product-strategy/domainCanvas.example.json',
+        path.join(
+          process.cwd(),
+          'node_modules',
+          'apiops-cycles-method-data',
+          'src',
+          'data',
+          'canvas',
+          'import-export-templates',
+          'Canvas_domainCanvas.json',
+        ),
         'utf8',
       ),
     );
