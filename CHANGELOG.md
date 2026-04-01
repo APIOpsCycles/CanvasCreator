@@ -2,11 +2,12 @@
 
 The repository history shows twelve merged pull requests, which introduce localization features, bug fixes, and new tests. Key updates include:
 
-## Version 1.7.0 - 1.7.1
+## Version 1.7.0 - 1.7.2
 - 1.7.0 UI is now embeddable and configurable for Astro, Vue, React etc. use
 - 1.7.0 fixed export bug where sticky notes were partially hidden if on top of section line
 - 1.7.1 Fixed the responsive Help toggle so hiding the Help section no longer causes layout trembling on narrower screens.
 - 1.7.1 Aligned the mobile toolbar by hiding the Help button at the same breakpoint where the Help panel is unavailable.
+- 1.7.2 Regression from 1.7.0 Fixed journeystep visibility in SVG and PNG exports
 
 ## Version 1.6.0-1.6.2
 Canvas package for PNG generation is now a normal dependency, because it's not working as optional, and downstream modules depend on PNG generation.

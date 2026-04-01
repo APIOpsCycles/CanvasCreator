@@ -110,6 +110,46 @@ describe('export helpers', () => {
     expect(noteIndex).toBeGreaterThan(svg.indexOf(laterSectionTitle));
   });
 
+  test('renderSVG includes journey steps on journey canvases', () => {
+    const canvases = [
+      ['customerJourneyCanvas', 'journeySteps'],
+      ['domainCanvas', 'selectedCustomerJourneySteps'],
+      ['apiValuePropositionCanvas', 'tasks'],
+    ];
+
+    canvases.forEach(([canvasId, sectionId]) => {
+      const content = buildContent(canvasData, canvasId, 'en', false);
+      const section = content.sections.find((item) => item.sectionId === sectionId);
+      expect(section).toBeDefined();
+
+      const svg = renderSVG(canvasData[canvasId], localizedData, content);
+      expect(svg).toContain('url(#journey-arrowhead)');
+      expect((svg.match(/stroke-dasharray="3"/g) || []).length).toBe(5);
+    });
+  });
+
+  test('renderSVG keeps sticky notes above journey steps', () => {
+    const content = buildContent(canvasData, 'customerJourneyCanvas', 'en', false);
+    const journeySection = content.sections.find(
+      (section) => section.sectionId === 'journeySteps',
+    );
+
+    journeySection.stickyNotes.push({
+      content: 'JourneyNote',
+      position: { x: 330, y: 420 },
+      size: 80,
+      color: '#C0EB6A',
+    });
+
+    const svg = renderSVG(canvasData['customerJourneyCanvas'], localizedData, content);
+    expect(svg.indexOf('JourneyNote')).toBeGreaterThan(
+      svg.indexOf('marker-end="url(#journey-arrowhead)"'),
+    );
+    expect(svg.indexOf('JourneyNote')).toBeGreaterThan(
+      svg.indexOf('stroke-dasharray="3"'),
+    );
+  });
+
   test('writePNG export exists', () => {
     expect(typeof writePNG).toBe('function');
   });

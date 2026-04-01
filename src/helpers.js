@@ -72,8 +72,44 @@ function distributeMissingPositions(content, canvasDef, styles = defaultStyles) 
   });
 }
 
+function getJourneyStepsLayout(sectionDef, sectionBox, styles = defaultStyles) {
+  if (!sectionDef || !sectionDef.journeySteps || !sectionBox) {
+    return null;
+  }
+
+  const stepCount = 5;
+  const stepWidth = Math.max(
+    sectionBox.width / stepCount - 2 * styles.padding,
+    styles.stickyNoteSize,
+  );
+  const stepHeight = styles.stickyNoteSize;
+  const stepY = sectionBox.y + styles.stickyNoteSize / 2 + 2 * styles.stickyNoteSpacing;
+
+  const boxes = Array.from({ length: stepCount }, (_, index) => ({
+    x: sectionBox.x + index * (stepWidth + 2 * styles.stickyNoteSpacing),
+    y: stepY,
+    width: stepWidth,
+    height: stepHeight,
+  }));
+
+  const arrows = boxes.slice(0, -1).map((box, index) => {
+    const nextBox = boxes[index + 1];
+    const centerY = stepY + stepHeight / 2;
+
+    return {
+      x1: box.x + stepWidth,
+      y1: centerY,
+      x2: nextBox.x,
+      y2: centerY,
+    };
+  });
+
+  return { boxes, arrows };
+}
+
 module.exports = {
   sanitizeInput,
   validateInput,
   distributeMissingPositions,
+  getJourneyStepsLayout,
 };

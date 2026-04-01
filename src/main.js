@@ -2,6 +2,7 @@ const {
   sanitizeInput,
   validateInput,
   distributeMissingPositions,
+  getJourneyStepsLayout,
 } = require('./helpers');
 const defaultStyles = require('./defaultStyles');
 const {
@@ -246,6 +247,34 @@ function appendWrappedSvgText(parts, config) {
   };
 }
 
+function appendJourneyStepsSvg(parts, sectionDef, sectionBox) {
+  const layout = getJourneyStepsLayout(sectionDef, sectionBox, defaultStyles);
+  if (!layout) {
+    return;
+  }
+
+  parts.push(
+    '<g class="cc-journey-steps">',
+    ...layout.boxes.map(
+      (box) =>
+        `<rect x="${box.x}" y="${box.y}" width="${box.width}" height="${box.height}" fill="#fff" stroke="${escapeXml(
+          defaultStyles.borderColor,
+        )}" stroke-width="${defaultStyles.lineSize}" stroke-dasharray="${
+          3 * defaultStyles.lineSize
+        }" rx="${defaultStyles.cornerRadius / 2}" ry="${
+          defaultStyles.cornerRadius / 2
+        }" />`,
+    ),
+    ...layout.arrows.map(
+      (arrow) =>
+        `<line x1="${arrow.x1}" y1="${arrow.y1}" x2="${arrow.x2}" y2="${arrow.y2}" stroke="${escapeXml(
+          defaultStyles.borderColor,
+        )}" stroke-width="${2 * defaultStyles.lineSize}" marker-end="url(#journey-arrowhead)" />`,
+    ),
+    '</g>',
+  );
+}
+
 function buildCanvasSvgMarkup({
   assetBase,
   content,
@@ -262,6 +291,7 @@ function buildCanvasSvgMarkup({
   const geometry = getCanvasGeometry(canvasDef, locale, content);
   const { localizedCanvas } = geometry;
   const noteParts = [];
+  const hasJourneySteps = canvasDef.sections.some((section) => section.journeySteps);
   const parts = [
     `<svg xmlns="${SVG_NS}" width="${BASE_WIDTH}" height="${BASE_HEIGHT}" viewBox="0 0 ${BASE_WIDTH} ${BASE_HEIGHT}" font-family="${escapeXml(
       defaultStyles.fontFamily,
@@ -269,6 +299,12 @@ function buildCanvasSvgMarkup({
       defaultStyles.backgroundColor,
     )}">`,
   ];
+
+  if (hasJourneySteps) {
+    parts.push(
+      '<defs><marker id="journey-arrowhead" markerWidth="4" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0, 5 3.5, 0 7" fill="#1a3987" /></marker></defs>',
+    );
+  }
 
   if (inlineLogo && inlineLogo.markup) {
     parts.push(
@@ -352,6 +388,10 @@ function buildCanvasSvgMarkup({
         defaultStyles.cornerRadius
       }" ry="${defaultStyles.cornerRadius}" />`,
     );
+
+    if (sectionDef.journeySteps) {
+      appendJourneyStepsSvg(parts, sectionDef, sectionBox);
+    }
 
     parts.push(
       `<circle cx="${sectionBox.x + defaultStyles.padding}" cy="${
