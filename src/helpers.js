@@ -69,6 +69,7 @@ function distributeMissingPositions(content, canvasDef, styles = defaultStyles) 
     (localizedData[locale] && localizedData[locale][canvasDef.id]) || {};
   const noteGap = Math.max(4, Math.floor(resolvedStyles.stickyNoteSpacing / 2));
   const borderGap = Math.max(4, Math.floor(resolvedStyles.padding / 2));
+  const journeyNoteInsetY = Math.max(4, Math.floor(noteGap / 2));
 
   content.sections.forEach((section) => {
     const templateSection = canvasDef.sections.find(
@@ -133,8 +134,9 @@ function distributeMissingPositions(content, canvasDef, styles = defaultStyles) 
         const rowOffset = row * (noteSize + noteGap);
         note.position = {
           x: box.x + Math.max(0, Math.floor((box.width - noteSize) / 2)),
-          y: box.y + Math.max(0, Math.floor((box.height - noteSize) / 2))+ rowOffset,
-
+          y: box.y + Math.max(0, Math.floor((box.height - noteSize) / 2)) +
+            journeyNoteInsetY +
+            rowOffset,
         };
       });
       return;
@@ -195,10 +197,7 @@ function getJourneyStepsLayout(sectionDef, sectionBox, styles = defaultStyles) {
     resolvedStyles.stickyNoteSize,
   );
   const stepHeight = resolvedStyles.stickyNoteSize;
-  const stepY =
-    sectionBox.y +
-    resolvedStyles.stickyNoteSize / 2 +
-    2 * resolvedStyles.stickyNoteSpacing;
+  const stepY = sectionBox.y  + sectionBox.height - stepHeight - (resolvedStyles.padding * 2);
 
   const boxes = Array.from({ length: stepCount }, (_, index) => ({
     x: sectionBox.x + index * (stepWidth + 2 * resolvedStyles.stickyNoteSpacing),

@@ -6,6 +6,7 @@ const {
   writePNG,
   exportJSON,
 } = require('../src/node-export.cjs');
+const { getJourneyStepsLayout } = require('../src/helpers.js');
 const canvasData = require('apiops-cycles-method-data/canvasData.json');
 const localizedData = require('apiops-cycles-method-data/localizedData.json');
 const defaultStyles = require('../src/defaultStyles');
@@ -154,15 +155,28 @@ describe('export helpers', () => {
     const journeySection = content.sections.find(
       (section) => section.sectionId === 'selectedCustomerJourneySteps',
     );
-    const journeyTop =
-      journeySectionDef.gridPosition.row * cellHeight + defaultStyles.headerHeight;
-    const journeyStepTop =
-      journeyTop +
-      defaultStyles.stickyNoteSize / 2 +
-      2 * defaultStyles.stickyNoteSpacing;
+    const journeySectionBox = {
+      x: journeySectionDef.gridPosition.column * cellWidth + 2 * defaultStyles.padding,
+      y: journeySectionDef.gridPosition.row * cellHeight + defaultStyles.headerHeight,
+      width: journeySectionDef.gridPosition.colSpan * cellWidth,
+      height: journeySectionDef.gridPosition.rowSpan * cellHeight,
+    };
+    const journeyLayout = getJourneyStepsLayout(
+      journeySectionDef,
+      journeySectionBox,
+      defaultStyles,
+    );
+    const noteGap = Math.max(4, Math.floor(defaultStyles.stickyNoteSpacing / 2));
+    const journeyInsetY = Math.max(4, Math.floor(noteGap / 2));
 
     expect(journeySection.stickyNotes[0].position.y).toBeGreaterThanOrEqual(
-      journeyStepTop,
+      journeyLayout.boxes[0].y,
+    );
+    expect(journeySection.stickyNotes[0].position.y).toBeLessThanOrEqual(
+      journeyLayout.boxes[0].y +
+        journeyLayout.boxes[0].height -
+        journeySection.stickyNotes[0].size +
+        journeyInsetY,
     );
 
     const coreEntitiesDef = canvasDef.sections.find(
@@ -247,6 +261,72 @@ describe('export helpers', () => {
     expect(svg.indexOf('JourneyNote')).toBeGreaterThan(
       svg.indexOf('stroke-dasharray="3"'),
     );
+  });
+
+  test('journey notes are centered within step boxes', () => {
+    const canvasIds = [
+      [
+        'customerJourneyCanvas',
+        'journeySteps',
+        ['Discover', 'Evaluate', 'Try', 'Adopt', 'Expand'],
+      ],
+      [
+        'apiValuePropositionCanvas',
+        'tasks',
+        ['Search', 'Filter', 'Open', 'Compare', 'Check'],
+      ],
+    ];
+
+    canvasIds.forEach(([canvasId, sectionId, notes]) => {
+      const imported = {
+        templateId: canvasId,
+        locale: 'en',
+        metadata: {},
+        sections: canvasData[canvasId].sections.map((section) => ({
+          sectionId: section.id,
+          stickyNotes:
+            section.id === sectionId
+              ? notes.map((content) => ({ content, size: 80, color: '#7DC9E7' }))
+              : [],
+        })),
+      };
+      const content = buildContent(canvasData, canvasId, 'en', false, imported, true);
+      const canvasDef = canvasData[canvasId];
+      const noteSection = content.sections.find((section) => section.sectionId === sectionId);
+      const sectionDef = canvasDef.sections.find((section) => section.id === sectionId);
+
+      const cellWidth = Math.floor(
+        (defaultStyles.width - canvasDef.layout.columns * defaultStyles.padding) /
+          canvasDef.layout.columns,
+      );
+      const cellHeight = Math.floor(
+        (defaultStyles.height -
+          defaultStyles.headerHeight -
+          defaultStyles.footerHeight -
+          4 * defaultStyles.padding) /
+          canvasDef.layout.rows,
+      );
+      const sectionBox = {
+        x: sectionDef.gridPosition.column * cellWidth + 2 * defaultStyles.padding,
+        y: sectionDef.gridPosition.row * cellHeight + defaultStyles.headerHeight,
+        width: sectionDef.gridPosition.colSpan * cellWidth,
+        height: sectionDef.gridPosition.rowSpan * cellHeight,
+      };
+      const journeyLayout = getJourneyStepsLayout(sectionDef, sectionBox, defaultStyles);
+      const noteGap = Math.max(4, Math.floor(defaultStyles.stickyNoteSpacing / 2));
+      const journeyInsetY = Math.max(4, Math.floor(noteGap / 2));
+
+      const firstNote = noteSection.stickyNotes[0];
+      const firstBox = journeyLayout.boxes[0];
+      expect(firstNote.position.x).toBe(
+        firstBox.x + Math.max(0, Math.floor((firstBox.width - firstNote.size) / 2)),
+      );
+      expect(firstNote.position.y).toBe(
+        firstBox.y +
+          Math.max(0, Math.floor((firstBox.height - firstNote.size) / 2)) +
+          journeyInsetY,
+      );
+    });
   });
 
   test('writePNG export exists', () => {
