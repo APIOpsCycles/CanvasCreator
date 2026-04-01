@@ -823,15 +823,18 @@ class CanvasCreatorInstance {
     if (this.toolbar.export) {
       this.exportJsonButton = this.createButton('Export JSON', 'export-json');
       this.exportSvgButton = this.createButton('Export SVG', 'export-svg');
+      this.exportPdfButton = this.createButton('Export PDF', 'export-pdf');
       this.exportPngButton = this.createButton('Export PNG', 'export-png');
       this.secondaryToolbar.append(
         this.exportJsonButton,
         this.exportSvgButton,
+        this.exportPdfButton,
         this.exportPngButton,
       );
     } else {
       this.exportJsonButton = null;
       this.exportSvgButton = null;
+      this.exportPdfButton = null;
       this.exportPngButton = null;
     }
 
@@ -1002,6 +1005,7 @@ class CanvasCreatorInstance {
     if (this.exportJsonButton) {
       this.exportJsonButton.addEventListener('click', () => this.exportJSON());
       this.exportSvgButton.addEventListener('click', () => this.exportSVG());
+      this.exportPdfButton.addEventListener('click', () => this.exportPDF());
       this.exportPngButton.addEventListener('click', () => this.exportPNG());
     }
 
@@ -1530,6 +1534,87 @@ class CanvasCreatorInstance {
       blob,
       `${getExportBaseName(this.contentData)}.svg`,
     );
+  }
+
+  exportPDF() {
+    if (!this.contentData) return;
+    const svgMarkup = buildCanvasSvgMarkup({
+      assetBase: this.assetBase,
+      content: this.contentData,
+      includeNotes: true,
+      inlineLogo: this.inlineLogo,
+    });
+    const iframe = this.document.createElement('iframe');
+    iframe.setAttribute('aria-hidden', 'true');
+    iframe.style.position = 'fixed';
+    iframe.style.left = '-10000px';
+    iframe.style.top = '0';
+    iframe.style.width = '1px';
+    iframe.style.height = '1px';
+    iframe.style.border = '0';
+    iframe.style.opacity = '0';
+    iframe.srcdoc = `
+      <!doctype html>
+      <html>
+        <head>
+          <title>${escapeXml(getExportBaseName(this.contentData))}</title>
+          <style>
+            html, body {
+              margin: 0;
+              padding: 0;
+              background: white;
+            }
+            svg {
+              display: block;
+              width: 100%;
+              height: auto;
+            }
+            @media print {
+              body {
+                margin: 0;
+              }
+            }
+          </style>
+        </head>
+        <body>${svgMarkup}</body>
+      </html>
+    `;
+    this.document.body.appendChild(iframe);
+
+    const iframeWindow = iframe.contentWindow;
+    if (!iframeWindow || typeof iframeWindow.print !== 'function') {
+      iframe.remove();
+      this.window.alert('PDF export is not available in this browser.');
+      return;
+    }
+
+    let printed = false;
+    const cleanup = () => {
+      if (iframe.parentNode) {
+        iframe.parentNode.removeChild(iframe);
+      }
+    };
+
+    const triggerPrint = () => {
+      if (printed) return;
+      printed = true;
+      try {
+        iframeWindow.focus();
+        iframeWindow.print();
+      } catch (error) {
+        cleanup();
+        this.window.alert(`PDF export failed: ${error.message}`);
+      }
+    };
+
+    iframeWindow.addEventListener('afterprint', cleanup, { once: true });
+    iframe.addEventListener('load', () => {
+      setTimeout(triggerPrint, 0);
+    });
+
+    if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+      triggerPrint();
+    }
   }
 
   exportPNG() {
