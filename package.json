@@ -1,6 +1,6 @@
 {
   "name": "canvascreator",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "main": "dist/canvascreator.cjs",
   "scripts": {
     "test": "jest",
@@ -11,7 +11,7 @@
     "check-fit": "node scripts/checkNoteFit.js"
   },
   "dependencies": {
-    "apiops-cycles-method-data": "^3.3.2",
+    "apiops-cycles-method-data": "^3.4.0",
     "canvas": "^3.1.2",
     "jsdom": "^26.1.0",
     "pdfkit": "^0.18.0",
