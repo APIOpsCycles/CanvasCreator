@@ -57,6 +57,39 @@ describe('initCanvasCreator', () => {
     expect(host.querySelector('.cc-theme-panel').hidden).toBe(false);
   });
 
+  test('help and method links reflect the selected canvas context', () => {
+    const host = createHost();
+    const { initCanvasCreator } = require('../src/main.js');
+
+    const instance = initCanvasCreator({
+      container: host,
+      mode: 'standalone',
+      locale: 'en',
+      canvas: 'graphqlCanvas',
+    });
+
+    const helpContext = host.querySelector('.cc-help__context');
+    const brandLink = host.querySelector('.cc-brand');
+    expect(helpContext.textContent).toContain('GraphQL Canvas');
+    expect(helpContext.textContent).toContain(
+      'How can the API be designed using GraphQL principles?',
+    );
+    expect(brandLink.href).toBe(
+      'https://www.apiopscycles.com/resources/graphql-canvas/',
+    );
+    expect(helpContext.querySelector('a').href).toBe(brandLink.href);
+
+    instance.loadCanvas('fi', 'capacityCanvas');
+
+    expect(helpContext.isConnected).toBe(false);
+    expect(host.querySelector('.cc-help__context').textContent).toContain(
+      'Kuinka paljon kapasiteettia',
+    );
+    expect(brandLink.href).toBe(
+      'https://www.apiopscycles.com/resources/capacity-canvas/',
+    );
+  });
+
   test('embed mode uses lean defaults', () => {
     const host = createHost();
     const { initCanvasCreator } = require('../src/main.js');

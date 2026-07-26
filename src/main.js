@@ -665,7 +665,7 @@ class CanvasCreatorInstance {
     root.innerHTML = `
       <div class="cc-shell">
         <header class="cc-header">
-          <a class="cc-brand" href="https://www.apiopscycles.com/resources/customer-journey-canvas/" target="_blank" rel="noopener noreferrer">
+          <a class="cc-brand" href="https://www.apiopscycles.com/resources/" target="_blank" rel="noopener noreferrer">
             <img class="cc-brand__logo" alt="CanvasCreator logo" width="64" height="64" />
             <span class="cc-brand__title">CanvasCreator</span>
           </a>
@@ -735,6 +735,7 @@ class CanvasCreatorInstance {
     this.container.appendChild(root);
 
     this.headerLinks = root.querySelector('.cc-header__links');
+    this.brandLink = root.querySelector('.cc-brand');
     this.primaryToolbar = root.querySelector('.cc-toolbar__primary');
     this.secondaryToolbar = root.querySelector('.cc-toolbar__secondary');
     this.localeSelect = root.querySelector('[data-cc-role="locale"]');
@@ -890,6 +891,33 @@ class CanvasCreatorInstance {
     }
 
     this.helpPanel.hidden = this.mode !== 'standalone';
+    this.updateContextualContent();
+  }
+
+  updateContextualContent() {
+    const localizedCanvas = this.contentData
+      ? localizedData[this.contentData.locale]?.[this.contentData.templateId]
+      : null;
+
+    if (this.brandLink) {
+      const resourceSlug = this.contentData
+        ? this.contentData.templateId
+            .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+            .toLowerCase()
+        : '';
+      this.brandLink.href = resourceSlug
+        ? `https://www.apiopscycles.com/resources/${resourceSlug}/`
+        : 'https://www.apiopscycles.com/resources/';
+      this.brandLink.setAttribute(
+        'aria-label',
+        localizedCanvas
+          ? `Learn more about ${localizedCanvas.title}`
+          : 'Browse APIOps Cycles resources',
+      );
+    }
+
+    if (!this.helpPanel || !this.toolbar.help) return;
+
     this.helpPanel.innerHTML = `
       <strong>Canvas Help</strong>
       <ul>
@@ -900,6 +928,39 @@ class CanvasCreatorInstance {
         <li>Use the toolbar to manage metadata and exports.</li>
       </ul>
     `;
+
+    if (!localizedCanvas) return;
+
+    const context = this.document.createElement('section');
+    context.className = 'cc-help__context';
+
+    const heading = this.document.createElement('h3');
+    heading.textContent = localizedCanvas.title;
+    context.appendChild(heading);
+
+    if (localizedCanvas.purpose) {
+      const purpose = this.document.createElement('p');
+      const label = this.document.createElement('strong');
+      label.textContent = 'Purpose: ';
+      purpose.append(label, localizedCanvas.purpose);
+      context.appendChild(purpose);
+    }
+
+    if (localizedCanvas.howToUse) {
+      const howToUse = this.document.createElement('p');
+      const label = this.document.createElement('strong');
+      label.textContent = 'How to use: ';
+      howToUse.append(label, localizedCanvas.howToUse);
+      context.appendChild(howToUse);
+    }
+
+    const methodLink = this.document.createElement('a');
+    methodLink.href = this.brandLink.href;
+    methodLink.target = '_blank';
+    methodLink.rel = 'noopener noreferrer';
+    methodLink.textContent = `Open the ${localizedCanvas.title} method page`;
+    context.appendChild(methodLink);
+    this.helpPanel.prepend(context);
   }
 
   initializeSelections(options) {
@@ -1160,6 +1221,7 @@ class CanvasCreatorInstance {
   render() {
     this.root.dataset.mode = this.mode;
     this.root.classList.toggle('cc-root--compact', this.compact);
+    this.updateContextualContent();
 
     if (!this.contentData) {
       this.svgHost.innerHTML = `
