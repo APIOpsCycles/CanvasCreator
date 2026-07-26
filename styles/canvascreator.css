@@ -175,6 +175,21 @@
   border-radius: var(--cc-radius-lg);
 }
 
+.cc-help__context {
+  margin-bottom: var(--cc-space-lg);
+  padding-bottom: var(--cc-space-lg);
+  border-bottom: 1px solid var(--cc-border-subtle);
+}
+
+.cc-help__context h3,
+.cc-help__context p {
+  margin-top: 0;
+}
+
+.cc-help__context p {
+  margin-bottom: var(--cc-space-sm);
+}
+
 .cc-help[hidden],
 .cc-theme-panel[hidden] {
   display: none;

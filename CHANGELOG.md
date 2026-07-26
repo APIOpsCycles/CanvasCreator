@@ -2,6 +2,10 @@
 
 The repository history shows twelve merged pull requests, which introduce localization features, bug fixes, and new tests. Key updates include:
 
+## Unreleased
+- Help now shows the selected canvas's localized purpose and usage guidance.
+- CanvasCreator branding and help link to the selected canvas's method page instead of always linking to the Customer Journey Canvas.
+
 ## Version 1.7.0 - 1.7.2
 - 1.7.0 UI is now embeddable and configurable for Astro, Vue, React etc. use
 - 1.7.0 fixed export bug where sticky notes were partially hidden if on top of section line
