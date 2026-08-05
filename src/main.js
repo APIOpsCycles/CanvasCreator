@@ -320,7 +320,7 @@ function buildCanvasSvgMarkup({
   } else {
     const logoUrl = resolveAssetUrl(
       assetBase,
-      'img/apiops-cycles-logo2025-blue.svg',
+      'img/apiops-cycles-logo-dark.svg',
     );
     parts.push(
       `<image href="${escapeXml(logoUrl)}" x="${defaultStyles.padding}" y="${
@@ -628,7 +628,7 @@ class CanvasCreatorInstance {
   preloadInlineLogo() {
     const logoUrl = resolveAssetUrl(
       this.assetBase,
-      'img/apiops-cycles-logo2025-blue.svg',
+      'img/apiops-cycles-logo-dark.svg',
     );
 
     if (!this.window.fetch) return;
@@ -765,7 +765,7 @@ class CanvasCreatorInstance {
     const brandLogo = root.querySelector('.cc-brand__logo');
     brandLogo.src = resolveAssetUrl(
       this.assetBase,
-      'img/apiops-cycles-logo-2025-64.png',
+      'img/apiops-cycles-logo64.png',
     );
 
     this.renderHeaderLinks();

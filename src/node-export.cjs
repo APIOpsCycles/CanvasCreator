@@ -167,7 +167,7 @@ function appendJourneyStepsSvg(document, parent, sectionDef, sectionBox) {
 
 function renderSVG(canvasDef, localizedData, content) {
   const logo = fs.readFileSync(
-    path.join(__dirname, '../img/apiops-cycles-logo2025-blue.svg'),
+    path.join(__dirname, '../img/apiops-cycles-logo-dark.svg'),
     'utf8',
   );
 
