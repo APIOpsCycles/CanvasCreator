@@ -1,16 +1,16 @@
 /* Source CSS. Run `npm run minify-css` to regenerate canvascreator.min.css */
 .cc-root {
   --cc-font-family: Arial, sans-serif;
-  --cc-text-primary: #1a3987;
-  --cc-text-secondary: #333;
-  --cc-text-muted: #70809b;
+  --cc-text-primary: #1656b8;
+  --cc-text-secondary: #0f172a;
+  --cc-text-muted: 	#334155;
   --cc-text-on-brand: #fff;
-  --cc-border-primary: #1a3987;
+  --cc-border-primary: #1656b8;
   --cc-border-subtle: #ccd3df;
   --cc-surface-page: #eef2f7;
   --cc-surface-panel: rgba(255, 255, 255, 0.96);
   --cc-surface-card: #fff;
-  --cc-surface-brand: #16294f;
+  --cc-surface-brand: #1656b8;
   --cc-surface-muted: #e4e9f3;
   --cc-primary: #1a3987;
   --cc-primary-hover: #2b4a9d;

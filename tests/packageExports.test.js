@@ -20,7 +20,7 @@ describe('package exports', () => {
           __dirname,
           '..',
           'img',
-          'apiops-cycles-logo-2025-64.png',
+          'apiops-cycles-logo64.png',
         ),
       ),
     ).toBe(true);
