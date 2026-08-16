@@ -570,6 +570,7 @@ function extractInlineSvgData(svgText) {
     markup: source
     .replace(/<\?xml[\s\S]*?\?>/i, '')
     .replace(/<!DOCTYPE[\s\S]*?>/i, '')
+    .replace(/<metadata\b[\s\S]*?<\/metadata>/gi, '')
     .replace(/<sodipodi:namedview[\s\S]*?<\/sodipodi:namedview>/i, '')
     .replace(/<sodipodi:namedview[\s\S]*?\/>/i, '')
     .replace(/^[\s\S]*?<svg[^>]*>/i, '')

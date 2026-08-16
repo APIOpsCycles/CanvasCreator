@@ -67,6 +67,17 @@ describe('export helpers', () => {
     expect(svg.includes('Placeholder')).toBe(false);
   });
 
+  test('renderSVG inlines logo without XML metadata namespaces', () => {
+    const content = buildContent(canvasData, 'apiBusinessModelCanvas', 'en', false);
+    const svg = renderSVG(canvasData['apiBusinessModelCanvas'], localizedData, content);
+    const dom = new (require('jsdom').JSDOM)();
+    const parsed = new dom.window.DOMParser().parseFromString(svg, 'image/svg+xml');
+
+    expect(parsed.querySelector('parsererror')).toBeNull();
+    expect(svg).not.toContain('<metadata');
+    expect(svg).not.toContain('rdf:');
+  });
+
   test('empty canvas export keeps section descriptions', () => {
     const content = buildContent(canvasData, 'apiBusinessModelCanvas', 'en', false);
     const svg = renderSVG(canvasData['apiBusinessModelCanvas'], localizedData, content);

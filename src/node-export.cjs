@@ -85,6 +85,24 @@ function wrapText(text, maxWidth = defaultStyles.maxLineWidth) {
   return lines.join('\n');
 }
 
+function extractInlineSvgData(svgText) {
+  if (!svgText) return { markup: '', viewBox: '0 0 567 567.000005' };
+  const source = String(svgText);
+  const viewBoxMatch = source.match(/viewBox="([^"]+)"/i);
+  return {
+    viewBox: viewBoxMatch ? viewBoxMatch[1] : '0 0 567 567.000005',
+    markup: source
+      .replace(/<\?xml[\s\S]*?\?>/i, '')
+      .replace(/<!DOCTYPE[\s\S]*?>/i, '')
+      .replace(/<metadata\b[\s\S]*?<\/metadata>/gi, '')
+      .replace(/<sodipodi:namedview[\s\S]*?<\/sodipodi:namedview>/i, '')
+      .replace(/<sodipodi:namedview[\s\S]*?\/>/i, '')
+      .replace(/^[\s\S]*?<svg[^>]*>/i, '')
+      .replace(/<\/svg>\s*$/i, '')
+      .trim(),
+  };
+}
+
 function appendWrappedText(document, parent, {
   x,
   y,
@@ -166,9 +184,11 @@ function appendJourneyStepsSvg(document, parent, sectionDef, sectionBox) {
 }
 
 function renderSVG(canvasDef, localizedData, content) {
-  const logo = fs.readFileSync(
-    path.join(__dirname, '../img/apiops-cycles-logo-dark.svg'),
-    'utf8',
+  const logo = extractInlineSvgData(
+    fs.readFileSync(
+      path.join(__dirname, '../img/apiops-cycles-logo-dark.svg'),
+      'utf8',
+    ),
   );
 
   const dom = new JSDOM('<!DOCTYPE html><svg xmlns="http://www.w3.org/2000/svg"></svg>');
@@ -197,7 +217,7 @@ function renderSVG(canvasDef, localizedData, content) {
     'transform',
     `translate(${defaultStyles.padding}, ${defaultStyles.padding / 2}) scale(0.1,0.1)`,
   );
-  logoGroup.innerHTML = logo;
+  logoGroup.innerHTML = `<svg viewBox="${logo.viewBox}">${logo.markup}</svg>`;
   svg.appendChild(logoGroup);
 
   const locCanvas =
