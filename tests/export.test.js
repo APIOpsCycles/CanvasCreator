@@ -322,7 +322,7 @@ describe('export helpers', () => {
       const imported = {
         templateId: canvasId,
         locale: 'en',
-        metadata: {},
+        metadata: { source: '', license: '', authors: [], website: '' },
         sections: canvasData[canvasId].sections.map((section) => ({
           sectionId: section.id,
           stickyNotes:

@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { importJSON } = require('./noteManager');
 const defaultStyles = require('../src/defaultStyles');
 const { buildContent } = require('./export');
 
@@ -95,7 +96,7 @@ function analyzeContentFit(content, styles = defaultStyles) {
 }
 
 function loadImportedContent(importPath) {
-  return JSON.parse(fs.readFileSync(importPath, 'utf8'));
+  return importJSON(fs.readFileSync(importPath, 'utf8'));
 }
 
 function formatIssue(issue) {

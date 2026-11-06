@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
+const { importJSON } = require('./noteManager');
 const {
   buildContent,
   buildFileName,
@@ -73,7 +74,7 @@ async function main() {
   if (args.import) {
     const files = Array.isArray(args.import) ? args.import : [args.import];
     for (const file of files) {
-      const obj = JSON.parse(fs.readFileSync(file, 'utf8'));
+      const obj = importJSON(fs.readFileSync(file, 'utf8'));
       imports[obj.templateId] = obj;
     }
   }

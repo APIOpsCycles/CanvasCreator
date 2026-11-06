@@ -11,6 +11,7 @@
     "check-fit": "node scripts/checkNoteFit.js"
   },
   "dependencies": {
+    "ajv": "^8.20.0",
     "apiops-cycles-method-data": "^4.2.1",
     "canvas": "^3.1.2",
     "jsdom": "^26.1.0",

@@ -1,3 +1,4 @@
+const { validateImportedContent } = require('./validateImport');
 if (typeof TextEncoder === 'undefined') {
   global.TextEncoder = require('util').TextEncoder;
   global.TextDecoder = require('util').TextDecoder;
@@ -40,6 +41,7 @@ function buildContent(
 ) {
   const canvasDef = canvasData[canvasId];
   if (imported) {
+    validateImportedContent(imported);
     const content = cloneContent(imported);
     if (forRender) {
       distributeMissingPositions(content, canvasDef, defaultStyles);
