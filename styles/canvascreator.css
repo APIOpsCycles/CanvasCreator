@@ -290,6 +290,23 @@
   background: transparent;
 }
 
+.cc-import-error {
+  padding: var(--cc-space-md);
+  border: 1px solid #b42318;
+  border-radius: 8px;
+  background: #fff5f4;
+  color: #7a271a;
+  overflow-wrap: anywhere;
+}
+
+.cc-import-error[hidden] {
+  display: none;
+}
+
+.cc-import-error__message {
+  white-space: pre-line;
+}
+
 .cc-metadata-dialog::backdrop {
   background: rgba(12, 20, 36, 0.35);
 }

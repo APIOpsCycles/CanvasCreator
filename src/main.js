@@ -1,4 +1,4 @@
-const { validateImportedContent } = require('./validateImport');
+const { validateImportedContent, getImportErrorMessage } = require('./validateImport');
 const {
   sanitizeInput,
   validateInput,
@@ -687,6 +687,12 @@ class CanvasCreatorInstance {
           </div>
           <div class="cc-toolbar__secondary"></div>
         </section>
+        <div class="cc-import-error" role="alert" tabindex="-1" hidden>
+          <strong>We couldn’t import this canvas</strong>
+          <p class="cc-import-error__message"></p>
+          <p>Your current canvas has not changed. Fix the file and try importing it again.</p>
+          <button type="button" data-cc-role="dismissImportError">Dismiss</button>
+        </div>
         <section class="cc-workspace">
           <div class="cc-help" hidden></div>
           <div class="cc-stage-shell">
@@ -750,6 +756,12 @@ class CanvasCreatorInstance {
     this.notesLayer = root.querySelector('.cc-notes-layer');
     this.themePanel = root.querySelector('.cc-theme-panel');
     this.metadataDialog = root.querySelector('.cc-metadata-dialog');
+    this.importErrorPanel = root.querySelector('.cc-import-error');
+    this.importErrorMessage = root.querySelector('.cc-import-error__message');
+    root.querySelector('[data-cc-role="dismissImportError"]').addEventListener('click', () => {
+      this.importErrorPanel.hidden = true;
+      this.importButton?.focus();
+    });
     this.metadataSource = root.querySelector('[data-cc-role="source"]');
     this.metadataLicense = root.querySelector('[data-cc-role="license"]');
     this.metadataAuthors = root.querySelector('[data-cc-role="authors"]');
@@ -1288,6 +1300,7 @@ class CanvasCreatorInstance {
   importFromFile() {
     const file = this.fileInput.files && this.fileInput.files[0];
     if (!file) return;
+    this.importErrorPanel.hidden = true;
 
     const reader = new this.window.FileReader();
     reader.onload = (event) => {
@@ -1313,7 +1326,9 @@ class CanvasCreatorInstance {
         this.selectedNoteRef = null;
         this.render();
       } catch (error) {
-        this.window.alert(`Failed to import canvas JSON: ${error.message}`);
+        this.importErrorMessage.textContent = getImportErrorMessage(error);
+        this.importErrorPanel.hidden = false;
+        this.importErrorPanel.focus();
       } finally {
         this.fileInput.value = '';
       }

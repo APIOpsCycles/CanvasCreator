@@ -63,9 +63,7 @@
             "items": {
               "type": "object",
               "required": [
-                "content",
-                "size",
-                "color"
+                "content"
               ],
               "additionalProperties": false,
               "properties": {
