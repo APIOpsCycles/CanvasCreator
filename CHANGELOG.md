@@ -1,5 +1,8 @@
 # Release Notes
 
+## Unreleased
+- Validate browser and CLI imports against the JSON schema and report field paths for invalid data, including missing sticky-note `content`. Reject invalid imports before replacing the current canvas.
+
 The repository history shows twelve merged pull requests, which introduce localization features, bug fixes, and new tests. Key updates include:
 
 ## Version 1.7.0 - 1.7.2

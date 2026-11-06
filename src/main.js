@@ -1,3 +1,4 @@
+const { validateImportedContent } = require('./validateImport');
 const {
   sanitizeInput,
   validateInput,
@@ -1292,13 +1293,7 @@ class CanvasCreatorInstance {
     reader.onload = (event) => {
       try {
         const imported = JSON.parse(event.target.result);
-        if (
-          !imported.templateId ||
-          !imported.metadata ||
-          !Array.isArray(imported.sections)
-        ) {
-          throw new Error('Invalid JSON file format.');
-        }
+        validateImportedContent(imported);
 
         const locale = getLocaleKey(imported.locale || defaultStyles.defaultLocale);
         const cloned = cloneContent(imported);

@@ -222,6 +222,7 @@ function getJourneyStepsLayout(sectionDef, sectionBox, styles = defaultStyles) {
 }
 
 module.exports = {
+  getLocaleKey,
   sanitizeInput,
   validateInput,
   distributeMissingPositions,

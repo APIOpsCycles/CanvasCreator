@@ -1,3 +1,4 @@
+const { validateImportedContent } = require('../src/validateImport');
 // Use shared helpers for input handling
 const { sanitizeInput } = require('../src/helpers.js');
 
@@ -36,7 +37,7 @@ function exportJSON(contentData) {
 }
 
 function importJSON(json) {
-  return JSON.parse(json);
+  return validateImportedContent(JSON.parse(json));
 }
 
 function switchLocale(contentData, locale) {
